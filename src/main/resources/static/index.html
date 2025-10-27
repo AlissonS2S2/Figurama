@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Figures - Sistema de Coleções</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🎭 Sistema de Coleções de Action Figures</h1>
+        <p>Gerencie suas coleções e action figures de forma simples e intuitiva</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('colecoes')">📚 Coleções</button>
+        <button class="tab-btn" onclick="openTab('actionFigures')">🎭 Action Figures</button>
+        <button class="tab-btn" onclick="openTab('dashboard')">📊 Dashboard</button>
+    </div>
+
+    <!-- Tab: Coleções -->
+    <div id="colecoes" class="tab-content active">
+        <div class="card">
+            <h2>➕ Cadastrar Nova Coleção</h2>
+            <form id="formColecao" onsubmit="cadastrarColecao(event)">
+                <div class="form-group">
+                    <label for="colecaoNome">Nome da Coleção *</label>
+                    <input type="text" id="colecaoNome" required placeholder="Ex: Heróis da Marvel">
+                </div>
+                <div class="form-group">
+                    <label for="colecaoDescricao">Descrição</label>
+                    <textarea id="colecaoDescricao" placeholder="Descreva sua coleção..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="colecaoVisibilidade">Visibilidade *</label>
+                        <select id="colecaoVisibilidade" required>
+                            <option value="PUBLICA">Pública</option>
+                            <option value="PRIVADA">Privada</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="colecionadorId">ID do Colecionador *</label>
+                        <input type="number" id="colecionadorId" required value="1" min="1">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Cadastrar Coleção</button>
+                <button type="reset" class="btn btn-secondary">Limpar</button>
+            </form>
+        </div>
+
+        <div id="alertColecoes"></div>
+
+        <div class="card">
+            <h2>📚 Minhas Coleções</h2>
+            <button onclick="listarColecoes()" class="btn btn-primary">🔄 Atualizar Lista</button>
+            <button onclick="listarColecoesPublicas()" class="btn btn-secondary">👁️ Ver Públicas</button>
+            <div id="listaColecoes" class="grid"></div>
+        </div>
+    </div>
+
+    <!-- Tab: Action Figures -->
+    <div id="actionFigures" class="tab-content">
+        <div class="card">
+            <h2>➕ Cadastrar Nova Action Figure</h2>
+            <form id="formActionFigure" onsubmit="cadastrarActionFigure(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="afNome">Nome *</label>
+                        <input type="text" id="afNome" required placeholder="Ex: Homem de Ferro Mark 50">
+                    </div>
+                    <div class="form-group">
+                        <label for="afCategoria">Categoria *</label>
+                        <input type="text" id="afCategoria" required placeholder="Ex: Marvel, DC, Anime">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="afDescricao">Descrição</label>
+                    <textarea id="afDescricao" placeholder="Descreva a action figure..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="afFabricante">Fabricante</label>
+                        <input type="text" id="afFabricante" placeholder="Ex: Hot Toys, Sideshow">
+                    </div>
+                    <div class="form-group">
+                        <label for="afPreco">Preço (R$)</label>
+                        <input type="number" id="afPreco" step="0.01" min="0" placeholder="299.90">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="afUrlFoto">URL da Foto</label>
+                    <input type="url" id="afUrlFoto" placeholder="https://exemplo.com/foto.jpg">
+                </div>
+                <button type="submit" class="btn btn-primary">Cadastrar Action Figure</button>
+                <button type="reset" class="btn btn-secondary">Limpar</button>
+            </form>
+        </div>
+
+        <div id="alertActionFigures"></div>
+
+        <div class="card">
+            <h2>🎭 Todas as Action Figures</h2>
+            <button onclick="listarActionFigures()" class="btn btn-primary">🔄 Atualizar Lista</button>
+            <div class="form-group" style="margin-top: 20px;">
+                <label for="filtroCategoria">Filtrar por Categoria:</label>
+                <input type="text" id="filtroCategoria" placeholder="Digite a categoria e pressione Enter" onkeypress="if(event.key==='Enter') filtrarPorCategoria()">
+            </div>
+            <div id="listaActionFigures" class="grid"></div>
+        </div>
+    </div>
+
+    <!-- Tab: Dashboard -->
+    <div id="dashboard" class="tab-content">
+        <div class="card">
+            <h2>📊 Estatísticas do Sistema</h2>
+            <button onclick="carregarDashboard()" class="btn btn-primary">🔄 Atualizar Dashboard</button>
+            <div class="stats" style="margin-top: 20px;">
+                <div class="stat-card">
+                    <h3 id="totalColecoes">0</h3>
+                    <p>Total de Coleções</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalActionFigures">0</h3>
+                    <p>Total de Action Figures</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="colecoesPublicas">0</h3>
+                    <p>Coleções Públicas</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🏆 Coleções Recentes</h2>
+            <div id="colecoesRecentes" class="grid"></div>
+        </div>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
