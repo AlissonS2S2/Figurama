@@ -127,11 +127,6 @@ Criar a plataforma de referência para colecionadores de action figures, fomenta
 - Plataforma **gratuita** para atrair base sólida de usuários
 - Foco em funcionalidades core e experiência do usuário
 
-### Monetização Futura
-- **Plano Premium**: Estatísticas avançadas, temas personalizados, backup em nuvem
-- **Marketplace Integrado**: Compra/venda de action figures
-- **Publicidade Segmentada**: Anúncios de lojas especializadas
-
 ---
 
 ## 👥 Equipe
