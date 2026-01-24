@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/components/cards.css">
+    <link rel="stylesheet" href="css/components/buttons.css">
+    <link rel="stylesheet" href="css/components/forms.css">
+    <link rel="stylesheet" href="css/pages/action_figure.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header class="header-logged">
+        <a href="dashboard.html">
+            <img class="logo" src="images/Logo.png" alt="Logo Figurama">
+        </a>
+        
+        <nav class="nav-logged">
+            <span>
+                <img class="profile-icon" src="icons/Profile-icon.png" alt="Descrição da imagem">N_Usuário</span>
+            <a href="#">Coleção</a>
+            <input type="text" placeholder="Pesquisar">
+            <button class="btn-add">Adicionar +</button>
+        </nav>
+    </header>
+
+    <main class="figure-page">
+        <section class="figure-container">
+            <div class="figure-image">
+                <img>
+                <button class="btn-primary">Adicionar</button>
+            </div>
+            
+            <div class="figure-info">
+                <h1>{{nome.action_figure}}</h1>
+                <p class="figure-subtitle">de franquia {{franquia.nome}}</p>
+
+                <span class="release-date">Lançada em **/**/**</span>
+
+                <p class="description">{{descricao.figure}}</p>
+
+                <div class="category">
+                    <p>Categorias</p>
+                    <span class="tag">{{categoria.figure}}</span>
+                    <span class="tag">{{categoria.figure}}</span>
+                    <span class="tag">{{categoria.figure}}</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <p>Da mesma franquia</p>
+            <hr>
+            <div class="cards-line-figure">
+                <div class="card-figure"></div>
+                <div class="cardP"></div>
+                <div class="cardP"></div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <p>Figuras relacionadas</p>
+            <hr>
+            <div class="cards-line-figure">
+                <div class="card-figure"></div>
+                <div class="card-figure"></div>
+                <div class="card-figure"></div>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

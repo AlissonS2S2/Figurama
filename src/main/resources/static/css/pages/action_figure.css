@@ -1,0 +1,74 @@
+.figure-page{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.figure-container{
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+    align-items: start;
+    margin-bottom: 60px;
+}
+
+.figure-image{
+    background: #3a3a4f;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.figure-image img{
+    width: 100%;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.figure-info h1{
+font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.figure-subtitle{
+font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.release-date{
+display: inline-block;
+  background: #44445c;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.description{
+    margin: 20px 0;
+  line-height: 1.6;
+  color: #ddd;
+}
+
+
+.category{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.section-block{
+    margin-top: 50px;
+}
+
+.section-block h2{
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.cards-line-figure{
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}

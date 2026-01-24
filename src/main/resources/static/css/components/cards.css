@@ -1,0 +1,54 @@
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    aspect-ratio: 3/4;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.recent-card {
+    width: 100px;
+    height: 140px;
+    background: #4ef1f1;
+    border-radius: 6px;
+}
+
+.collection-card {
+    margin-top: 20px;
+    background: #3a3952;
+    padding: 15px;
+    width: 160px;
+    border-radius: 10px;
+}
+
+.news-card,
+.news-card img {
+    width: 120px;
+    height: 160px;
+    background: #ccc;
+    border-radius: 6px;
+}
+
+.card-figure {
+    width: 140px;
+    height: 200px;
+    background: #3a3a4f;
+    border-radius: 10px;
+}
+
+.tag {
+    background: #44445c;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border-style: solid;
+    border-color: #AEAEAE;
+    font-size: 13px;
+}

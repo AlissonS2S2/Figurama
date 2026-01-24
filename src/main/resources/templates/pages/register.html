@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/pages/register.css">
+    <link rel="stylesheet" href="css/components/buttons.css">
+    <link rel="stylesheet" href="css/components/forms.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <a href="index.html">
+            <img src="images/logo.png" alt="Logo" width="120">
+        </a>
+
+        <nav>
+            <a href="login.html" id="loginBtn">Fazer login</a>
+            <a href="register.html" id="registerBtn">Registrar</a>
+            <a href="#" id="exploreBtn">Explorar</a>
+            <div class="search-box">
+                <input type="text" placeholder="Pesquisar">
+                <span>🔍</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="register-content">
+        <h1 class="title-register">Registrar</h1>
+
+        <form id="register-form" class="register-container">
+            <input type="email" id="email" name="email" placeholder="Endereço de E-mail">
+
+            <input type="text" id="username" name="username" placeholder="Nome de usuário" maxlength="16">
+            <small id="max-char">Máximo de 16 caracteres</small>
+
+            <input type="password" id="password" name="password" placeholder="Senha">
+            <small id="min-char">Mínimo de 6 caracteres</small>
+
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirmar Senha">
+
+            <label class="terms">
+                <input type="checkbox" id="terms" name="terms" required>
+                <a>Eu aceito os Termos de Serviço e Política de Privacidade</a>
+            </label>
+
+            <button type="submit" class="btn-register">Registrar</button>
+    
+            <p>
+                Já tem uma conta? <a href="login.html">Faça login</a>
+            </p>
+        </form>
+    </main>
+
+    <script>
+        // Validação do formulário
+function validateForm() {
+    const email = document.getElementById('email').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const terms = document.getElementById('terms').checked;
+    
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert('E-mail inválido');
+        return false;
+    }
+    
+    if (username.length < 3 || username.length > 16) {
+        alert('Username deve ter 3-16 caracteres');
+        return false;
+    }
+    
+    if (password.length < 6) {
+        alert('Senha deve ter no mínimo 6 caracteres');
+        return false;
+    }
+    
+    if (password !== confirmPassword) {
+        alert('As senhas não coincidem');
+        return false;
+    }
+    
+    if (!terms) {
+        alert('Aceite os termos para continuar');
+        return false;
+    }
+    
+    return true;
+}
+
+// Enviar registro
+async function handleRegister(event) {
+    event.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    const btn = document.querySelector('.btn-register');
+    btn.textContent = 'Registrando...';
+    btn.disabled = true;
+    
+    try {
+        const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: document.getElementById('email').value.trim(),
+                username: document.getElementById('username').value.trim(),
+                password: document.getElementById('password').value
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Conta criada!');
+            window.location.href = 'login.html';
+        } else {
+            alert(data.message || 'Erro ao criar conta');
+        }
+    } catch (error) {
+        alert('Erro ao conectar');
+    } finally {
+        btn.textContent = 'Registrar';
+        btn.disabled = false;
+    }
+}
+
+// Inicializar
+document.getElementById('register-form').addEventListener('submit', handleRegister);
+    </script>
+</body>
+</html>

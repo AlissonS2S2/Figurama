@@ -1,0 +1,141 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/components/buttons.css">
+    <link rel="stylesheet" href="css/components/forms.css">
+    <link rel="stylesheet" href="css/pages/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html">
+            <img src="images/logo.png" alt="Logo" width="120">
+        </a>
+
+        <nav>
+            <a href="login.html" id="loginBtn">Fazer login</a>
+            <a href="register.html" id="registerBtn">Registrar</a>
+            <a href="#" id="exploreBtn">Explorar</a>
+            <div class="search-box">
+                <input type="text" placeholder="Pesquisar">
+                <span>🔍</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="login-content">
+        <h1 class="title-login">Bem-vindo de volta!</h1>
+
+        <div id="error-message"style="display: none; color: #ff6b6b; background: rgba(255, 107, 107, 0.1); padding: 12px; border-radius: 6px; margin-bottom: 20px; max-width: 600px; width: 100%; text-align: center;">
+        </div>
+        
+        <form id="login-form" class="login-area">
+            <input type="text" id="username" name="username" placeholder="Nome de usuário ou E-mail">
+                <div class="password-area">
+                    <input type="password" id="password" name="password" placeholder="Senha" >
+                    <button type="button" id="toggle-password" title="Mostrar/Ocultar Senha">
+                        👁️
+                    </button>
+                </div>
+
+                <label class="remember">
+                    <input type="checkbox" id="remember"> Lembre-se de mim
+                </label>
+
+                <button type="submit" id="btn-login" class="btn-login">Login</button>
+
+                <a href="#" class="forgot">Esqueceu a senha?</a>
+        </form>
+
+        <p class="register-link">
+            Não tem uma conta? <a href="register.html">Registre-se</a>
+        </p>
+    </main>
+    
+    <script>
+        // Seleção dos elementos
+const form = document.getElementById("login-form");
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const errorMessage = document.getElementById("error-message");
+const togglePassword = document.getElementById("toggle-password");
+const rememberCheckbox = document.getElementById("remember");
+
+/* ======================
+   MOSTRAR / OCULTAR SENHA
+====================== */
+togglePassword.addEventListener("click", () => {
+  const type = passwordInput.type === "password" ? "text" : "password";
+  passwordInput.type = type;
+
+  togglePassword.textContent = type === "password" ? "👁️" : "🙈";
+});
+
+/* ======================
+   SUBMIT DO LOGIN
+====================== */
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  // Limpa erro anterior
+  errorMessage.style.display = "none";
+  errorMessage.textContent = "";
+
+  // Validação simples
+  if (!username || !password) {
+    showError("Preencha todos os campos.");
+    return;
+  }
+
+  if (password.length < 6) {
+    showError("A senha deve ter pelo menos 6 caracteres.");
+    return;
+  }
+
+  // Remember me (simples, frontend)
+  if (rememberCheckbox.checked) {
+    localStorage.setItem("rememberUser", username);
+  } else {
+    localStorage.removeItem("rememberUser");
+  }
+
+  // Simulação de login (aqui depois entra API)
+  console.log("Login enviado:", {
+    username,
+    password,
+  });
+
+  // Exemplo de redirecionamento
+  // window.location.href = "dashboard.html";
+});
+
+/* ======================
+   FUNÇÃO DE ERRO
+====================== */
+function showError(message) {
+  errorMessage.textContent = message;
+  errorMessage.style.display = "block";
+}
+
+/* ======================
+   CARREGAR REMEMBER ME
+====================== */
+window.addEventListener("load", () => {
+  const rememberedUser = localStorage.getItem("rememberUser");
+  if (rememberedUser) {
+    usernameInput.value = rememberedUser;
+    rememberCheckbox.checked = true;
+  }
+});
+    </script>
+</body>
+</html>

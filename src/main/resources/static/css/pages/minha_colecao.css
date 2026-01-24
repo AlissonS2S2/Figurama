@@ -1,0 +1,154 @@
+/* Estilos específicos da página de Coleção */
+
+.colecao-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 40px;
+}
+
+/* Informações da coleção */
+.colecao-info {
+    grid-column: 1 / -1;
+    margin-bottom: 20px;
+}
+
+.colecao-info h1 {
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+
+.colecao-info p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #b0b0b0;
+    margin-bottom: 10px;
+}
+
+.colecao-info small {
+    font-size: 13px;
+    color: #999;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.colecao-info hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Grid de cards */
+.card-grid1 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.cards1 {
+    background: #3a3952;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.cards1:hover {
+    transform: translateY(-5px);
+}
+
+.cards1 img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    background: #4a495a;
+}
+
+.cards1 h3 {
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cards1 .status {
+    display: inline-block;
+    margin: 0 12px 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    background: #4caf50;
+    color: white;
+}
+
+/* Sidebar de edição */
+.aside-edit {
+    grid-column: 2;
+    grid-row: 2;
+    background: #3a3952;
+    padding: 25px;
+    border-radius: 12px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: sticky;
+    top: 20px;
+}
+
+.icone-usuario-aside {
+    font-size: 48px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.aside-edit button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+#btn-edit {
+    background: #c77dff;
+    color: white;
+}
+
+#btn-edit:hover {
+    opacity: 0.9;
+}
+
+#btn-delete {
+    background: #ff6b6b;
+    color: white;
+}
+
+#btn-delete:hover {
+    opacity: 0.9;
+}
+
+.aside-edit small {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+}
+
+/* Responsivo */
+@media (max-width: 968px) {
+    .colecao-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .aside-edit {
+        grid-row: auto;
+        position: static;
+    }
+}

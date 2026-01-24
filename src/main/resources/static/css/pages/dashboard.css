@@ -1,0 +1,60 @@
+.dashboard{
+    padding: 30px;
+}
+
+.wb{
+    margin-bottom: 25px;
+    font-weight: normal;
+    text-align: center;
+}
+
+.stats{
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.stat{
+    background: #3a3952;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 22px;
+    margin-top: 55px;
+}
+
+.stat span{
+    display: block;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.recent{
+    margin-left: auto;
+}
+
+.recent h4{
+    margin-bottom: 15px;
+    margin-left: 100px;
+}
+
+.recent-grid{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.collections{
+    display: flex;
+    gap: 20px;
+}
+
+.new-text{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.news-grid{
+    display: flex;
+    gap: 15px;
+}

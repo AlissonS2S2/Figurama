@@ -1,0 +1,50 @@
+.franchise-container{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.franchise-info{
+    margin-bottom: 40px;
+}
+
+.franchise-info h1 {
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 15px;
+    color: #e0e0e0;
+}
+
+.franchise-info p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #b0b0b0;
+    margin-bottom: 10px;
+    max-width: 600px;
+}
+
+.franchise-info small {
+            font-size: 13px;
+            color: #999;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+.franchise-info hr {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+
+.cards-franchise{
+
+}
+
+.cards-line-franchise{
+
+}
+
+.status{
+
+}
+

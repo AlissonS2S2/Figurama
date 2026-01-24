@@ -1,48 +1,97 @@
-.header{
-background-color: #711D93;
-height: 152px;
-display: flex;
-align-items: center;
-}
-
-.footer{
-
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    padding: 0;
+    background: #323044;
+    color: white;
+    min-height: 100vh;
 }
 
-.Home-Page{
-    background-color: #323044;
+.footer{
+    background-color: #444257;
+    height: 120px;
+    display: flex;
+    align-items: center;
+}
+
+.footer-container{
     width: 100%;
-    height: 2653px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-
-}
-.Deadpool-Figurama{ 
-    position: absolute;
-    left: 165px;
-    top: 0px;
-
+    padding: 0 20px;
 }
 
-.register-page{
-    background-color: #323044;
-    width: 100%;
-    height: 800px;
-    display: flex;
-    top: 0%;
-}
+/* Header para Login, Registro e Landing Page*/
 
-.register-page h1{
-    color: white;
+
+.header {
     font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    font-size: 45px;
-    text-align: center;
-    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+}
+
+.header img {
+    width: 150px;
+}
+
+.header nav {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #e879f9;
+}
+
+/*Header para Logado*/
+
+.header-logged{
+    background: #7b2cbf;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logged img{
+    width: 150px;
+}
+
+.nav-logged{
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.profile-icon{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 8px;
+    position:relative;
+    top: 2px;
+}
+
+.nav-logged input{
+    display: flex;
+    gap: 15px;
+    align-items: center;
 }
