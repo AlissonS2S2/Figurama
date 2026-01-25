@@ -3,11 +3,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../../static/css/style.css">
-    <link rel="stylesheet" href="../../static/css/components/cards.css">
-    <link rel="stylesheet" href="../../static/css/components/buttons.css">
-    <link rel="stylesheet" href="../../static/css/components/forms.css">
-    <link rel="stylesheet" href="../../static/css/pages/minha_colecao.css">
+    <link rel="icon" type="web-icon" href="/images/Logo.png">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../css/components/cards.css">
+    <link rel="stylesheet" href="../css/components/buttons.css">
+    <link rel="stylesheet" href="../css/components/forms.css">
+    <link rel="stylesheet" href="../css/pages/minha_colecao.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -15,7 +16,7 @@
 <body>
     <header class="header-logged">
         <a href="dashboard.html">
-            <img src="../img/Logo.png" alt="Logo Figurama">
+            <img src="images/Logo.png" alt="Logo Figurama">
         </a>
         
         <nav class="nav-logged">
@@ -28,135 +29,82 @@
 
     <main class="colecao-container">
 
-        <section class="colecao-info">
-            <h1 id="title-colecao">{{colecao.nome}}</h1> <!-- Pega o nome da coleção no Banco -->
-            <p id="description">{{colecao.descricao}}</p> <!-- Pega o descrição da coleção no Banco -->
-            <small>{{colecao.total_itens}} Action Figures</small> <!-- Pega o total da coleção no Banco -->
-            <hr>
-        </section>
+        <div class="left-container">
+            <section class="colecao-info">
+                <h1 id="title-colecao"></h1>
+                <p id="description"></p>
+                <small id="total-items"> Action Figures</small>
+                <hr class=divider>
+            </section>
 
-        <section class="card-grid1">
-            <div class="cards1">
-                <img src="{{action_figure.nome}}" alt="{{action_figure.nome}}">
-                <h3>{{action_figure.nome}}</h3>
-                <span class="status">{{item.status}}</span>
-            </div>
-
-            <!-- Isso ira se repetir no JS -->
-        </section>
+            <section class="card-grid" id="collection-grid-container">
+                <div class="figure-card-placeholder"></div>
+            </section>
+        </div>
 
         <aside class="aside-edit">
-            <span class="icone-usuario-aside">👤</span> 
-            <button id="btn-edit">Editar Coleção</button>
-            <small>Ultima modificação: {{colecao.data_update}}</small>
-            <button id="btn-delete">Excluir Coleção</button>
+            <div class="user-header">
+                <div class="user-avatar">
+                    <img class="profile-icon" src="../icons/Profile-icon.png" alt="Descrição da imagem">
+                </div>
+                <span class="menu-dots">⋮</span>
+            </div>
+
+            <div class="aside-buttons">
+                <button id="btn-edit" onclick="goToEditPage()">Editar Coleção</button>
+                <small class="update-date">Ultima modificação: **/**/**</small>
+                <button id="btn-delete" onlclick="deleteCollection()">Excluir Coleção</button>
+            </div>
         </aside>
     </main>
 
-     <script src="../../static/js/config.js"></script>
-     <script src="../../static/js/api.js"></script>
-     <script src="../../static/js/minha_colecao.js"></script>
     <script>
-        // Dados da coleção (virão do backend)
-let colecaoId = null;
-
-// Carregar dados da coleção
-async function loadColecao() {
-    // Pegar ID da URL (ex: colecao.html?id=123)
+        // BACK-END: Função para pegar o ID da coleção da URL
+function getCollectionId() {
     const params = new URLSearchParams(window.location.search);
-    colecaoId = params.get('id');
+    return params.get('id');
+}
+
+// Redireciona para a página de edição (levando o ID)
+function goToEditPage() {
+    const id = getCollectionId();
+    // BACK-END: Certifique-se que o nome do arquivo da página anterior seja este
+    window.location.href = `criando-uma-colecao.html?id=${id}`;
+}
+
+// Função para excluir a coleção
+async function deleteCollection() {
+    const id = getCollectionId();
     
-    if (!colecaoId) {
-        alert('Coleção não encontrada');
-        window.location.href = 'dashboard.html';
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/api/colecoes/${colecaoId}`);
-        const data = await response.json();
+    if (confirm("Tem certeza que deseja excluir esta coleção? Esta ação não pode ser desfeita.")) {
+        // BACK-END: DELETE /api/collections/:id
+        console.log("Chamando banco para excluir coleção ID:", id);
         
-        if (response.ok) {
-            renderColecao(data);
-        } else {
-            alert('Erro ao carregar coleção');
+        /*
+        try {
+            const response = await fetch(`${API_BASE_URL}/collections/${id}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                alert("Coleção excluída!");
+                window.location.href = "home.html"; // Redireciona após excluir
+            }
+        } catch (error) {
+            console.error("Erro ao excluir coleção:", error);
         }
-    } catch (error) {
-        console.error('Erro:', error);
-        alert('Erro ao conectar');
+        */
     }
 }
 
-// Renderizar informações da coleção
-function renderColecao(data) {
-    document.getElementById('title-colecao').textContent = data.nome;
-    document.getElementById('description').textContent = data.descricao;
-    document.querySelector('.colecao-info small').textContent = `${data.total_itens} Action Figures`;
-    document.querySelector('.aside-edit small').textContent = `Última modificação: ${formatDate(data.data_update)}`;
-    
-    // Renderizar cards
-    renderCards(data.itens);
+// BACK-END: Função para carregar os dados iniciais
+async function loadCollectionDetails() {
+    const id = getCollectionId();
+    // 1. Buscar dados da coleção (Nome, Descrição, Data)
+    // 2. Buscar itens da coleção (Action Figures)
+    // 3. Preencher o ID 'figures-container' com os cards reais
 }
 
-// Renderizar cards de action figures
-function renderCards(itens) {
-    const grid = document.querySelector('.card-grid1');
-    grid.innerHTML = '';
-    
-    itens.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'cards1';
-        card.innerHTML = `
-            <img src="${item.imagem || 'images/placeholder.png'}" alt="${item.nome}">
-            <h3>${item.nome}</h3>
-            <span class="status">Na Coleção</span>
-        `;
-        
-        card.addEventListener('click', () => {
-            window.location.href = `figure.html?id=${item.id}`;
-        });
-        
-        grid.appendChild(card);
-    });
-}
-
-// Formatar data
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR');
-}
-
-// Editar coleção
-function editarColecao() {
-    window.location.href = `editar-colecao.html?id=${colecaoId}`;
-}
-
-// Excluir coleção
-async function excluirColecao() {
-    if (!confirm('Tem certeza que deseja excluir esta coleção?')) return;
-    
-    try {
-        const response = await fetch(`/api/colecoes/${colecaoId}`, {
-            method: 'DELETE'
-        });
-        
-        if (response.ok) {
-            alert('Coleção excluída');
-            window.location.href = 'dashboard.html';
-        } else {
-            alert('Erro ao excluir');
-        }
-    } catch (error) {
-        alert('Erro ao conectar');
-    }
-}
-
-// Inicializar
-document.addEventListener('DOMContentLoaded', () => {
-    loadColecao();
-    document.getElementById('btn-edit').addEventListener('click', editarColecao);
-    document.getElementById('btn-delete').addEventListener('click', excluirColecao);
-});
+document.addEventListener('DOMContentLoaded', loadCollectionDetails);
     </script>
 </body>
 </html>

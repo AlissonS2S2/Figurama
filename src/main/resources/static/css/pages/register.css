@@ -36,6 +36,10 @@
     font-size: 15px;
 }
 
+.register-container button{
+    width: 100%;
+}
+
 .register-container input::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
@@ -70,7 +74,6 @@
 }
 
 .btn-register {
-    width: 100%;
     padding: 15px;
     background: #c77dff;
     border: none;
@@ -102,6 +105,11 @@
 .register-container > p a {
     color: #c77dff;
     text-decoration: none;
+}
+
+.register-container small{
+    position: relative;
+    top: -20px;
 }
 
 @media (max-width: 768px) {

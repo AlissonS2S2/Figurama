@@ -3,11 +3,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../../static/css/style.css">
-    <link rel="stylesheet" href="../../static/css/components/cards.css">
-    <link rel="stylesheet" href="../../static/css/components/buttons.css">
-    <link rel="stylesheet" href="../../static/css/components/forms.css">
-    <link rel="stylesheet" href="../../static/css/pages/action_figure.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../css/components/cards.css">
+    <link rel="stylesheet" href="../css/components/buttons.css">
+    <link rel="stylesheet" href="../css/components/forms.css">
+    <link rel="stylesheet" href="../css/pages/action_figure.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -16,12 +16,13 @@
 <body>
     <header class="header-logged">
         <a href="dashboard.html">
-            <img class="logo" src="../img/Logo.png" alt="Logo Figurama">
+            <img class="logo" src="../images/Logo.png" alt="Logo Figurama">
         </a>
         
         <nav class="nav-logged">
             <span>
-                <img class="profile-icon" src="../img/Profile-icon.png" alt="Descrição da imagem">N_Usuário</span>
+                <img class="profile-icon" src="../icons/Profile-icon.png" alt="Descrição da imagem">N_Usuário
+            </span>
             <a href="#">Coleção</a>
             <input type="text" placeholder="Pesquisar">
             <button class="btn-add">Adicionar +</button>
@@ -30,51 +31,120 @@
 
     <main class="figure-page">
         <section class="figure-container">
-            <div class="figure-image">
-                <img>
-                <button class="btn-primary">Adicionar</button>
+            <div class="figure-image-box">
+                <div class="image-placeholder">
+                    <img id="main-figure-img" src="" alt="">
+                </div>
+                <button class="btn-add">Adicionar</button>
             </div>
-            
+
             <div class="figure-info">
-                <h1>{{nome.action_figure}}</h1>
-                <p class="figure-subtitle">de franquia {{franquia.nome}}</p>
+                <div class="info-header">
+                    <h1 id="figure-name"></h1>
+                    <div class="release-date">
+                        Lançada em <span id="figure-date"></span>
+                    </div>
+                </div>
 
-                <span class="release-date">Lançada em **/**/**</span>
+                <p class="figure-subtitle">de franquia <span id="franchise-name"></span></p>
 
-                <p class="description">{{descricao.figure}}</p>
+                <hr class="info-divider">
 
-                <div class="category">
+                <p class="description" id="figure-description"></p>
+
+                <hr class="info-divider">
+
+                <div class="category-area">
                     <p>Categorias</p>
-                    <span class="tag">{{categoria.figure}}</span>
-                    <span class="tag">{{categoria.figure}}</span>
-                    <span class="tag">{{categoria.figure}}</span>
+                    <div class="tags-container" id="category-tags">
+
+                    </div>
                 </div>
             </div>
         </section>
 
         <section class="section-block">
-            <p>Da mesma franquia</p>
-            <hr>
-            <div class="cards-line-figure">
-                <div class="card-figure"></div>
-                <div class="cardP"></div>
-                <div class="cardP"></div>
+            <p class="section-title">Da mesma franquia</p>
+            <hr class="section-divider">
+            <div class="cards-grid-row" id="franchise-figures-grid">
+
             </div>
         </section>
 
         <section class="section-block">
-            <p>Figuras relacionadas</p>
-            <hr>
-            <div class="cards-line-figure">
-                <div class="card-figure"></div>
-                <div class="card-figure"></div>
-                <div class="card-figure"></div>
+            <p class="section-title">Figuras relacionadas</p>
+            <hr class="section-divider">
+            <div class="cards-grid-row" id="related-figures-grid">
+
             </div>
         </section>
     </main>
 
-     <script src="../../static/js/config.js"></script>
-     <script src="../../static/js/api.js"></script>
-     <script src="../../static/js/pages/action_figure.js"></script>
+    <script>
+        // BACK-END: URL base da API
+const API_URL = 'http://localhost:3000/api';
+
+// Pega o ID da Figure pela URL (ex: detalhe.html?id=123)
+function getFigureId() {
+    return new URLSearchParams(window.location.search).get('id');
+}
+
+// BACK-END: Função para buscar detalhes da Action Figure principal
+async function loadFigureDetails() {
+    const id = getFigureId();
+    // fetch(`${API_URL}/figures/${id}`) ...
+}
+
+// BACK-END: Função para carregar as listas (Mesma Franquia e Relacionadas)
+async function loadRelatedLists() {
+    const id = getFigureId();
+    
+    // 1. Buscar figuras da mesma franquia (Limite 5)
+    // 2. Buscar figuras relacionadas por categoria (Limite 5)
+    
+    // Exemplo de como renderizar um card em qualquer uma das listas:
+    renderCardInList('franchise-figures-grid', {nome: "Exemplo", imagem_url: ""});
+}
+
+function renderCardInList(containerId, figure) {
+    const container = document.getElementById(containerId);
+    
+    // Seguindo seu modelo de card original
+    const card = document.createElement('div');
+    card.className = 'figure-card'; // Estilo definido no seu primeiro arquivo de modelo
+    
+    // Se não houver dados, o placeholder cinza pode ser usado:
+    if(!figure.imagem_url) {
+        card.className = 'card-placeholder-item';
+    } else {
+        card.innerHTML = `
+            <div class="figure-card-image">
+                <img src="${figure.imagem_url}" alt="${figure.nome}">
+            </div>
+            <div class="figure-card-info">
+                <p class="figure-card-name">${figure.nome}</p>
+            </div>
+        `;
+    }
+    
+    container.appendChild(card);
+}
+
+// BACK-END: Função para renderizar as tags de categoria
+function renderTags(categories) {
+    const container = document.getElementById('category-tags');
+    categories.forEach(cat => {
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.textContent = cat;
+        container.appendChild(span);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadFigureDetails();
+    loadRelatedLists();
+});
+    </script>
 </body>
 </html>

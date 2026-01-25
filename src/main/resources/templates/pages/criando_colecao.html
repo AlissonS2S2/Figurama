@@ -3,21 +3,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criando uma coleção</title>
-    <link rel="stylesheet" href="../../static/css/style.css">
-    <link rel="stylesheet" href="../../static/css/components/cards.css">
-    <link rel="stylesheet" href="../../static/css/components/buttons.css">
-    <link rel="stylesheet" href="../../static/css/components/forms.css">
-    <link rel="stylesheet" href="../../static/css/pages/criando_colecao.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../css/components/cards.css">
+    <link rel="stylesheet" href="../css/components/buttons.css">
+    <link rel="stylesheet" href="../css/components/forms.css">
+    <link rel="stylesheet" href="../css/pages/criando_colecao.css">
 </head>
 <body>
     <header class="header-logged">
-        <a href="dashboard.html">
-            <img class="logo" src="../img/Logo.png" alt="Logo Figurama">
+        <a href="../pages/dashboard.html">
+            <img class="logo" src="../images/Logo.png" alt="Logo Figurama">
         </a>
         
         <nav class="nav-logged">
             <span>
-                <img class="profile-icon" src="../../static/img/icons/Profile-icon.png" alt="Descrição da imagem">N_Usuário</span>
+                <img class="profile-icon" src="../icons/Profile-icon.png" alt="Descrição da imagem">N_Usuário</span>
             <a href="#">Coleção</a>
             <input type="text" placeholder="Pesquisar">
             <button class="btn-add">Adicionar +</button>
@@ -25,276 +25,90 @@
     </header>
 
     <main class="creating-container">
-        <div class="">
+        <div class="content-wrapper">
             <h1 class="create-title">Criando uma coleção</h1>
 
             <form id="collection-form">
-                <div class="form">
+                <div class="form-group">
                     <label>Título</label>
-                    <input type="text" name="title" required>
+                    <input type="text" id="collection-title" name="title" required class="input-short">
                 </div>
 
-                <div class="form">
+                <div class="form-group">
                     <label>Descrição</label>
-                    <textarea name="description" cols="60" rows="15" required></textarea>
+                    <textarea name="description" id="collection-description" cols="60" rows="15" required></textarea>
                 </div>
 
-                <div class="figures-add">
+                <div class="figures-section">
                     <label class="add-label">Adicionar Action Figures</label>
-                    <input type="text" class="search-figures" placeholder="Pesquise e selecione para adicionar">
+                    <div class="search-and-buttons">
+                        <input type="text" class="search-figures" id="search-figures" placeholder="Pesquise e selecione para adicionar">
 
-                    <div class=figure-grid>
-                        <div class="figure-card-pchd"></div>
-                        <div class="figure-card-pchd"></div>
+                        <div class="form-buttons">
+                            <button type="submit" class="btn-save">Salvar</button>
+                            <button type="button" class="btn-cancel" onclick="window.history.back()">Cancelar</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-buttons">
-                    <button type="button" class="btn-cancel" onclick="cancelForm()">Cancelar</button>
-                    <button type="submit" class="btn-save">Salvar</button>
+                    <hr class="section-divider">
+                    
+                    <div class="figure-grid" id="selected-figure-grid">
+                        
+                    </div>
                 </div>
             </form>   
         </div>
+
     </main>
 
-     <script src="../../static/js/config.js"></script>
-     <script src="../../static/js/api.js"></script>
-     <script src="../../static/js/pages/criando_colecao.js"></script>
     <script>
-        // ============================================
-// CRIAR COLEÇÃO - Integração com Backend
-// ============================================
+        // BACK-END: URL da sua API
+const API_URL = 'http://localhost:3000/api';
 
-// Variável para armazenar figures selecionadas
-let selectedFigures = [];
+// Array para armazenar os IDs das figuras selecionadas antes de salvar
+let selectedFiguresIds = [];
 
-// ============================================
-// 1. BUSCAR ACTION FIGURES (PESQUISA)
-// ============================================
-document.querySelector('.search-figures').addEventListener('input', async function(e) {
-    const searchTerm = e.target.value.toLowerCase().trim();
-    
-    if (searchTerm.length < 2) return; // Só busca com 2+ caracteres
-    
-    // *** INTEGRAÇÃO COM BACKEND - BUSCAR FIGURES ***
-    // Endpoint: GET /api/figures/search?query=batman
-    // Retorna: [ { id: 1, nome: "Batman", imagem: "url..." }, ... ]
-    
-    try {
-        const response = await fetch(`/api/figures/search?query=${searchTerm}`);
-        const figures = await response.json();
-        
-        // Renderizar resultados da busca
-        renderSearchResults(figures);
-    } catch (error) {
-        console.error('Erro ao buscar figures:', error);
+// Função para buscar figuras (Disparada ao digitar no campo de busca)
+document.getElementById('search-figures').addEventListener('input', async (e) => {
+    const searchTerm = e.target.value;
+    if (searchTerm.length > 2) {
+        // BACK-END: GET /api/figures?search=searchTerm
+        // Aqui você faria o fetch e exibiria uma lista de sugestões
+        console.log("Buscando por:", searchTerm);
     }
 });
 
-// ============================================
-// 2. RENDERIZAR RESULTADOS DA BUSCA
-// ============================================
-function renderSearchResults(figures) {
-    const grid = document.querySelector('.figure-grid');
-    
-    // Limpar placeholders
-    grid.innerHTML = '';
-    
-    // Renderizar cada figure encontrada
-    figures.forEach(figure => {
-        const card = document.createElement('div');
-        card.className = 'figure-card-pchd';
-        card.dataset.figureId = figure.id;
-        
-        // *** DADOS VÊM DO BANCO DE DADOS ***
-        // figure.id - ID da action figure no banco
-        // figure.nome - Nome da action figure
-        // figure.imagem - URL da imagem
-        
-        card.innerHTML = `
-            <img src="${figure.imagem}" alt="${figure.nome}">
-            <span>${figure.nome}</span>
-        `;
-        
-        // Adicionar evento de clique para selecionar
-        card.addEventListener('click', () => toggleFigureSelection(card, figure));
-        
-        grid.appendChild(card);
-    });
-}
-
-// ============================================
-// 3. SELECIONAR/DESSELECIONAR FIGURES
-// ============================================
-function toggleFigureSelection(card, figure) {
-    card.classList.toggle('selected');
-    
-    const index = selectedFigures.findIndex(f => f.id === figure.id);
-    
-    if (index > -1) {
-        // Remover da seleção
-        selectedFigures.splice(index, 1);
-    } else {
-        // Adicionar à seleção
-        selectedFigures.push(figure);
-    }
-}
-
-// ============================================
-// 4. VALIDAR FORMULÁRIO
-// ============================================
-function validateForm() {
-    const title = document.querySelector('input[name="title"]').value.trim();
-    const description = document.querySelector('textarea[name="description"]').value.trim();
-    
-    if (!title) {
-        alert('Por favor, insira um título para a coleção');
-        return false;
-    }
-    
-    if (!description) {
-        alert('Por favor, insira uma descrição para a coleção');
-        return false;
-    }
-    
-    if (selectedFigures.length === 0) {
-        alert('Por favor, adicione pelo menos uma action figure');
-        return false;
-    }
-    
-    return true;
-}
-
-// ============================================
-// 5. ENVIAR DADOS PARA O BACKEND (CRIAR COLEÇÃO)
-// ============================================
-document.getElementById('collection-form').addEventListener('submit', async function(e) {
+// Função para Salvar a Coleção
+document.getElementById('collection-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) return;
-    
-    const title = document.querySelector('input[name="title"]').value.trim();
-    const description = document.querySelector('textarea[name="description"]').value.trim();
-    
-    // Preparar dados para envio
+
     const collectionData = {
-        nome: title,
-        descricao: description,
-        figures: selectedFigures.map(f => f.id) // Apenas os IDs das figures
+        titulo: document.getElementById('collection-title').value,
+        descricao: document.getElementById('collection-description').value,
+        figures: selectedFiguresIds // Array de IDs
     };
-    
-    // Desabilitar botão durante envio
-    const btnSave = document.querySelector('.btn-save');
-    btnSave.textContent = 'Salvando...';
-    btnSave.disabled = true;
-    
-    // *** INTEGRAÇÃO COM BACKEND - CRIAR COLEÇÃO ***
-    // Endpoint: POST /api/colecoes
-    // Body: { nome: "string", descricao: "string", figures: [1, 2, 3] }
-    // Retorna: { id: 123, nome: "...", mensagem: "Coleção criada" }
-    
+
+    // BACK-END: POST /api/collections
+    /*
     try {
-        const response = await fetch('/api/colecoes', {
+        const response = await fetch(`${API_URL}/collections`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // *** TOKEN DE AUTENTICAÇÃO ***
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(collectionData)
         });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            // *** SUCESSO - COLEÇÃO CRIADA NO BANCO ***
-            alert('Coleção criada com sucesso!');
-            
-            // Redirecionar para a página da coleção criada
-            window.location.href = `colecao.html?id=${data.id}`;
-        } else {
-            // *** ERRO DO SERVIDOR ***
-            alert(data.mensagem || 'Erro ao criar coleção');
-        }
-        
+        if (response.ok) alert('Coleção criada com sucesso!');
     } catch (error) {
-        console.error('Erro ao criar coleção:', error);
-        alert('Erro ao conectar com o servidor');
-    } finally {
-        // Restaurar botão
-        btnSave.textContent = 'Salvar';
-        btnSave.disabled = false;
+        console.error('Erro ao salvar:', error);
     }
+    */
+    console.log("Dados prontos para o back-end:", collectionData);
 });
 
-// ============================================
-// 6. CANCELAR E VOLTAR
-// ============================================
-function cancelForm() {
-    if (confirm('Deseja cancelar? As alterações não serão salvas.')) {
-        window.location.href = 'dashboard.html';
-    }
+// Função para adicionar figura ao grid (chamada quando o usuário clica em um resultado da busca)
+function addFigureToGrid(figure) {
+    selectedFiguresIds.push(figure.id);
+    // Lógica para criar o elemento HTML do card e dar append no #selected-figures-grid
 }
-
-// ============================================
-// 7. CARREGAR FIGURES INICIAIS (OPCIONAL)
-// ============================================
-async function loadInitialFigures() {
-    // *** INTEGRAÇÃO COM BACKEND - CARREGAR FIGURES POPULARES/RECENTES ***
-    // Endpoint: GET /api/figures/recent?limit=10
-    // Retorna: [ { id: 1, nome: "...", imagem: "..." }, ... ]
-    
-    try {
-        const response = await fetch('/api/figures/recent?limit=10');
-        const figures = await response.json();
-        
-        renderSearchResults(figures);
-    } catch (error) {
-        console.error('Erro ao carregar figures:', error);
-    }
-}
-
-// ============================================
-// INICIALIZAR
-// ============================================
-document.addEventListener('DOMContentLoaded', () => {
-    // Carregar algumas figures iniciais (opcional)
-    // loadInitialFigures();
-});
-
-
-// ============================================
-// ESTRUTURA ESPERADA DO BACKEND
-// ============================================
-
-/*
-ENDPOINTS NECESSÁRIOS:
-
-1. Buscar Action Figures
-   GET /api/figures/search?query=batman
-   Resposta: [
-     { id: 1, nome: "Batman", imagem: "url...", franquia: "DC" },
-     { id: 2, nome: "Batgirl", imagem: "url...", franquia: "DC" }
-   ]
-
-2. Criar Coleção
-   POST /api/colecoes
-   Headers: { Authorization: "Bearer TOKEN" }
-   Body: {
-     nome: "Minha Coleção",
-     descricao: "Descrição aqui",
-     figures: [1, 2, 3]
-   }
-   Resposta: {
-     id: 123,
-     nome: "Minha Coleção",
-     mensagem: "Coleção criada com sucesso"
-   }
-
-3. Figures Recentes/Populares (opcional)
-   GET /api/figures/recent?limit=10
-   Resposta: [ { id: 1, nome: "...", imagem: "..." }, ... ]
-*/
     </script>
     
 </body>

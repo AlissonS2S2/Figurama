@@ -3,21 +3,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../../static/css/style.css">
-    <link rel="stylesheet" href="../../static/css/components/buttons.css">
-    <link rel="stylesheet" href="../../static/css/components/cards.css">
-    <link rel="stylesheet" href="../../static/css/components/forms.css">
-    <link rel="stylesheet" href="../../static/css/pages/franquia.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../css/components/buttons.css">
+    <link rel="stylesheet" href="../css/components/cards.css">
+    <link rel="stylesheet" href="../css/components/forms.css">
+    <link rel="stylesheet" href="../css/pages/franquia.css">
 </head>
 <body>
     <header class="header-logged">
         <a href="dashboard.html">
-            <img class="logo" src="../img/Logo.png" alt="Logo Figurama">
+            <img class="logo" src="../images/Logo.png" alt="Logo Figurama">
         </a>
         
         <nav class="nav-logged">
             <span>
-                <img class="profile-icon" src="../../static/img/icons/Profile-icon.png" alt="Descrição da imagem">N_Usuário</span>
+                <img class="profile-icon" src="../icons/Profile-icon.png" alt="Descrição da imagem">N_Usuário</span>
             <a href="#">Coleção</a>
             <input type="text" placeholder="Pesquisar">
             <button class="btn-add">Adicionar +</button>
@@ -26,14 +26,9 @@
 
     <main class="franchise-container">
         <section class="franchise-info">
-            <h1 id="franchise-title">Franquia - Batman The Animated Series</h1>
-            <p id="franchise-description">
-                Descrição que pode durar<br>
-                precisa ver<br>
-                quantas linhas<br>
-                poder ter aqui
-            </p>
-            <small id="total-figures">27 Action Figures nessa franquia</small>
+            <h1 id="franchise-title"></h1>
+            <p id="franchise-description"></p>
+            <small id="total-figures"> Action Figures nessa franquia</small>
             <hr>
         </section>
 
@@ -42,61 +37,76 @@
         </section>
     </main>
 
-     <script src="../../static/js/config.js"></script>
-     <script src="../../static/js/api.js"></script>
     <script>
-        // Dados de exemplo (viriam do backend)
-        const figures = [
-            { id: 1, nome: 'Batman', status: 'owned' },
-            { id: 2, nome: 'Robin', status: 'wishlist' },
-            { id: 3, nome: 'Joker', status: 'owned' },
-            { id: 4, nome: 'Harley Quinn', status: 'owned' },
-            { id: 5, nome: 'Catwoman', status: 'wishlist' },
-            { id: 6, nome: 'Two-Face', status: 'owned' },
-            { id: 7, nome: 'Penguin', status: 'sold' },
-            { id: 8, nome: 'Poison Ivy', status: 'owned' },
-            { id: 9, nome: 'Mr. Freeze', status: 'wishlist' },
-            { id: 10, nome: 'Scarecrow', status: 'owned' },
-            { id: 11, nome: 'Riddler', status: 'owned' },
-            { id: 12, nome: 'Batgirl', status: 'wishlist' }
-        ];
+        const API_BASE_URL = 'http://localhost:3000/api';
 
-        // Renderizar cards
+// Pegar ID da franquia da URL
+function getFranchiseId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id');
+}
+
+// BANCO DE DADOS: GET /api/franchises/:id - Buscar dados da franquia (nome, descrição, total de figures)
+async function loadFranchiseInfo() {
+    const franchiseId = getFranchiseId();
+    
+    if (!franchiseId) {
+        console.error('ID da franquia não encontrado');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/franchises/${franchiseId}`);
+        const data = await response.json();
+
+        if (response.ok) {
+            document.getElementById('franchise-title').textContent = `Franquia - ${data.nome}`;
+            document.getElementById('franchise-description').textContent = data.descricao;
+            document.getElementById('total-figures').textContent = 
+                `${data.total_figures} Action Figures nessa coleção (oficial)`;
+        }
+    } catch (error) {
+        console.error('Erro ao carregar informações da franquia:', error);
+    }
+}
+
+// BANCO DE DADOS: GET /api/franchises/:id/figures - Buscar todas as action figures da franquia
+async function loadFranchiseFigures() {
+    const franchiseId = getFranchiseId();
+    
+    if (!franchiseId) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/franchises/${franchiseId}/figures`);
+        const figures = await response.json();
         const grid = document.getElementById('figures-grid');
-        
+        grid.innerHTML = '';
+
         figures.forEach(figure => {
             const card = document.createElement('div');
-            card.className = 'card-franchise';
+            card.className = 'figure-card';
+            card.onclick = () => window.location.href = `detail.html?id=${figure.id}`;
+            
             card.innerHTML = `
-                <img src="" alt="${figure.nome}">
-                <div class="card-content">
-                    <h3>${figure.nome}</h3>
-                    <span class="status ${figure.status}">${getStatusText(figure.status)}</span>
+                <div class="figure-card-image">
+                    <img src="${figure.imagem_url}" alt="${figure.nome}">
+                </div>
+                <div class="figure-card-info">
+                    <p class="figure-card-name">${figure.nome}</p>
                 </div>
             `;
             
-            // Adicionar evento de clique
-            card.addEventListener('click', () => {
-                window.location.href = `figure.html?id=${figure.id}`;
-            });
-            
             grid.appendChild(card);
         });
+    } catch (error) {
+        console.error('Erro ao carregar figuras da franquia:', error);
+    }
+}
 
-        function getStatusText(status) {
-            const statusMap = {
-                'owned': 'Tenho',
-                'wishlist': 'Quero',
-                'sold': 'Vendido'
-            };
-            return statusMap[status] || status;
-        }
-
-        // Atualizar informações da franquia (seria dinâmico)
-        document.addEventListener('DOMContentLoaded', () => {
-            // Aqui você faria fetch dos dados da franquia
-            // e atualizaria o DOM dinamicamente
-        });
+document.addEventListener('DOMContentLoaded', () => {
+    loadFranchiseInfo();
+    loadFranchiseFigures();
+});
     </script>
     
 </body>

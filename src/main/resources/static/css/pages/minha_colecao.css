@@ -1,154 +1,124 @@
-/* Estilos específicos da página de Coleção */
-
 .colecao-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 50px;
+    align-items: flex-start;
 }
 
-/* Informações da coleção */
-.colecao-info {
-    grid-column: 1 / -1;
-    margin-bottom: 20px;
+.left-content {
+    flex: 1;
 }
 
 .colecao-info h1 {
-    font-size: 32px;
-    font-weight: 400;
-    margin-bottom: 15px;
+    font-size: 36px;
+    margin-bottom: 10px;
+    font-weight: 600;
 }
 
 .colecao-info p {
-    font-size: 14px;
-    line-height: 1.6;
     color: #b0b0b0;
-    margin-bottom: 10px;
+    max-width: 300px;
+    line-height: 1.4;
+    font-size: 14px;
+    margin-bottom: 15px;
 }
 
 .colecao-info small {
+    color: #e0e0e0;
     font-size: 13px;
-    color: #999;
-    display: block;
-    margin-bottom: 20px;
 }
 
-.colecao-info hr {
+.divider {
     border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 20px 0;
 }
 
-/* Grid de cards */
-.card-grid1 {
+/* Grid de Cards */
+.card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(5, 1fr); /* 5 colunas como na imagem */
+    gap: 15px;
 }
 
-.cards1 {
-    background: #3a3952;
+.figure-card-placeholder {
+    background-color: #d9d9d9;
+    aspect-ratio: 2/3;
+    border-radius: 8px;
+}
+
+/* Sidebar Estilo Card */
+.aside-edit {
+    width: 280px;
+    background: #3f3e54;
+    padding: 20px;
     border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 25px;
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
     overflow: hidden;
-    transition: transform 0.3s;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.menu-dots {
+    color: #b0b0b0;
+    font-size: 20px;
     cursor: pointer;
 }
 
-.cards1:hover {
-    transform: translateY(-5px);
-}
-
-.cards1 img {
-    width: 100%;
-    aspect-ratio: 2/3;
-    object-fit: cover;
-    background: #4a495a;
-}
-
-.cards1 h3 {
-    padding: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.cards1 .status {
-    display: inline-block;
-    margin: 0 12px 12px;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    background: #4caf50;
-    color: white;
-}
-
-/* Sidebar de edição */
-.aside-edit {
-    grid-column: 2;
-    grid-row: 2;
-    background: #3a3952;
-    padding: 25px;
-    border-radius: 12px;
-    height: fit-content;
+.aside-buttons {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    position: sticky;
-    top: 20px;
+    gap: 12px;
 }
 
-.icone-usuario-aside {
-    font-size: 48px;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.aside-edit button {
-    width: 100%;
+.aside-buttons button {
     padding: 12px;
     border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
+    border-radius: 8px;
+    font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.3s;
+    font-size: 14px;
+    transition: background 0.2s;
 }
 
 #btn-edit {
-    background: #c77dff;
-    color: white;
-}
-
-#btn-edit:hover {
-    opacity: 0.9;
+    background: #7a6fb3; /* Roxo da imagem */
+    color: #e0e0e0;
 }
 
 #btn-delete {
-    background: #ff6b6b;
-    color: white;
+    background: #6b6b9d; /* Azul acinzentado da imagem */
+    color: #e0e0e0;
 }
 
-#btn-delete:hover {
-    opacity: 0.9;
-}
-
-.aside-edit small {
-    font-size: 12px;
-    color: #999;
+.update-date {
     text-align: center;
+    color: #b0b0b0;
+    font-size: 11px;
+    margin: 5px 0;
 }
 
-/* Responsivo */
-@media (max-width: 968px) {
-    .colecao-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .aside-edit {
-        grid-row: auto;
-        position: static;
-    }
+@media (max-width: 1024px) {
+    .card-grid { grid-template-columns: repeat(3, 1fr); }
+    .colecao-container { flex-direction: column; }
+    .aside-edit { width: 100%; box-sizing: border-box; }
 }
