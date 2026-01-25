@@ -3,23 +3,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="css/pages/register.css">
-    <link rel="stylesheet" href="css/components/buttons.css">
-    <link rel="stylesheet" href="css/components/forms.css">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/pages/register.css">
+    <link rel="stylesheet" href="../../static/css/components/buttons.css">
+    <link rel="stylesheet" href="../../static/css/components/forms.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
-        <a href="index.html">
-            <img src="images/logo.png" alt="Logo" width="120">
+        <a href="../index.html">
+            <img src="../img/Logo.png" alt="Logo" width="120">
         </a>
 
         <nav>
-            <a href="login.html" id="loginBtn">Fazer login</a>
-            <a href="register.html" id="registerBtn">Registrar</a>
+            <a href="../index.html" id="loginBtn">Fazer login</a>
+            <a href="../pages/register.html" id="registerBtn">Registrar</a>
             <a href="#" id="exploreBtn">Explorar</a>
             <div class="search-box">
                 <input type="text" placeholder="Pesquisar">
@@ -50,11 +50,14 @@
             <button type="submit" class="btn-register">Registrar</button>
     
             <p>
-                Já tem uma conta? <a href="login.html">Faça login</a>
+                Já tem uma conta? <a href="../index.html">Faça login</a>
             </p>
         </form>
     </main>
 
+     <script src="../../static/js/config.js"></script>
+    <script src="../../static/js/api.js"></script>
+    <script src="../../static/js/auth.js"></script>
     <script>
         // Validação do formulário
 function validateForm() {
