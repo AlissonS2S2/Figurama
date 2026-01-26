@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,18 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="header-logged">
-        <a href="dashboard.html">
-            <img src="images/Logo.png" alt="Logo Figurama">
-        </a>
-        
-        <nav class="nav-logged">
-            <span>👤 N_Usuário</span>
-            <a href="#">Coleção</a>
-            <input type="text" placeholder="Pesquisar">
-            <button class="btn-add">Adicionar +</button>
-        </nav>
-    </header>
+<div th:replace="~{fragments/header_logged :: logado}"></div>
 
     <main class="colecao-container">
 
@@ -57,6 +46,7 @@
             </div>
         </aside>
     </main>
+<div th:replace="~{fragments/footer :: rodape}"></div>
 
     <script>
         // BACK-END: Função para pegar o ID da coleção da URL
