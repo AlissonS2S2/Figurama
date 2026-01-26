@@ -2,8 +2,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Registrar</title>
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/pages/register.css">
     <link rel="stylesheet" href="../css/components/buttons.css">
     <link rel="stylesheet" href="../css/components/forms.css">
@@ -14,12 +14,12 @@
 <body>
     <header class="header">
         <a href="../index.html">
-                <img src="../images/logo.png" alt="Logo" width="120">
+                <img src="../img/Logo.png" alt="Logo" width="120">
         </a>
 
         <nav>
-            <a href="../pages/login.html" id="loginBtn">Fazer login</a>
-            <a href="../pages/register.html" id="registerBtn">Registrar</a>
+            <a href="login.html" id="loginBtn">Fazer login</a>
+            <a href="register.html" id="registerBtn">Registrar</a>
             <a href="#" id="exploreBtn">Explorar</a>
             <div class="search-box">
                 <input type="text" placeholder="Pesquisar">
@@ -56,60 +56,52 @@
     </main>
 
     <script>
-        const API_BASE_URL = 'http://localhost:3000/api';
-        POST /api/auth/register
+    // Aponta para o seu UsuarioController
+    const API_BASE_URL = '/api/usuarios';
+    
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Pega os valores
+        const email = document.getElementById('email').value.trim();
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const terms = document.getElementById('terms').checked;
+        
+        // Validações básicas no Front
+        if (!email || !username || !password || !confirmPassword) {
+            alert('Preencha todos os campos'); return;
+        }
+        if (password !== confirmPassword) {
+            alert('As senhas não coincidem'); return;
+        }
+        if (!terms) {
+            alert('Aceite os termos'); return;
+        }
+
+        try {
+            // Rota ajustada para bater com seu @PostMapping("/registrar")
+            const response = await fetch(`${API_BASE_URL}/registrar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // O Java espera um objeto Usuario (email, username, password)
+                body: JSON.stringify({ email, username, password })
+            });
             
-            const email = document.getElementById('email').value.trim();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const terms = document.getElementById('terms').checked;
+            const data = await response.json();
             
-            if (!email || !username || !password || !confirmPassword) {
-                alert('Por favor, preencha todos os campos');
-                return;
+            if (response.ok && data.sucesso) {
+                alert('Conta criada com sucesso!');
+                window.location.href = '/login'; // Redireciona via WebController
+            } else {
+                alert(data.mensagem || 'Erro ao registrar');
             }
-    
-            if (password.length < 6) {
-                alert('A senha deve ter no mínimo 6 caracteres');
-                return;
-            }
-    
-            if (password !== confirmPassword) {
-                alert('As senhas não coincidem');
-                return;
-            }
-    
-            if (!terms) {
-                alert('Você deve aceitar os Termos de Serviço');
-                return;
-            }
-    
-            try {
-                const response = await fetch(`${API_BASE_URL}/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, username, password })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    alert('Cadastro realizado com sucesso!');
-                    window.location.href = 'login.html';
-                } else {
-                    alert(data.message || 'Erro ao realizar cadastro');
-                }
-            } catch (error) {
-                console.error('Erro no registro:', error);
-                alert('Erro ao realizar cadastro. Tente novamente.');
-            }
-        });
-    </script>
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao tentar registrar.');
+        }
+    });
+</script>
 </body>
 </html>
