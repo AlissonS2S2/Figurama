@@ -1,0 +1,207 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: #2e2d3e;
+    color: white;
+}
+
+/* Header para Login, Registro e Landing Page*/
+
+
+.header {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 100px;
+}
+
+.header img {
+    width: 150px;
+}
+
+.header nav {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #e879f9;
+}
+
+/*Header para Logado*/
+
+/* --- CONFIGURAÇÕES GLOBAIS --- */
+
+/* Espaçamento lateral de 100px exigido */
+.contain-wrapper, 
+.container-wrapper {
+    max-width: 100%;
+    padding-left: 100px;
+    padding-right: 100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* --- HEADER ESTILO --- */
+.header-logged {
+    background-color: #7b2cbf; /* Roxo vibrante da imagem */
+    height: 90px;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 160px;
+    display: block;
+}
+
+.nav-logged {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Distância entre os elementos do nav */
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-icon {
+    width: 25px;
+    height: 25px;
+    background-color: #333;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+#header-user-name {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+/* Barra de Pesquisa */
+.search-box {
+    /* "Preto no fundo" - usando um preto suave/transparente para o design */
+    background-color: rgba(0, 0, 0, 0.4); 
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 8px;
+    
+    /* Faz a caixa terminar logo após o ícone, sem sobrar espaço */
+    width: 220px; 
+    transition: width 0.3s;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: white;
+    outline: none;
+    font-size: 14px;
+    width: 100%; /* Ocupa o espaço até chegar no ícone */
+}
+
+/* Estilo do botão/ícone da lupa */
+.search-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding-left: 5px; /* Espaço pequeno entre o texto e a lupa */
+}
+
+.search-btn img, .search-btn {
+    font-size: 16px;
+    /* Se for um emoji ou ícone, ajustamos a cor se necessário */
+    filter: brightness(1.2); 
+}
+
+
+/* Botão Criar + */
+.btn-create {
+    background-color: #d682ff; /* Lilás claro da imagem */
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-create:hover {
+    opacity: 0.9;
+}
+
+/* --- FOOTER ESTILO --- */
+.main-footer {
+    background-color: #312f45; /* Cor do footer da imagem */
+    padding: 30px 0;
+    width: 100%;
+}
+
+.footer-nav {
+    display: flex;
+    gap: 25px;
+}
+
+.footer-nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.footer-copy {
+    color: #a0a0a0;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-social {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.footer-social img {
+    width: 25px;
+    height: 20px;
+    filter: brightness(0.9);
+}
+
+/* Responsividade Básica */
+@media (max-width: 1200px) {
+    .contain-wrapper, .container-wrapper {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+}

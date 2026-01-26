@@ -1,0 +1,139 @@
+/* Configurações Gerais de Fundo (ajuste conforme o seu body) */
+body {
+    background-color: #2e2d3e; /* Cor de fundo escura da imagem */
+    color: white;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+.creating-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+.create-title {
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #e0e0e0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-top: 25px;
+}
+
+.form-group label, .add-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #b0b0b0;
+}
+
+/* Inputs e Textarea */
+input[type="text"], textarea {
+    background: #3f3e54;
+    border: 1px solid #4a4964;
+    border-radius: 8px;
+    padding: 12px 15px;
+    color: white;
+    font-size: 14px;
+}
+
+.input-short {
+    width: 350px; /* Título é mais curto na imagem */
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    resize: none;
+}
+
+/* Seção de busca e botões na mesma linha */
+.figures-section {
+    margin-top: 30px;
+}
+
+.search-and-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.search-input {
+    flex: 1;
+    max-width: 350px;
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 25px;
+}
+
+/* Botões */
+.form-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.btn-save {
+    background-color: #d682ff; /* Roxo claro da imagem */
+    color: white;
+    border: none;
+    padding: 10px 35px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #6b6b9d; /* Azul acinzentado da imagem */
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Grid de Cards */
+.figure-grid {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* Placeholder cinza da imagem */
+.figure-card-placeholder {
+    width: 130px;
+    height: 180px;
+    background-color: #d9d9d9;
+    border-radius: 8px;
+}
+
+/* Estilo para quando o card real for inserido via JS (Baseado no seu modelo) */
+.figure-card {
+    width: 130px;
+    background: #3a3952;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.figure-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.figure-card p {
+    font-size: 12px;
+    padding: 5px;
+    text-align: center;
+    margin: 0;
+}

@@ -1,0 +1,151 @@
+.figure-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+.figure-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 50px;
+    align-items: start;
+    margin-bottom: 60px;
+}
+
+/* Caixa da Imagem à Esquerda */
+.figure-image-box {
+    background: #3a3952;
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.image-placeholder {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: #d9d9d9; /* Cor cinza da imagem */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-add {
+    background: #d682ff;
+    color: #1a1a1a;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Informações à Direita */
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.figure-info h1 {
+    font-size: 32px;
+    margin: 0;
+}
+
+.release-date {
+    background: #3a3952;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #b0b0b0;
+}
+
+.release-date span {
+    color: #e0e0e0;
+    margin-left: 10px;
+}
+
+.figure-subtitle {
+    font-size: 16px;
+    color: #b0b0b0;
+    margin-bottom: 20px;
+}
+
+.info-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 20px 0;
+}
+
+.description {
+    line-height: 1.6;
+    color: #e0e0e0;
+    font-size: 15px;
+}
+
+/* Categorias / Tags */
+.category-area {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.category-area p {
+    font-size: 14px;
+    color: #e0e0e0;
+}
+
+.tags-container {
+    display: flex;
+    gap: 10px;
+}
+
+.tag {
+    border: 1px solid #7a7a7a;
+    padding: 5px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #e0e0e0;
+}
+
+/* Seções de Listas Inferiores */
+.section-block {
+    margin-top: 60px;
+}
+
+.section-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 25px;
+}
+
+.cards-grid-row {
+    display: flex;
+    gap: 20px;
+}
+
+/* Reutilizando estilo de card placeholder para quando não houver imagem */
+.card-placeholder-item {
+    width: 160px;
+    height: 220px;
+    background: #d9d9d9;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .figure-container { grid-template-columns: 1fr; }
+    .info-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+}
