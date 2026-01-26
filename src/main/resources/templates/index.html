@@ -1,27 +1,28 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th=http://www.thymeleaf.org">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <title>Figurama</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/pages/index.css}">
-    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
-    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/pages/index.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/cards.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <header class="header">
         <div class="logo">
-            <img src="../static/img/Logo.png" alt="Logo" width="120">
+            <a href="index.html">
+                <img src="images/logo.png" alt="Logo" width="120">
+            </a>
         </div>
         <nav>
-            <a href="../templates/pages/login.html" id="loginBtn">Fazer login</a>
-            <a href="../templates/pages/register.html" id="registerBtn">Registrar</a>
+            <a href="pages/login.html" id="loginBtn">Fazer login</a>
+            <a href="pages/register.html" id="registerBtn">Registrar</a>
             <a href="#" id="exploreBtn">Explorar</a>
             <div class="search-box">
                 <input type="text" placeholder="Pesquisar">
@@ -31,43 +32,91 @@
     </header>
 
     <section class="main">
-        <div class="main-image">
-            <img src="../static/img/Deadpool-Figurama.jpg" alt="Deadpool Figurama">
-        </div>
-        <div class="main-text">
-            <h1>
-                Crie uma coleção.<br>
-                Adicione as Figures que possui.<br>
-                Compartilhe com seus amigos.
-            </h1>
-            <a href="../templates/pages/register.html">
-                <button class="cta-btn" id="startBtn">Comece agora - é de graça</button>
-            </a>
-        </div>
-    </section>
+    <div class="main-image">
+        <img src="images/Deadpool img.png" alt="Deadpool Figurama">
+    </div>
+    <div class="main-text">
+        <h1>
+            Adicione Figuras que você tem.<br>
+            Favorite as que deseja.<br>
+            Compartilhe com seus amigos.
+        </h1>
+        <a href="register.html">
+            <button class="cta-btn" id="startBtn">Comece agora - é de graça</button>
+        </a>
+    </div>
+</section>
 
-    <section class="novidades">
-        <h2>Novidades</h2>
-        <div class="cards-grid" id="novidadesGrid">
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-        </div>
-    </section>
-    <section class="popular">
-        <h2>Populares</h2>
-        <div class="cards-grid" id="popularGrid">
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-    </section>
+<section class="novidades">
+    <h2>Novidades</h2>
+    <!-- BANCO DE DADOS: Buscar 6 figuras específicas para "Novidades" -->
+    <div class="cards-grid" id="novidadesGrid">
+        <!-- Cards inseridos via JavaScript -->
+    </div>
+</section>
 
-    <script src="../static/js/script.js"></script>
-    <script src="../../static/js/config.js"></script>
-    <script src="../../static/js/api.js"></script>
+<section class="popular">
+    <h2>Populares no momento</h2>
+    <!-- BANCO DE DADOS: Buscar 6 figuras específicas para "Populares" -->
+    <div class="cards-grid" id="popularGrid">
+        <!-- Cards inseridos via JavaScript -->
+    </div>
+</section>
+
+<script>
+    const API_BASE_URL = 'http://localhost:3000/api';
+
+function createFigureCard(figure) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    
+    card.innerHTML = `
+        <a href="detail.html?id=${figure.id}">
+            <img src="${figure.imagem_url}" alt="${figure.nome}">
+            <h3>${figure.nome}</h3>
+            <p>${figure.fabricante}</p>
+        </a>
+    `;
+    
+    return card;
+}
+
+// BANCO DE DADOS: GET /api/figures/novidades - Retorna array com 6 figuras (id, nome, imagem_url, fabricante)
+async function loadNovidades() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/figures/novidades`);
+        const novidades = await response.json();
+        const grid = document.getElementById('novidadesGrid');
+        
+        grid.innerHTML = '';
+        novidades.forEach(figure => {
+            grid.appendChild(createFigureCard(figure));
+        });
+    } catch (error) {
+        console.error('Erro ao carregar novidades:', error);
+    }
+}
+
+// BANCO DE DADOS: GET /api/figures/populares - Retorna array com 6 figuras (id, nome, imagem_url, fabricante)
+async function loadPopulares() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/figures/populares`);
+        const populares = await response.json();
+        const grid = document.getElementById('popularGrid');
+        
+        grid.innerHTML = '';
+        populares.forEach(figure => {
+            grid.appendChild(createFigureCard(figure));
+        });
+    } catch (error) {
+        console.error('Erro ao carregar populares:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadNovidades();
+    loadPopulares();
+});
+</script>
 </body>
 </html>

@@ -1,21 +1,42 @@
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
-    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
-    <link rel="stylesheet" th:href="@{/css/pages/action_figure.css}">
-
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../css/components/cards.css">
+    <link rel="stylesheet" href="../css/components/buttons.css">
+    <link rel="stylesheet" href="../css/components/forms.css">
+    <link rel="stylesheet" href="../css/pages/action_figure.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-<div th:replace="~{fragments/header :: comum}"></div>
+    <header class="header-logged">
+        <div class="contain-wrapper">
+            <a href="dashboard.html">
+            <img class="logo" src="../images/Logo.png" alt="Logo Figurama">
+            </a>
+
+            <nav class="nav-logged">
+                <div class="user-profile">
+                    <img class="profile-icon" src="../icons/Profile-icon.png" alt="Descrição da imagem">
+                    <span id="header-user-name"></span>
+                </div>
+
+                <a href="logout.php" class="nav-link logout">Sair</a>
+
+                <div class="search-box">
+                    <input type="text" placeholder="Pesquisar">
+                    <button class="search-btn">🔍</button>
+                </div>
+
+                <button class="btn-create" onclick="window.location.href='../pages/criar_colecao.html'">Criar +</button>
+            </nav>
+        </div>
+    </header>
 
     <main class="figure-page">
         <section class="figure-container">
@@ -67,7 +88,29 @@
             </div>
         </section>
     </main>
-<div th:replace="~{fragments/footer :: rodape}"></div>
+
+    <footer class="main-footer">
+        <div class="container-wrapper">
+            <nav class="footer-nav">
+                <a href="#">Sobre</a>
+                <a href="#">Contato</a>
+                <a href="#">Ajuda</a>
+                <a href="#">Termos</a>
+            </nav>
+
+            <div class="footer-copy">
+                <span>© Figurama. Projeto integrador</span>
+            </div>
+
+            <div class="footer-social">
+            <!-- BACK-END: Ícones de redes sociais -->
+                <a href="#"><img src="../icons/Instagram-icon.png" alt="Instagram"></a>
+                <a href="#"><img src="../icons/Youtube-Icon.png" alt="Youtube"></a>
+                <a href="#"><img src="../icons/X-Icon.png" alt="X"></a>
+                <a href="#"><img src="../icons/Discord-Icon.png" alt="Discord"></a>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // BACK-END: URL base da API
