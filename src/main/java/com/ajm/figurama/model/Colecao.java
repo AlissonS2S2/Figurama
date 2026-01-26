@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,17 +31,34 @@ public class Colecao {
     @Column(name = "colecionador_id", nullable = false)
     private Long colecionadorId;
     
-    // Agora a coleção tem ITENS (que referenciam o catálogo)
+    @Column(name = "data_criacao")
+    private LocalDateTime dataCriacao;
+    
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
+    
+    // Relacionamento com itens
     @OneToMany(mappedBy = "colecao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ItemColecao> itens = new ArrayList<>();
     
-    // Método para adicionar item à coleção
+    @PrePersist
+    public void prePersist() {
+        if (dataCriacao == null) {
+            dataCriacao = LocalDateTime.now();
+        }
+    }
+    
+    @PreUpdate
+    public void preUpdate() {
+        dataAtualizacao = LocalDateTime.now();
+    }
+    
+    // Métodos auxiliares
     public void adicionarItem(ItemColecao item) {
         itens.add(item);
         item.setColecao(this);
     }
     
-    // Método para remover item da coleção
     public void removerItem(ItemColecao item) {
         itens.remove(item);
         item.setColecao(null);

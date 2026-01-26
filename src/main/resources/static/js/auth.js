@@ -1,12 +1,15 @@
 // ============================================
-// AUTH.JS - SISTEMA DE AUTENTICAÇÃO
+// AUTH.JS - SISTEMA DE AUTENTICAÇÃO INTEGRADO
 // ============================================
+
+const CONFIG = {
+    API_BASE_URL: "http://localhost:8080/api"
+};
 
 // ============================================
 // REGISTRO DE NOVO USUÁRIO
 // ============================================
 
-// Validação do formulário de registro
 function validateRegisterForm() {
     const email = document.getElementById('email')?.value.trim();
     const username = document.getElementById('username')?.value.trim();
@@ -42,7 +45,6 @@ function validateRegisterForm() {
     return true;
 }
 
-// Enviar registro para o backend
 async function handleRegister(event) {
     event.preventDefault();
     
@@ -60,36 +62,24 @@ async function handleRegister(event) {
     };
     
     try {
-        // NOTA: Este endpoint precisa ser criado no backend
-        // Por enquanto, vamos simular sucesso
+        const response = await fetch(`${CONFIG.API_BASE_URL}/usuarios/registrar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
         
-        // const response = await fetch(`${CONFIG.API_BASE_URL}/usuarios/registrar`, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(userData)
-        // });
+        const data = await response.json();
         
-        // const data = await handleResponse(response);
-        
-        // SIMULAÇÃO (remover quando o backend estiver pronto)
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Simular usuário criado
-        const mockUser = {
-            id: Math.floor(Math.random() * 1000),
-            username: userData.username,
-            email: userData.email
-        };
-        
-        // Salvar no localStorage (temporário)
-        localStorage.setItem('currentUser', JSON.stringify(mockUser));
-        
-        alert('Conta criada com sucesso!');
-        window.location.href = 'login.html';
+        if (data.sucesso) {
+            alert('Conta criada com sucesso!');
+            window.location.href = 'login.html';
+        } else {
+            alert(data.mensagem || 'Erro ao criar conta');
+        }
         
     } catch (error) {
         console.error('Erro ao registrar:', error);
-        alert(error.message || 'Erro ao criar conta');
+        alert('Erro ao conectar com o servidor');
     } finally {
         btn.textContent = originalText;
         btn.disabled = false;
@@ -100,7 +90,6 @@ async function handleRegister(event) {
 // LOGIN DE USUÁRIO
 // ============================================
 
-// Validação do formulário de login
 function validateLoginForm() {
     const username = document.getElementById('username')?.value.trim();
     const password = document.getElementById('password')?.value;
@@ -123,7 +112,6 @@ function validateLoginForm() {
     return true;
 }
 
-// Mostrar mensagem de erro
 function showError(message) {
     const errorDiv = document.getElementById('error-message');
     if (errorDiv) {
@@ -138,11 +126,9 @@ function showError(message) {
     }
 }
 
-// Enviar login para o backend
 async function handleLogin(event) {
     event.preventDefault();
     
-    // Limpar erro anterior
     const errorDiv = document.getElementById('error-message');
     if (errorDiv) {
         errorDiv.style.display = 'none';
@@ -161,46 +147,37 @@ async function handleLogin(event) {
     };
     
     try {
-        // NOTA: Este endpoint precisa ser criado no backend
-        // Por enquanto, vamos simular sucesso
+        const response = await fetch(`${CONFIG.API_BASE_URL}/usuarios/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials)
+        });
         
-        // const response = await fetch(`${CONFIG.API_BASE_URL}/usuarios/login`, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(credentials)
-        // });
+        const data = await response.json();
         
-        // const data = await handleResponse(response);
-        
-        // SIMULAÇÃO (remover quando o backend estiver pronto)
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Simular usuário logado
-        const mockUser = {
-            id: 1,
-            username: credentials.username,
-            email: credentials.username + '@example.com',
-            token: 'mock-jwt-token-' + Date.now()
-        };
-        
-        // Salvar no localStorage
-        localStorage.setItem('currentUser', JSON.stringify(mockUser));
-        localStorage.setItem('authToken', mockUser.token);
-        
-        // Remember me
-        const rememberCheckbox = document.getElementById('remember');
-        if (rememberCheckbox?.checked) {
-            localStorage.setItem('rememberUser', credentials.username);
+        if (data.sucesso) {
+            // Salvar dados do usuário
+            localStorage.setItem('currentUser', JSON.stringify(data.data.usuario));
+            localStorage.setItem('authToken', data.data.token);
+            
+            // Remember me
+            const rememberCheckbox = document.getElementById('remember');
+            if (rememberCheckbox?.checked) {
+                localStorage.setItem('rememberUser', credentials.username);
+            } else {
+                localStorage.removeItem('rememberUser');
+            }
+            
+            alert('Login realizado com sucesso!');
+            window.location.href = 'dashboard.html';
+            
         } else {
-            localStorage.removeItem('rememberUser');
+            showError(data.mensagem || 'Usuário ou senha incorretos');
         }
-        
-        alert('Login realizado com sucesso!');
-        window.location.href = 'dashboard.html';
         
     } catch (error) {
         console.error('Erro ao fazer login:', error);
-        showError(error.message || 'Usuário ou senha incorretos');
+        showError('Erro ao conectar com o servidor');
     } finally {
         btn.textContent = originalText;
         btn.disabled = false;
@@ -212,9 +189,12 @@ async function handleLogin(event) {
 // ============================================
 
 function logout() {
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('authToken');
-    window.location.href = 'index.html';
+    if (confirm('Deseja realmente sair?')) {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('authToken');
+        alert('Você saiu do sistema');
+        window.location.href = '../index.html';
+    }
 }
 
 // ============================================
@@ -230,11 +210,57 @@ function getCurrentUser() {
     return userStr ? JSON.parse(userStr) : null;
 }
 
-// Redirecionar se não estiver logado (para páginas protegidas)
 function requireAuth() {
     if (!isLoggedIn()) {
         alert('Você precisa fazer login para acessar esta página');
         window.location.href = 'login.html';
+    }
+}
+
+// ============================================
+// ATUALIZAR NOME DO USUÁRIO NO HEADER
+// ============================================
+
+function updateUserHeader() {
+    const user = getCurrentUser();
+    if (user) {
+        // Atualizar nome do usuário em todos os locais
+        const nomeUsuarioElements = document.querySelectorAll('.nome-usuario');
+        nomeUsuarioElements.forEach(el => {
+            el.textContent = user.username;
+        });
+        
+        // Atualizar mensagem de boas-vindas se existir
+        const welcomeMsg = document.querySelector('.wb');
+        if (welcomeMsg) {
+            welcomeMsg.textContent = `Bem-vindo de volta ${user.username}, suas coleções te esperam...`;
+        }
+    }
+}
+
+// ============================================
+// ADICIONAR BOTÃO DE LOGOUT
+// ============================================
+
+function addLogoutButton() {
+    const nav = document.querySelector('.nav-logged');
+    if (nav && !document.getElementById('logout-btn')) {
+        const logoutBtn = document.createElement('button');
+        logoutBtn.id = 'logout-btn';
+        logoutBtn.className = 'btn-logout';
+        logoutBtn.textContent = 'Sair';
+        logoutBtn.style.cssText = `
+            background: #ff6b6b;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        `;
+        logoutBtn.addEventListener('click', logout);
+        nav.appendChild(logoutBtn);
     }
 }
 
@@ -293,20 +319,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Verificar se está em página protegida
-    const protectedPages = ['dashboard.html', 'criando_colecao.html', 'minha_colecao.html'];
+    const protectedPages = ['dashboard.html', 'criando_colecao.html', 'minha_colecao.html', 'action_figure.html'];
     const currentPage = window.location.pathname.split('/').pop();
     
     if (protectedPages.includes(currentPage)) {
         requireAuth();
-        
-        // Atualizar nome do usuário no header
-        const user = getCurrentUser();
-        if (user) {
-            const nomeUsuario = document.querySelector('.nome-usuario');
-            if (nomeUsuario) {
-                nomeUsuario.textContent = user.username;
-            }
-        }
+        updateUserHeader();
+        addLogoutButton();
+    }
+    
+    // Adicionar botão de logout em todas as páginas logadas
+    if (isLoggedIn() && document.querySelector('.nav-logged')) {
+        addLogoutButton();
+        updateUserHeader();
     }
 });
 
