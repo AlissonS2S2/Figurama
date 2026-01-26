@@ -1,35 +1,21 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <title>Figurama</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="css/pages/index.css">
-  <link rel="stylesheet" href="css/components/buttons.css">
-  <link rel="stylesheet" href="css/components/cards.css">
-  <link rel="stylesheet" href="css/components/forms.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/index.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header class="header">
-        <div class="logo">
-            <a href="index.html">
-                <img src="images/logo.png" alt="Logo" width="120">
-            </a>
-        </div>
-        <nav>
-            <a href="pages/login.html" id="loginBtn">Fazer login</a>
-            <a href="pages/register.html" id="registerBtn">Registrar</a>
-            <a href="#" id="exploreBtn">Explorar</a>
-            <div class="search-box">
-                <input type="text" placeholder="Pesquisar">
-                <span>🔍</span>
-            </div>
-        </nav>
-    </header>
+<div th:replace="~{fragments/header :: comum}"></div>
 
     <section class="main">
     <div class="main-image">
@@ -62,6 +48,8 @@
         <!-- Cards inseridos via JavaScript -->
     </div>
 </section>
+
+<div th:replace="~{fragments/footer :: rodape}"></div>
 
 <script>
     const API_BASE_URL = 'http://localhost:3000/api';
