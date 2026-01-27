@@ -76,7 +76,7 @@ Criar a plataforma de referência para colecionadores de action figures, fomenta
 #### Backend
 - **Linguagem**: Java
 - **Framework**: Spring Boot
-- **Banco de Dados**: PostgreSQL
+- **Banco de Dados**: MySQL
 - **Autenticação**: JWT
 - **Upload**: Sistema de armazenamento de imagens
 
@@ -84,11 +84,6 @@ Criar a plataforma de referência para colecionadores de action figures, fomenta
 - **Framework**: HTML/JS
 - **UI/UX**: Design responsivo (Web First)
 - **Estilo**: CSS/Tailwind CSS
-
-#### Infraestrutura
-- **Hospedagem**: Cloud (Heroku)
-- **CI/CD**: GitHub Actions
-- **Containerização**: Docker
 
 ---
 
