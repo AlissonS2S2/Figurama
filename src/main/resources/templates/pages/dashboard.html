@@ -1,30 +1,20 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Figurama</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="../css/components/buttons.css">
-    <link rel="stylesheet" href="../css/components/cards.css">
-    <link rel="stylesheet" href="../css/components/forms.css">
-    <link rel="stylesheet" href="../css/pages/dashboard.css">
+    <title>Dashboard - Figurama</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
 </head>
 <body>
-    <header class="header-logged">
-        <a href="dashboard.html">
-            <img src="../images/Logo.png" alt="Logo Figurama">
-        </a>
-        
-        <nav class="nav-logged">
-            <span>👤 N_Usuário</span>
-            <a href="#">Coleção</a>
-            <input type="text" placeholder="Pesquisar">
-            <button class="btn-add">Adicionar +</button>
-        </nav>
-    </header>
+    <div th:replace="~{fragments/header_logged :: logado}"></div>
 
     <main class="dashboard">
-        <h2 class="wb">Bem-vindo de volta <span id="username"></span>, suas coleções te esperam...</h2>
+        <h2 class="wb">Bem-vindo de volta <span id="username">Colecionador</span>, suas coleções te esperam...</h2>
 
         <section class="stats">
             <div class="stat">
@@ -39,8 +29,7 @@
             <div class="recent">
                 <h4>Últimas adicionadas</h4>
                 <div class="recent-grid" id="recent-grid">
-                    
-                </div>
+                    </div>
             </div>
         </section>
 
@@ -49,198 +38,136 @@
         <section class="collections-section">
             <h3>Suas Coleções</h3>
             <div class="collections" id="collections-container">
-                <!-- Cards de coleções inseridos via JavaScript -->
-            </div>
+                <p style="color: #666; padding: 20px;">Você ainda não possui coleções.</p>
+                </div>
         </section>
 
         <section class="novidades-section">
             <div class="new-text">
                 <h3>Novidades</h3>
-                <a href="">Ver mais...</a>
+                <a th:href="@{/explorar}">Ver mais...</a>
             </div>
 
             <div class="news-grid" id="news-grid">
-                <!-- Cards de novidades inseridos via JavaScript -->
-            </div>
+                </div>
         </section>
 
         <section class="populares-section">
             <div class="new-text">
                 <h3>Populares no momento</h3>
-                <a href="">Ver mais...</a>
+                <a th:href="@{/explorar}">Ver mais...</a>
             </div>
 
             <div class="popular-grid" id="popular-grid">
-                <!-- Cards inseridos via JavaScript -->
-            </div>
+                </div>
         </section>
     </main>
 
     <script>
-        const API_BASE_URL = 'http://localhost:3000/api';
+        // --- CONFIGURAÇÃO ---
+        const API_BASE = '/api'; // Aponta para o próprio Spring Boot (8080)
 
-// Verificar autenticação
-function checkAuth() {
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    return token;
-}
-
-// BANCO DE DADOS: GET /api/user/profile - Buscar dados do usuário logado
-async function loadUserData() {
-    const token = checkAuth();
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/user/profile`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
+        // --- AUTENTICAÇÃO ---
+        function checkAuth() {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login'; // Redireciona se não estiver logado
+                return null;
             }
-        });
-
-        const data = await response.json();
-        
-        if (response.ok) {
-            document.getElementById('username').textContent = data.username;
+            return token;
         }
-    } catch (error) {
-        console.error('Erro ao carregar dados do usuário:', error);
-    }
-}
 
-// BANCO DE DADOS: GET /api/user/stats - Buscar estatísticas (total figuras e coleções)
-async function loadStats() {
-    const token = checkAuth();
+        // --- CARREGAMENTO DE DADOS ---
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/user/stats`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
+        // 1. Dados do Usuário
+        // Em vez de chamar a API (que ainda não tem endpoint de profile),
+        // pegamos do localStorage que salvamos na tela de Login.
+        function loadUserData() {
+            const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                // Tenta pegar username ou nome, ou define um padrão
+                const nomeExibicao = user.username || user.nome || 'Colecionador';
+                document.getElementById('username').textContent = nomeExibicao;
+                
+                // Atualiza também no Header se houver o campo lá
+                const headerName = document.getElementById('header-user-name');
+                if(headerName) headerName.textContent = nomeExibicao;
             }
-        });
-
-        const data = await response.json();
-        
-        if (response.ok) {
-            document.getElementById('total-figures').textContent = data.total_figures || 0;
-            document.getElementById('total-collections').textContent = data.total_collections || 0;
         }
-    } catch (error) {
-        console.error('Erro ao carregar estatísticas:', error);
-    }
-}
 
-// BANCO DE DADOS: GET /api/user/recent-figures - Buscar 3 últimas figuras adicionadas
-async function loadRecentFigures() {
-    const token = checkAuth();
+        // 2. Estatísticas (Mock temporário até você criar o Controller de Stats)
+        async function loadStats() {
+            // Deixamos como 0 por enquanto para não dar erro 404
+            document.getElementById('total-figures').textContent = "0";
+            document.getElementById('total-collections').textContent = "0";
+        }
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/user/recent-figures?limit=3`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
+        // 3. Novidades e Populares
+        // Como você só tem o CatalogoController por enquanto, vamos buscar TUDO
+        // e filtrar no front-end para exibir algo na tela.
+        async function loadCatalogoData() {
+            try {
+                // Chama seu endpoint existente: /api/catalogo
+                const response = await fetch(`${API_BASE}/catalogo`);
+                if (!response.ok) throw new Error('Erro ao buscar catálogo');
+                
+                const figures = await response.json();
+
+                // -- Novidades (Pega as 4 últimas do array) --
+                const novidades = figures.slice(-4).reverse();
+                renderGrid('news-grid', novidades);
+                renderGrid('recent-grid', novidades.slice(0, 3)); // Reusa para "Últimas adicionadas"
+
+                // -- Populares (Pega as 4 primeiras do array como exemplo) --
+                const populares = figures.slice(0, 4);
+                renderGrid('popular-grid', populares);
+
+            } catch (error) {
+                console.error('Erro:', error);
+            }
+        }
+
+        // Função auxiliar para desenhar os cards
+        function renderGrid(elementId, lista) {
+            const grid = document.getElementById(elementId);
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            if (lista.length === 0) {
+                grid.innerHTML = '<p>Nenhuma figura encontrada.</p>';
+                return;
+            }
+
+            lista.forEach(fig => {
+                const card = document.createElement('div');
+                // Define a classe dependendo de onde está sendo renderizado
+                card.className = elementId === 'recent-grid' ? 'recent-card' : 'news-card'; 
+                
+                // Monta o HTML do card
+                card.innerHTML = `
+                    <img src="${fig.urlFoto || '/img/placeholder.png'}" alt="${fig.nome}">
+                    ${elementId !== 'recent-grid' ? `<div class="card-info"><h4>${fig.nome}</h4></div>` : ''}
+                `;
+                
+                // Ao clicar, vai para a rota do WebController: /detalhes?id=X
+                card.onclick = () => window.location.href = `/detalhes?id=${fig.id}`;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = checkAuth();
+            if (token) {
+                loadUserData();
+                loadStats();
+                loadCatalogoData(); // Carrega as figuras
+                // loadCollections(); // Comentado até você criar o backend de coleções
             }
         });
-
-        const figures = await response.json();
-        const grid = document.getElementById('recent-grid');
-        grid.innerHTML = '';
-
-        figures.forEach(figure => {
-            const card = document.createElement('div');
-            card.className = 'recent-card';
-            card.innerHTML = `<img src="${figure.imagem_url}" alt="${figure.nome}">`;
-            grid.appendChild(card);
-        });
-    } catch (error) {
-        console.error('Erro ao carregar figuras recentes:', error);
-    }
-}
-
-// BANCO DE DADOS: GET /api/user/collections - Buscar coleções com preview de 5 primeiras figuras
-async function loadCollections() {
-    const token = checkAuth();
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/user/collections`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        const collections = await response.json();
-        const container = document.getElementById('collections-container');
-        container.innerHTML = '';
-
-        collections.forEach(collection => {
-            const card = document.createElement('div');
-            card.className = 'collection-card';
-            
-            const previewHTML = collection.preview_images.slice(0, 5).map(img => 
-                `<img src="${img}" alt="Figure">`
-            ).join('');
-            
-            card.innerHTML = `
-                <p class="collection-name">${collection.nome}</p>
-                <small class="collection-count">${collection.total_figures} Figures</small>
-                <div class="collection-preview">
-                    ${previewHTML}
-                </div>
-            `;
-            
-            card.onclick = () => window.location.href = `collection.html?id=${collection.id}`;
-            container.appendChild(card);
-        });
-    } catch (error) {
-        console.error('Erro ao carregar coleções:', error);
-    }
-}
-
-// BANCO DE DADOS: GET /api/figures/novidades-dc - Buscar figuras específicas de novidades DC
-async function loadNovidadesDC() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/figures/novidades-dc?limit=6`);
-        const figures = await response.json();
-        const grid = document.getElementById('news-grid');
-        grid.innerHTML = '';
-
-        figures.forEach(figure => {
-            const card = document.createElement('div');
-            card.className = 'news-card';
-            card.innerHTML = `<img src="${figure.imagem_url}" alt="${figure.nome}">`;
-            card.onclick = () => window.location.href = `detail.html?id=${figure.id}`;
-            grid.appendChild(card);
-        });
-    } catch (error) {
-        console.error('Erro ao carregar novidades DC:', error);
-    }
-}
-
-// BANCO DE DADOS: GET /api/figures/populares-momento - Buscar figuras específicas populares
-async function loadPopulares() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/figures/populares-momento?limit=6`);
-        const figures = await response.json();
-        const grid = document.getElementById('popular-grid');
-        grid.innerHTML = '';
-
-        figures.forEach(figure => {
-            const card = document.createElement('div');
-            card.className = 'popular-card';
-            card.innerHTML = `<img src="${figure.imagem_url}" alt="${figure.nome}">`;
-            card.onclick = () => window.location.href = `detail.html?id=${figure.id}`;
-            grid.appendChild(card);
-        });
-    } catch (error) {
-        console.error('Erro ao carregar populares:', error);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadUserData();
-    loadStats();
-    loadRecentFigures();
-    loadCollections();
-    loadNovidadesDC();
-    loadPopulares();
-});
     </script>
 </body>
 </html>

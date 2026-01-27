@@ -12,21 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
-        <a href="../index.html">
-                <img src="../img/Logo.png" alt="Logo" width="120">
-        </a>
-
-        <nav>
-            <a href="login.html" id="loginBtn">Fazer login</a>
-            <a href="register.html" id="registerBtn">Registrar</a>
-            <a href="#" id="exploreBtn">Explorar</a>
-            <div class="search-box">
-                <input type="text" placeholder="Pesquisar">
-                <span>🔍</span>
-            </div>
-        </nav>
-    </header>
+    <div th:replace="~{fragments/header :: comum}"></div>
 
     <main class="register-content">
         <h1 class="title-register">Registrar</h1>
@@ -93,7 +79,7 @@
             
             if (response.ok && data.sucesso) {
                 alert('Conta criada com sucesso!');
-                window.location.href = '/login'; // Redireciona via WebController
+                window.location.href = '/dashboard'; // Redireciona via WebController
             } else {
                 alert(data.mensagem || 'Erro ao registrar');
             }

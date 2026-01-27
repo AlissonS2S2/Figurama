@@ -13,22 +13,8 @@
 </head>
 </head>
 <body>
-    <header class="header">
-        <a href="../index.html">
-                <img src="../img/Logo.png" alt="Logo" width="120">
-        </a>
-
-        <nav>
-            <a href="login.html" id="loginBtn">Fazer login</a>
-            <a href="register.html" id="registerBtn">Registrar</a>
-            <a href="#" id="exploreBtn">Explorar</a>
-            <div class="search-box">
-                <input type="text" placeholder="Pesquisar">
-                <span>🔍</span>
-            </div>
-        </nav>
-    </header>
-
+    <div th:replace="~{fragments/header :: comum}"></div>
+    
     <main class="login-content">
       <h1 class="title-login">Bem-Vindo de Volta</h1>
 
@@ -104,8 +90,7 @@
                 storage.setItem('token', data.data.token);
                 storage.setItem('user', JSON.stringify(data.data.usuario));
                 
-                // Redireciona para a home (rota do WebController)
-                window.location.href = '/'; 
+                window.location.href = '/dashboard'; // Manda para o Dashboard
             } else {
                 showError(data.mensagem || 'Usuário ou senha incorretos');
             }
