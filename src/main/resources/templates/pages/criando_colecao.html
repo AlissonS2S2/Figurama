@@ -1,8 +1,10 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criando uma coleção</title>
+    <title>Criando uma coleção - Figurama</title>
+    
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/components/cards.css}">
     <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
@@ -19,85 +21,42 @@
             <form id="collection-form">
                 <div class="form-group">
                     <label>Título</label>
-                    <input type="text" id="collection-title" name="title" required class="input-short">
+                    <input type="text" id="collection-title" name="title" required class="input-short" placeholder="Ex: Meus Vilões Favoritos">
                 </div>
 
                 <div class="form-group">
                     <label>Descrição</label>
-                    <textarea name="description" id="collection-description" cols="60" rows="15" required></textarea>
+                    <textarea name="description" id="collection-description" cols="60" rows="5" required placeholder="Descreva sua coleção..."></textarea>
                 </div>
 
                 <div class="figures-section">
                     <label class="add-label">Adicionar Action Figures</label>
+                    
                     <div class="search-and-buttons">
-                        <input type="text" class="search-figures" id="search-figures" placeholder="Pesquise e selecione para adicionar">
+                        <div class="search-wrapper" style="flex-grow: 1; margin-right: 20px;">
+                            <input type="text" class="search-figures" id="search-figures" placeholder="Pesquise por nome (Ex: Batman, Naruto...)">
+                        </div>
 
                         <div class="form-buttons">
-                            <button type="submit" class="btn-save">Salvar</button>
-                            <button type="button" class="btn-cancel" onclick="window.history.back()">Cancelar</button>
+                            <button type="submit" class="btn-save">Salvar Coleção</button>
+                            <button type="button" class="btn-cancel">Cancelar</button>
                         </div>
                     </div>
 
                     <hr class="section-divider">
                     
-                    <div class="figure-grid" id="selected-figure-grid">
-                        
+                    <h4 style="color: #bbb; margin-bottom: 15px;">Selecione as figuras:</h4>
+                    <div class="figure-grid" id="figures-grid">
+                        <p style="color: #666;">Carregando catálogo...</p>
                     </div>
                 </div>
             </form>   
         </div>
-
     </main>
 
-    <script>
-        // BACK-END: URL da sua API
-const API_URL = 'http://localhost:3000/api';
-
-// Array para armazenar os IDs das figuras selecionadas antes de salvar
-let selectedFiguresIds = [];
-
-// Função para buscar figuras (Disparada ao digitar no campo de busca)
-document.getElementById('search-figures').addEventListener('input', async (e) => {
-    const searchTerm = e.target.value;
-    if (searchTerm.length > 2) {
-        // BACK-END: GET /api/figures?search=searchTerm
-        // Aqui você faria o fetch e exibiria uma lista de sugestões
-        console.log("Buscando por:", searchTerm);
-    }
-});
-
-// Função para Salvar a Coleção
-document.getElementById('collection-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const collectionData = {
-        titulo: document.getElementById('collection-title').value,
-        descricao: document.getElementById('collection-description').value,
-        figures: selectedFiguresIds // Array de IDs
-    };
-
-    // BACK-END: POST /api/collections
-    /*
-    try {
-        const response = await fetch(`${API_URL}/collections`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(collectionData)
-        });
-        if (response.ok) alert('Coleção criada com sucesso!');
-    } catch (error) {
-        console.error('Erro ao salvar:', error);
-    }
-    */
-    console.log("Dados prontos para o back-end:", collectionData);
-});
-
-// Função para adicionar figura ao grid (chamada quando o usuário clica em um resultado da busca)
-function addFigureToGrid(figure) {
-    selectedFiguresIds.push(figure.id);
-    // Lógica para criar o elemento HTML do card e dar append no #selected-figures-grid
-}
-    </script>
+    <script th:src="@{/js/config.js}"></script>
+    <script th:src="@{/js/api.js?v=10}"></script> <script th:src="@{/js/criando_colecao.js?v=10}"></script>
+    <script th:src="@{/js/criando_colecao.js}"></script>
     
 </body>
 </html>

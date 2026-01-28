@@ -1,278 +1,193 @@
 // ============================================
-// CRIANDO_COLECAO.JS - CRIAR NOVA COLEÇÃO
+// CRIANDO_COLECAO.JS
 // ============================================
 
-const USUARIO_ID = 1; // Simular usuário logado
-let selectedFigures = []; // Figures selecionadas
+let selectedFigures = []; // Array para guardar as figuras selecionadas
+let usuarioLogadoId = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // ==========================
-    // CARREGAR FIGURES INICIAIS
-    // ==========================
+    // 1. Verificar Login e Obter ID do Usuário
+    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+    if (!userStr) {
+        alert("Você precisa estar logado!");
+        window.location.href = '/login';
+        return;
+    }
     
+    const user = JSON.parse(userStr);
+    usuarioLogadoId = user.id; // Pega o ID real do banco
+
+    // 2. Carregar Figures Iniciais (As mais recentes ou todas)
     await loadInitialFigures();
 
-    // ==========================
-    // PESQUISA DE FIGURES
-    // ==========================
-    
-    const searchInput = document.querySelector('.search-figures');
+    // 3. Configurar Pesquisa (Com delay para não travar)
+    const searchInput = document.getElementById('search-figures');
+    let searchTimeout;
+
     if (searchInput) {
-        let searchTimeout;
-        
-        searchInput.addEventListener('input', async (e) => {
+        searchInput.addEventListener('input', (e) => {
             const termo = e.target.value.trim();
-            
-            // Debounce para evitar muitas requisições
             clearTimeout(searchTimeout);
             
-            if (termo.length < 2) {
-                await loadInitialFigures();
-                return;
-            }
-            
             searchTimeout = setTimeout(async () => {
-                try {
-                    const resultados = await CatalogoAPI.pesquisar(termo);
-                    renderFigures(resultados);
-                } catch (error) {
-                    console.error('Erro na busca:', error);
+                if (termo.length === 0) {
+                    await loadInitialFigures(); // Se limpar, volta ao inicial
+                } else {
+                    try {
+                        const resultados = await CatalogoAPI.pesquisar(termo);
+                        renderFigures(resultados);
+                    } catch (error) {
+                        console.error('Erro na busca:', error);
+                    }
                 }
-            }, 300);
+            }, 400); // Espera 400ms após parar de digitar
         });
     }
 
-    // ==========================
-    // SUBMIT DO FORMULÁRIO
-    // ==========================
-    
+    // 4. Configurar Envio do Formulário
     const form = document.getElementById('collection-form');
     if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await handleSubmit();
-        });
+        form.addEventListener('submit', handleSubmit);
     }
     
-    // ==========================
-    // BOTÃO CANCELAR
-    // ==========================
-    
+    // 5. Botão Cancelar
     const btnCancel = document.querySelector('.btn-cancel');
     if (btnCancel) {
-        btnCancel.addEventListener('click', cancelForm);
+        btnCancel.addEventListener('click', () => {
+            if(confirm('Cancelar criação?')) window.location.href = '/dashboard';
+        });
     }
 });
 
-// ==========================
-// CARREGAR FIGURES INICIAIS
-// ==========================
+// --- FUNÇÕES ---
 
 async function loadInitialFigures() {
+    const grid = document.getElementById('figures-grid');
+    if(grid) grid.innerHTML = '<p style="color:#888">Carregando...</p>';
+
     try {
+        // Busca todas (ou poderia ser uma rota de "populares")
         const figures = await CatalogoAPI.listarTodas();
-        const primeiras10 = figures.slice(0, 10);
-        renderFigures(primeiras10);
+        // Mostra as 12 primeiras para não pesar a tela
+        renderFigures(figures.slice(0, 12));
     } catch (error) {
         console.error('Erro ao carregar figures:', error);
+        if(grid) grid.innerHTML = '<p style="color:red">Erro ao carregar catálogo.</p>';
     }
 }
 
-// ==========================
-// RENDERIZAR CARDS DE FIGURES
-// ==========================
-
 function renderFigures(figures) {
-    const grid = document.querySelector('.figures-grid') || 
-                 document.querySelector('.figure-grid');
-    
+    const grid = document.getElementById('figures-grid');
     if (!grid) return;
     
     grid.innerHTML = '';
     
-    if (figures.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 20px;">Nenhuma figure encontrada</p>';
+    if (!figures || figures.length === 0) {
+        grid.innerHTML = '<p style="color:#bbb; grid-column: 1/-1;">Nenhuma figure encontrada.</p>';
         return;
     }
     
     figures.forEach(figure => {
-        const card = document.createElement('div');
-        card.className = 'figure-card';
-        card.dataset.figureId = figure.id;
-        
-        // Verificar se já está selecionada
+        // Verifica se essa figura já estava selecionada antes
         const isSelected = selectedFigures.some(f => f.id === figure.id);
-        if (isSelected) {
-            card.classList.add('selected');
-        }
+
+        const card = document.createElement('div');
+        card.className = `figure-card ${isSelected ? 'selected' : ''}`;
         
-        // Estrutura do card
+        // Estilo condicional para seleção
+        const borderStyle = isSelected ? '3px solid #d682ff' : '3px solid transparent';
+        
+        card.style.cssText = `
+            cursor: pointer;
+            border: ${borderStyle};
+            border-radius: 8px;
+            overflow: hidden;
+            background: #3a3952;
+            transition: all 0.2s;
+            position: relative;
+        `;
+
+        // Imagem e Nome
         card.innerHTML = `
-            <img src="${figure.urlFoto || 'images/placeholder.png'}" 
-                 alt="${figure.nome}"
-                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-            <div style="position: absolute; bottom: 5px; left: 5px; right: 5px; background: rgba(0,0,0,0.7); padding: 5px; border-radius: 4px;">
-                <p style="font-size: 11px; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            <div style="height: 160px; overflow: hidden;">
+                <img src="${figure.urlFoto || '/img/placeholder.png'}" 
+                     alt="${figure.nome}"
+                     style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div style="padding: 8px; text-align: center;">
+                <p style="margin:0; font-size: 13px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                     ${figure.nome}
                 </p>
+                <p style="margin:2px 0 0 0; font-size: 11px; color: #bbb;">${figure.categoria}</p>
             </div>
+            ${isSelected ? '<div style="position:absolute; top:5px; right:5px; background:#d682ff; color:white; border-radius:50%; width:20px; height:20px; text-align:center; font-size:12px;">✓</div>' : ''}
         `;
         
-        card.style.position = 'relative';
-        card.style.cursor = 'pointer';
-        card.style.transition = 'transform 0.2s, border 0.2s';
-        
-        // Evento de clique
-        card.addEventListener('click', () => toggleFigureSelection(card, figure));
+        // Clique para selecionar/desselecionar
+        card.addEventListener('click', () => toggleSelection(figure, card));
         
         grid.appendChild(card);
     });
 }
 
-// ==========================
-// SELECIONAR/DESSELECIONAR
-// ==========================
-
-function toggleFigureSelection(card, figure) {
+function toggleSelection(figure, card) {
     const index = selectedFigures.findIndex(f => f.id === figure.id);
     
     if (index > -1) {
-        // Remover da seleção
+        // Remover
         selectedFigures.splice(index, 1);
-        card.classList.remove('selected');
-        card.style.border = 'none';
+        card.style.border = '3px solid transparent';
+        card.querySelector('div[style*="position:absolute"]')?.remove(); // Remove o check
     } else {
-        // Adicionar à seleção
+        // Adicionar
         selectedFigures.push(figure);
-        card.classList.add('selected');
-        card.style.border = '3px solid #c77dff';
+        card.style.border = '3px solid #d682ff';
+        // Adiciona o check visualmente
+        card.insertAdjacentHTML('beforeend', '<div style="position:absolute; top:5px; right:5px; background:#d682ff; color:white; border-radius:50%; width:20px; height:20px; text-align:center; font-size:12px;">✓</div>');
     }
-    
-    console.log('Figures selecionadas:', selectedFigures.length);
 }
 
-// ==========================
-// VALIDAR FORMULÁRIO
-// ==========================
-
-function validateForm() {
-    const title = document.querySelector('input[name="title"]').value.trim();
-    const description = document.querySelector('textarea[name="description"]').value.trim();
+async function handleSubmit(e) {
+    e.preventDefault();
     
-    if (!title) {
-        alert('Por favor, insira um título para a coleção');
-        return false;
-    }
-    
-    if (title.length < 3) {
-        alert('O título deve ter pelo menos 3 caracteres');
-        return false;
-    }
-    
-    if (!description) {
-        alert('Por favor, insira uma descrição para a coleção');
-        return false;
-    }
-    
-    if (selectedFigures.length === 0) {
-        alert('Por favor, selecione pelo menos uma action figure');
-        return false;
-    }
-    
-    return true;
-}
-
-// ==========================
-// ENVIAR FORMULÁRIO
-// ==========================
-
-async function handleSubmit() {
-    if (!validateForm()) return;
-    
-    const title = document.querySelector('input[name="title"]').value.trim();
-    const description = document.querySelector('textarea[name="description"]').value.trim();
+    const title = document.getElementById('collection-title').value;
+    const description = document.getElementById('collection-description').value;
     const btnSave = document.querySelector('.btn-save');
-    
-    // Desabilitar botão
+
+    if (selectedFigures.length === 0) {
+        alert('Selecione pelo menos uma figure para sua coleção!');
+        return;
+    }
+
     btnSave.textContent = 'Salvando...';
     btnSave.disabled = true;
-    
+
     try {
-        // 1. Criar a coleção
-        const colecaoData = {
+        // 1. Cria a Coleção
+        const novaColecao = await ColecaoAPI.criar({
             nome: title,
             descricao: description,
-            visibilidade: 'PUBLICA', // ou PRIVADA
-            colecionadorId: USUARIO_ID
-        };
-        
-        const novaColecao = await ColecaoAPI.criar(colecaoData);
-        console.log('Coleção criada:', novaColecao);
-        
-        // 2. Adicionar cada figure selecionada à coleção
+            visibilidade: 'PUBLICA',
+            colecionadorId: usuarioLogadoId // ID real do usuário
+        });
+
+        // 2. Adiciona os itens selecionados
+        // Fazemos em loop (ou poderia ser um endpoint de lote se o backend suportar)
         for (const figure of selectedFigures) {
-            try {
-                await ItemColecaoAPI.adicionar(novaColecao.id, figure.id, {
-                    estado: 'Novo',
-                    favorito: false
-                });
-            } catch (error) {
-                console.error(`Erro ao adicionar figure ${figure.nome}:`, error);
-            }
+            await ItemColecaoAPI.adicionar(novaColecao.id, figure.id, {
+                estado: 'Novo', // Valor padrão
+                favorito: false
+            });
         }
-        
+
         alert('Coleção criada com sucesso!');
-        window.location.href = `minha_colecao.html?id=${novaColecao.id}`;
-        
+        window.location.href = '/dashboard'; // Volta pro painel
+
     } catch (error) {
-        console.error('Erro ao criar coleção:', error);
-        alert('Erro ao criar coleção: ' + error.message);
-    } finally {
-        btnSave.textContent = 'Salvar';
+        console.error(error);
+        alert('Erro ao salvar coleção: ' + error.message);
+        btnSave.textContent = 'Salvar Coleção';
         btnSave.disabled = false;
     }
 }
-
-// ==========================
-// CANCELAR
-// ==========================
-
-function cancelForm() {
-    if (confirm('Deseja cancelar? As alterações não serão salvas.')) {
-        window.location.href = 'dashboard.html';
-    }
-}
-
-// ==========================
-// ADICIONAR CSS DINÂMICO
-// ==========================
-
-const style = document.createElement('style');
-style.textContent = `
-    .figure-card {
-        background: #e0e0e0;
-        border-radius: 8px;
-        aspect-ratio: 2/3;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .figure-card.selected {
-        border: 3px solid #c77dff !important;
-        transform: scale(1.05);
-    }
-    
-    .figure-card:hover {
-        transform: scale(1.05);
-    }
-    
-    .figures-grid,
-    .figure-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 15px;
-        margin-bottom: 30px;
-    }
-`;
-document.head.appendChild(style);

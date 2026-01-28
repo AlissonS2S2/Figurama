@@ -1,3 +1,3 @@
-const CONFIG = { //usado em index e script
-    API_BASE_URL: "http://localhost:8080/api"
+const CONFIG = {
+    API_BASE_URL: "/api"
 };

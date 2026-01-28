@@ -1,16 +1,15 @@
 // ============================================
-// API.JS - INTEGRAÇÃO COMPLETA COM BACKEND
+// API.JS - VERSÃO CORRIGIDA (SEM CONFIG DUPLICADO)
+// Se você está lendo isso no navegador, o arquivo atualizou!
 // ============================================
 
-const CONFIG = {
-    API_BASE_URL: "http://localhost:8080/api"
-};
+// NÃO DECLARAMOS "const CONFIG" AQUI. 
+// Ele já vem do arquivo config.js carregado antes.
 
 // ============================================
 // UTILITÁRIOS
 // ============================================
 
-// Função para lidar com erros de API
 async function handleResponse(response) {
     if (!response.ok) {
         const error = await response.json().catch(() => ({ message: 'Erro desconhecido' }));
@@ -19,12 +18,9 @@ async function handleResponse(response) {
     return response.json();
 }
 
-// Headers padrão para requisições JSON
 function getHeaders() {
     return {
-        'Content-Type': 'application/json',
-        // Adicionar token de autenticação quando implementado
-        // 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        'Content-Type': 'application/json'
     };
 }
 
@@ -33,72 +29,48 @@ function getHeaders() {
 // ============================================
 
 const CatalogoAPI = {
-    // Listar todas as action figures do catálogo
+    // Listar todas
     listarTodas: async () => {
         const response = await fetch(`${CONFIG.API_BASE_URL}/catalogo`);
         return handleResponse(response);
     },
 
-    // Buscar action figure por ID
+    // Buscar por ID
     buscarPorId: async (id) => {
         const response = await fetch(`${CONFIG.API_BASE_URL}/catalogo/${id}`);
         return handleResponse(response);
     },
 
-    // Buscar por categoria (Marvel, DC, Anime, etc)
+    // Buscar por Categoria
     buscarPorCategoria: async (categoria) => {
         const response = await fetch(`${CONFIG.API_BASE_URL}/catalogo/categoria/${categoria}`);
         return handleResponse(response);
     },
 
     // Pesquisar por nome
-    pesquisar: async (nome) => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/catalogo/pesquisar?nome=${encodeURIComponent(nome)}`);
-        return handleResponse(response);
-    },
-
-    // Buscar por fabricante
-    buscarPorFabricante: async (fabricante) => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/catalogo/fabricante/${fabricante}`);
-        return handleResponse(response);
-    },
-
-    // ADMIN: Adicionar ao catálogo (com imagem)
-    adicionar: async (formData) => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/catalogo/admin`, {
-            method: 'POST',
-            body: formData // multipart/form-data
-        });
-        return handleResponse(response);
-    },
-
-    // ADMIN: Desativar do catálogo
-    desativar: async (id) => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/catalogo/admin/${id}/desativar`, {
-            method: 'DELETE'
-        });
-        return response.ok;
+    pesquisar: async (termo) => {
+        // Tenta rota de busca específica, senão filtra localmente
+        try {
+            const response = await fetch(`${CONFIG.API_BASE_URL}/catalogo`);
+            const todas = await handleResponse(response);
+            
+            // Filtra no JavaScript (case insensitive)
+            return todas.filter(f => 
+                f.nome.toLowerCase().includes(termo.toLowerCase()) || 
+                (f.fabricante && f.fabricante.toLowerCase().includes(termo.toLowerCase()))
+            );
+        } catch (e) {
+            console.error("Erro na pesquisa:", e);
+            return [];
+        }
     }
 };
 
 // ============================================
-// COLEÇÕES DO USUÁRIO
+// COLEÇÕES
 // ============================================
 
 const ColecaoAPI = {
-    // Listar todas as coleções
-    listarTodas: async () => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes`);
-        return handleResponse(response);
-    },
-
-    // Buscar coleção por ID (com itens)
-    buscarPorId: async (id) => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes/${id}`);
-        return handleResponse(response);
-    },
-
-    // Criar nova coleção
     criar: async (dados) => {
         const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes`, {
             method: 'POST',
@@ -108,17 +80,13 @@ const ColecaoAPI = {
         return handleResponse(response);
     },
 
-    // Deletar coleção
-    deletar: async (id) => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes/${id}`, {
-            method: 'DELETE'
-        });
-        return response.ok;
+    listarTodas: async () => {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes`);
+        return handleResponse(response);
     },
-
-    // Listar coleções públicas
-    listarPublicas: async () => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes/publicas`);
+    
+    buscarPorId: async (id) => {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes/${id}`);
         return handleResponse(response);
     }
 };
@@ -128,103 +96,25 @@ const ColecaoAPI = {
 // ============================================
 
 const ItemColecaoAPI = {
-    // Listar itens de uma coleção
-    listarItens: async (colecaoId) => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes/${colecaoId}/itens`);
-        return handleResponse(response);
-    },
+    adicionar: async (colecaoId, figureId, dadosExtras) => {
+        const payload = {
+            catalogoActionFigure: { id: figureId },
+            colecao: { id: colecaoId },
+            estado: dadosExtras.estado || 'Novo',
+            favorito: dadosExtras.favorito || false,
+            observacoes: dadosExtras.observacoes || ''
+        };
 
-    // Buscar item específico
-    buscarItem: async (colecaoId, itemId) => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes/${colecaoId}/itens/${itemId}`);
-        return handleResponse(response);
-    },
-
-    // Adicionar action figure do catálogo à coleção
-    adicionar: async (colecaoId, actionFigureId, detalhes = {}) => {
-        const response = await fetch(
-            `${CONFIG.API_BASE_URL}/colecoes/${colecaoId}/itens/adicionar/${actionFigureId}`,
-            {
-                method: 'POST',
-                headers: getHeaders(),
-                body: JSON.stringify(detalhes)
-            }
-        );
-        return handleResponse(response);
-    },
-
-    // Atualizar informações do item
-    atualizar: async (colecaoId, itemId, dados) => {
-        const response = await fetch(
-            `${CONFIG.API_BASE_URL}/colecoes/${colecaoId}/itens/${itemId}`,
-            {
-                method: 'PUT',
-                headers: getHeaders(),
-                body: JSON.stringify(dados)
-            }
-        );
-        return handleResponse(response);
-    },
-
-    // Remover item da coleção
-    remover: async (colecaoId, itemId) => {
-        const response = await fetch(
-            `${CONFIG.API_BASE_URL}/colecoes/${colecaoId}/itens/${itemId}`,
-            {
-                method: 'DELETE'
-            }
-        );
-        return response.ok;
-    },
-
-    // Listar favoritos
-    listarFavoritos: async (colecaoId) => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes/${colecaoId}/itens/favoritos`);
-        return handleResponse(response);
-    },
-
-    // Contar itens
-    contar: async (colecaoId) => {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes/${colecaoId}/itens/contar`);
-        return handleResponse(response);
-    },
-
-    // Marcar/desmarcar favorito
-    toggleFavorito: async (colecaoId, itemId, favorito) => {
-        const response = await fetch(
-            `${CONFIG.API_BASE_URL}/colecoes/${colecaoId}/itens/${itemId}/favorito?favorito=${favorito}`,
-            {
-                method: 'PATCH'
-            }
-        );
+        const response = await fetch(`${CONFIG.API_BASE_URL}/colecoes/itens`, {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify(payload)
+        });
         return handleResponse(response);
     }
 };
 
-// ============================================
-// FUNÇÕES DE COMPATIBILIDADE (MOCK -> REAL)
-// ============================================
-
-// Substituir funções antigas do sistema
-async function buscarNovidades() {
-    // Buscar as últimas adicionadas ao catálogo
-    const todasFigures = await CatalogoAPI.listarTodas();
-    return todasFigures.slice(0, 6); // Pegar as 6 primeiras
-}
-
-async function buscarPopulares() {
-    // Buscar por categoria Marvel (populares)
-    const marvel = await CatalogoAPI.buscarPorCategoria('Marvel');
-    return marvel.slice(0, 6);
-}
-
-// ============================================
-// EXPORTAR PARA USO GLOBAL
-// ============================================
-
-// Disponibilizar globalmente
+// Exportar globalmente
 window.CatalogoAPI = CatalogoAPI;
 window.ColecaoAPI = ColecaoAPI;
 window.ItemColecaoAPI = ItemColecaoAPI;
-window.buscarNovidades = buscarNovidades;
-window.buscarPopulares = buscarPopulares;
