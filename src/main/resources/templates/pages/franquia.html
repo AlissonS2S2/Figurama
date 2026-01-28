@@ -40,13 +40,11 @@
     <script>
         const API_BASE_URL = 'http://localhost:3000/api';
 
-// Pegar ID da franquia da URL
 function getFranchiseId() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
 }
 
-// BANCO DE DADOS: GET /api/franchises/:id - Buscar dados da franquia (nome, descrição, total de figures)
 async function loadFranchiseInfo() {
     const franchiseId = getFranchiseId();
     
@@ -70,7 +68,7 @@ async function loadFranchiseInfo() {
     }
 }
 
-// BANCO DE DADOS: GET /api/franchises/:id/figures - Buscar todas as action figures da franquia
+
 async function loadFranchiseFigures() {
     const franchiseId = getFranchiseId();
     

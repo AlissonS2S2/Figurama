@@ -47,6 +47,7 @@
     font-size: 25px;
     margin-bottom: 30px;
     font-weight: 300;
+    font-family: 'Roboto', sans-serif;
 }
 
 .cards-grid {
@@ -68,4 +69,5 @@
     font-size: 25px;
     margin-bottom: 30px;
     font-weight: 300;
+    font-family: 'Roboto', sans-serif;
 }

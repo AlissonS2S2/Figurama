@@ -20,7 +20,6 @@
 
       <div id="error-message" style="display: none;"></div>
     
-      <!-- BANCO DE DADOS: Verificar credenciais do usuário (username/email e senha) -->
       <form id="login-form" class="login-area">
           <input type="text" id="username" name="username" placeholder="Email / Nome de usuário" required>
         
@@ -46,10 +45,8 @@
     </main>
     
     <script>
-    // Aponta para o seu UsuarioController (@RequestMapping("/api/usuarios"))
     const API_BASE_URL = '/api/usuarios';
 
-    // Mostrar/Ocultar senha
     const togglePassword = document.getElementById('toggle-password');
     const passwordInput = document.getElementById('password');
 
@@ -76,7 +73,6 @@
         const remember = document.getElementById('remember').checked;
         
         try {
-            // Rota ajustada para bater com seu @PostMapping("/login") no Java
             const response = await fetch(`${API_BASE_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -85,12 +81,12 @@
             
             const data = await response.json();
             
-            if (data.sucesso) { // Seu controller retorna um JSON com campo "sucesso"
+            if (data.sucesso) { 
                 const storage = remember ? localStorage : sessionStorage;
                 storage.setItem('token', data.data.token);
                 storage.setItem('user', JSON.stringify(data.data.usuario));
                 
-                window.location.href = '/dashboard'; // Manda para o Dashboard
+                window.location.href = '/dashboard';
             } else {
                 showError(data.mensagem || 'Usuário ou senha incorretos');
             }

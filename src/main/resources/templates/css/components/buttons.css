@@ -39,6 +39,7 @@
     box-shadow: 0 10px 30px rgba(232, 121, 249, 0.3);
     position:relative;
     top: -220px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .cta-btn:hover {

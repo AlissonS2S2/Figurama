@@ -12,7 +12,6 @@ body {
 
 /* Header para Login, Registro e Landing Page*/
 
-
 .header {
     font-family: 'Roboto', sans-serif;
     display: flex;
@@ -29,6 +28,7 @@ body {
     display: flex;
     gap: 30px;
     align-items: center;
+    font-family: 'Roboto', sans-serif;
 }
 
 nav a {
@@ -43,10 +43,6 @@ nav a:hover {
 }
 
 /*Header para Logado*/
-
-/* --- CONFIGURAÇÕES GLOBAIS --- */
-
-/* Espaçamento lateral de 100px exigido */
 .contain-wrapper, 
 .container-wrapper {
     max-width: 100%;
@@ -59,9 +55,8 @@ nav a:hover {
     width: 100%;
 }
 
-/* --- HEADER ESTILO --- */
 .header-logged {
-    background-color: #7b2cbf; /* Roxo vibrante da imagem */
+    background-color: #7b2cbf;
     height: 90px;
     display: flex;
     align-items: center;
@@ -75,7 +70,8 @@ nav a:hover {
 .nav-logged {
     display: flex;
     align-items: center;
-    gap: 30px; /* Distância entre os elementos do nav */
+    gap: 30px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .user-profile {
@@ -103,16 +99,12 @@ nav a:hover {
     font-size: 16px;
 }
 
-/* Barra de Pesquisa */
 .search-box {
-    /* "Preto no fundo" - usando um preto suave/transparente para o design */
     background-color: rgba(0, 0, 0, 0.4); 
     display: flex;
     align-items: center;
     padding: 6px 12px;
     border-radius: 8px;
-    
-    /* Faz a caixa terminar logo após o ícone, sem sobrar espaço */
     width: 220px; 
     transition: width 0.3s;
 }
@@ -123,29 +115,25 @@ nav a:hover {
     color: white;
     outline: none;
     font-size: 14px;
-    width: 100%; /* Ocupa o espaço até chegar no ícone */
+    width: 100%;
 }
 
-/* Estilo do botão/ícone da lupa */
 .search-btn {
     background: transparent;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
-    padding-left: 5px; /* Espaço pequeno entre o texto e a lupa */
+    padding-left: 5px; 
 }
 
 .search-btn img, .search-btn {
     font-size: 16px;
-    /* Se for um emoji ou ícone, ajustamos a cor se necessário */
     filter: brightness(1.2); 
 }
 
-
-/* Botão Criar + */
 .btn-create {
-    background-color: #d682ff; /* Lilás claro da imagem */
+    background-color: #d682ff; 
     color: white;
     border: none;
     padding: 10px 25px;
@@ -160,9 +148,8 @@ nav a:hover {
     opacity: 0.9;
 }
 
-/* --- FOOTER ESTILO --- */
 .main-footer {
-    background-color: #312f45; /* Cor do footer da imagem */
+    background-color: #312f45;
     padding: 30px 0;
     width: 100%;
 }
@@ -170,6 +157,7 @@ nav a:hover {
 .footer-nav {
     display: flex;
     gap: 25px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .footer-nav a {
@@ -184,6 +172,7 @@ nav a:hover {
     display: flex;
     align-items: center;
     gap: 5px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .footer-social {
@@ -198,7 +187,6 @@ nav a:hover {
     filter: brightness(0.9);
 }
 
-/* Responsividade Básica */
 @media (max-width: 1200px) {
     .contain-wrapper, .container-wrapper {
         padding-left: 40px;

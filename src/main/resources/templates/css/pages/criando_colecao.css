@@ -15,6 +15,7 @@ body {
 .create-title {
     font-size: 32px;
     font-weight: 500;
+    font-family: 'Roboto', sans-serif;
     margin-bottom: 10px;
     color: #e0e0e0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.4);
@@ -30,6 +31,7 @@ body {
     margin-bottom: 8px;
     font-size: 14px;
     color: #b0b0b0;
+    font-family: 'Roboto', sans-serif;
 }
 
 /* Inputs e Textarea */
@@ -55,6 +57,7 @@ textarea {
 /* Seção de busca e botões na mesma linha */
 .figures-section {
     margin-top: 30px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .search-and-buttons {
@@ -90,6 +93,7 @@ textarea {
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
+    font-family: 'Roboto', sans-serif;
 }
 
 .btn-cancel {
@@ -100,6 +104,7 @@ textarea {
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
+
 }
 
 /* Grid de Cards */

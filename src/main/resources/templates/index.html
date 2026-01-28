@@ -52,20 +52,14 @@
 <div th:replace="~{fragments/footer :: rodape}"></div>
 
 <script>
-    // 1. A URL Base correta
-    // Como o HTML é servido pelo próprio Spring Boot, não precisamos colocar "http://localhost:8080"
-    // Usamos apenas o caminho relativo. Isso evita problemas de CORS.
     const API_BASE_URL = '/api/catalogo'; 
 
     // Referências aos elementos do DOM
     const figuresGrid = document.getElementById('figuresGrid');
-    const searchInput = document.querySelector('.search-box input'); // Ajuste o seletor se necessário
+    const searchInput = document.querySelector('.search-box input'); 
 
-    // 2. Função para carregar TODAS as figuras
     async function carregarFiguras() {
         try {
-            // No seu Controller, o @GetMapping sem caminho extra lista tudo
-            // Então chamamos direto: /api/catalogo
             const response = await fetch(API_BASE_URL);
             
             if (!response.ok) throw new Error('Erro ao buscar dados');
@@ -78,11 +72,8 @@
         }
     }
 
-    // 3. Função de Pesquisa
     async function pesquisarFiguras(termo) {
         try {
-            // No seu Controller: @GetMapping("/pesquisar") com @RequestParam("nome")
-            // A URL final deve ficar: /api/catalogo/pesquisar?nome=Naruto
             const url = `${API_BASE_URL}/pesquisar?nome=${encodeURIComponent(termo)}`;
             
             const response = await fetch(url);
@@ -95,9 +86,8 @@
         }
     }
 
-    // 4. Renderização (HTML dos cards)
     function renderizarFiguras(lista) {
-        figuresGrid.innerHTML = ''; // Limpa a lista atual
+        figuresGrid.innerHTML = '';
 
         if (lista.length === 0) {
             figuresGrid.innerHTML = '<p>Nenhuma figura encontrada.</p>';
@@ -105,10 +95,8 @@
         }
 
         lista.forEach(figura => {
-            // Ajuste os nomes das propriedades conforme seu Modelo Java (CatalogoActionFigure)
-            // Ex: figura.nome, figura.urlFoto, figura.precoSugerido
             const card = document.createElement('div');
-            card.className = 'figure-card'; // Use sua classe CSS de card
+            card.className = 'figure-card';
             card.innerHTML = `
                 <img src="${figura.urlFoto || '/img/default-placeholder.png'}" alt="${figura.nome}">
                 <h3>${figura.nome}</h3>
@@ -119,10 +107,8 @@
         });
     }
 
-    // Event Listeners
     document.addEventListener('DOMContentLoaded', carregarFiguras);
 
-    // Adiciona delay na pesquisa para não chamar a API a cada letra digitada (Debounce simples)
     let timeoutId;
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -134,7 +120,7 @@
                 } else {
                     carregarFiguras();
                 }
-            }, 500); // Espera 500ms após parar de digitar
+            }, 500);
         });
     }
 </script>

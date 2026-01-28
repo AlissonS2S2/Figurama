@@ -64,24 +64,17 @@
     </main>
 
     <script>
-        // --- CONFIGURAÇÃO ---
-        const API_BASE = '/api'; // Aponta para o próprio Spring Boot (8080)
+        const API_BASE = '/api';
 
-        // --- AUTENTICAÇÃO ---
         function checkAuth() {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             if (!token) {
-                window.location.href = '/login'; // Redireciona se não estiver logado
+                window.location.href = '/login';
                 return null;
             }
             return token;
         }
 
-        // --- CARREGAMENTO DE DADOS ---
-
-        // 1. Dados do Usuário
-        // Em vez de chamar a API (que ainda não tem endpoint de profile),
-        // pegamos do localStorage que salvamos na tela de Login.
         function loadUserData() {
             const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
             if (userStr) {
@@ -96,16 +89,11 @@
             }
         }
 
-        // 2. Estatísticas (Mock temporário até você criar o Controller de Stats)
         async function loadStats() {
-            // Deixamos como 0 por enquanto para não dar erro 404
             document.getElementById('total-figures').textContent = "0";
             document.getElementById('total-collections').textContent = "0";
         }
 
-        // 3. Novidades e Populares
-        // Como você só tem o CatalogoController por enquanto, vamos buscar TUDO
-        // e filtrar no front-end para exibir algo na tela.
         async function loadCatalogoData() {
             try {
                 // Chama seu endpoint existente: /api/catalogo
@@ -114,12 +102,10 @@
                 
                 const figures = await response.json();
 
-                // -- Novidades (Pega as 4 últimas do array) --
                 const novidades = figures.slice(-4).reverse();
                 renderGrid('news-grid', novidades);
-                renderGrid('recent-grid', novidades.slice(0, 3)); // Reusa para "Últimas adicionadas"
+                renderGrid('recent-grid', novidades.slice(0, 3)); 
 
-                // -- Populares (Pega as 4 primeiras do array como exemplo) --
                 const populares = figures.slice(0, 4);
                 renderGrid('popular-grid', populares);
 
@@ -128,7 +114,6 @@
             }
         }
 
-        // Função auxiliar para desenhar os cards
         function renderGrid(elementId, lista) {
             const grid = document.getElementById(elementId);
             if (!grid) return;
@@ -142,30 +127,25 @@
 
             lista.forEach(fig => {
                 const card = document.createElement('div');
-                // Define a classe dependendo de onde está sendo renderizado
                 card.className = elementId === 'recent-grid' ? 'recent-card' : 'news-card'; 
                 
-                // Monta o HTML do card
                 card.innerHTML = `
                     <img src="${fig.urlFoto || '/img/placeholder.png'}" alt="${fig.nome}">
                     ${elementId !== 'recent-grid' ? `<div class="card-info"><h4>${fig.nome}</h4></div>` : ''}
                 `;
                 
-                // Ao clicar, vai para a rota do WebController: /detalhes?id=X
                 card.onclick = () => window.location.href = `/detalhes?id=${fig.id}`;
                 
                 grid.appendChild(card);
             });
         }
 
-        // --- INICIALIZAÇÃO ---
         document.addEventListener('DOMContentLoaded', () => {
             const token = checkAuth();
             if (token) {
                 loadUserData();
                 loadStats();
-                loadCatalogoData(); // Carrega as figuras
-                // loadCollections(); // Comentado até você criar o backend de coleções
+                loadCatalogoData();
             }
         });
     </script>

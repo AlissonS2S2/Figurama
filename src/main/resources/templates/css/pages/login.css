@@ -12,6 +12,7 @@
     margin-bottom: 40px;
     font-size: 36px;
     font-weight: 400;
+    font-family: 'Roboto', sans-serif;
 }
 
 #error-message {
@@ -27,6 +28,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .login-area input[type="text"],
@@ -139,6 +141,7 @@
     text-align: center;
     font-size: 14px;
     color: rgba(255, 255, 255, 0.7);
+    font-family: 'Roboto', sans-serif;
 }
 
 .register-link a {

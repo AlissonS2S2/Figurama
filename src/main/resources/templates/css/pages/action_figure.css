@@ -12,7 +12,6 @@
     margin-bottom: 60px;
 }
 
-/* Caixa da Imagem à Esquerda */
 .figure-image-box {
     background: #3a3952;
     padding: 15px;
@@ -25,7 +24,7 @@
 .image-placeholder {
     width: 100%;
     aspect-ratio: 3/4;
-    background: #d9d9d9; /* Cor cinza da imagem */
+    background: #d9d9d9;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -45,9 +44,9 @@
     font-weight: bold;
     cursor: pointer;
     font-size: 14px;
+    font-family: 'Roboto', sans-serif;
 }
 
-/* Informações à Direita */
 .info-header {
     display: flex;
     justify-content: space-between;
@@ -71,12 +70,14 @@
 .release-date span {
     color: #e0e0e0;
     margin-left: 10px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .figure-subtitle {
     font-size: 16px;
     color: #b0b0b0;
     margin-bottom: 20px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .info-divider {
@@ -91,7 +92,6 @@
     font-size: 15px;
 }
 
-/* Categorias / Tags */
 .category-area {
     display: flex;
     align-items: center;
@@ -101,6 +101,7 @@
 .category-area p {
     font-size: 14px;
     color: #e0e0e0;
+    font-family: 'Roboto', sans-serif;
 }
 
 .tags-container {
@@ -116,7 +117,6 @@
     color: #e0e0e0;
 }
 
-/* Seções de Listas Inferiores */
 .section-block {
     margin-top: 60px;
 }
@@ -124,6 +124,7 @@
 .section-title {
     font-size: 18px;
     margin-bottom: 10px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .section-divider {
@@ -137,7 +138,6 @@
     gap: 20px;
 }
 
-/* Reutilizando estilo de card placeholder para quando não houver imagem */
 .card-placeholder-item {
     width: 160px;
     height: 220px;

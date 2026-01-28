@@ -59,49 +59,39 @@
     </main>
 
     <script>
-        // BACK-END: Função para pegar o ID da coleção da URL
-function getCollectionId() {
+    function getCollectionId() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
 }
 
-// Redireciona para a página de edição (levando o ID)
-function goToEditPage() {
+
+    function goToEditPage() {
     const id = getCollectionId();
-    // BACK-END: Certifique-se que o nome do arquivo da página anterior seja este
     window.location.href = `criando-uma-colecao.html?id=${id}`;
 }
 
-// Função para excluir a coleção
 async function deleteCollection() {
     const id = getCollectionId();
     
     if (confirm("Tem certeza que deseja excluir esta coleção? Esta ação não pode ser desfeita.")) {
-        // BACK-END: DELETE /api/collections/:id
         console.log("Chamando banco para excluir coleção ID:", id);
         
-        /*
         try {
             const response = await fetch(`${API_BASE_URL}/collections/${id}`, {
                 method: 'DELETE'
             });
             if (response.ok) {
                 alert("Coleção excluída!");
-                window.location.href = "home.html"; // Redireciona após excluir
+                window.location.href = "dashboard.html";
             }
         } catch (error) {
             console.error("Erro ao excluir coleção:", error);
         }
-        */
     }
 }
 
-// BACK-END: Função para carregar os dados iniciais
 async function loadCollectionDetails() {
     const id = getCollectionId();
-    // 1. Buscar dados da coleção (Nome, Descrição, Data)
-    // 2. Buscar itens da coleção (Action Figures)
-    // 3. Preencher o ID 'figures-container' com os cards reais
 }
 
 document.addEventListener('DOMContentLoaded', loadCollectionDetails);

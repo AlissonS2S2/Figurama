@@ -28,6 +28,7 @@
 .colecao-info small {
     color: #e0e0e0;
     font-size: 13px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .divider {
@@ -101,13 +102,15 @@
 }
 
 #btn-edit {
-    background: #7a6fb3; /* Roxo da imagem */
+    background: #7a6fb3;
     color: #e0e0e0;
+    font-family: 'Roboto', sans-serif;
 }
 
 #btn-delete {
-    background: #6b6b9d; /* Azul acinzentado da imagem */
+    background: #6b6b9d;
     color: #e0e0e0;
+    font-family: 'Roboto', sans-serif;
 }
 
 .update-date {
@@ -115,6 +118,7 @@
     color: #b0b0b0;
     font-size: 11px;
     margin: 5px 0;
+    font-family: 'Roboto', sans-serif;
 }
 
 @media (max-width: 1024px) {
