@@ -3,26 +3,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criando uma coleção</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="../css/components/cards.css">
-    <link rel="stylesheet" href="../css/components/buttons.css">
-    <link rel="stylesheet" href="../css/components/forms.css">
-    <link rel="stylesheet" href="../css/pages/criando_colecao.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/criando_colecao.css}">
 </head>
 <body>
-    <header class="header-logged">
-        <a href="../pages/dashboard.html">
-            <img class="logo" src="../images/Logo.png" alt="Logo Figurama">
-        </a>
-        
-        <nav class="nav-logged">
-            <span>
-                <img class="profile-icon" src="../icons/Profile-icon.png" alt="Descrição da imagem">N_Usuário</span>
-            <a href="#">Coleção</a>
-            <input type="text" placeholder="Pesquisar">
-            <button class="btn-add">Adicionar +</button>
-        </nav>
-    </header>
+    <div th:replace="~{fragments/header_logged :: logado}"></div>
 
     <main class="creating-container">
         <div class="content-wrapper">
