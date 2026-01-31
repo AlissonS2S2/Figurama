@@ -52,4 +52,9 @@ public class ActionFigureController {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
+    
+    @GetMapping(RotaActionFigures.NOVIDADES)
+    public ResponseEntity<List<ActionFigureEntity>> buscarNovidades() {
+        return ResponseEntity.ok(service.buscarNovidades());
+    }
 }

@@ -9,4 +9,5 @@ public interface RotaActionFigures {
     String SALVAR = "/salvar";
     String ATUALIZAR = "/{id}";
     String DELETAR = "/{id}";
+    String NOVIDADES = "/novidades";
 }

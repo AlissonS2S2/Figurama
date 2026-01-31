@@ -76,4 +76,9 @@ public class ActionFigureServiceImpl implements ActionFigureService {
     public List<ActionFigureEntity> buscarPorFranquia(String franquia) {
         return repository.findByFranquia(franquia);
     }
+
+    @Override
+    public List<ActionFigureEntity> buscarNovidades() {
+    return repository.findTop6ByOrderByIdDesc();
+    }
 }

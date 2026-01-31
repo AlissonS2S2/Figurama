@@ -19,4 +19,6 @@ public interface ActionFigureService {
     List<ActionFigureEntity> buscarPorColecao(Long colecaoId);
     
     List<ActionFigureEntity> buscarPorFranquia(String franquia);
+
+    List<ActionFigureEntity> buscarNovidades();
 }
