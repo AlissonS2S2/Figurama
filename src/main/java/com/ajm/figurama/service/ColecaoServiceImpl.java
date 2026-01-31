@@ -3,6 +3,8 @@ package com.ajm.figurama.service;
 import com.ajm.figurama.model.ColecaoRecord;
 import com.ajm.figurama.model.dto.mapper.ColecaoMapper;
 import com.ajm.figurama.repository.ColecaoRepository;
+import com.ajm.figurama.repository.UsuarioRepository;
+import com.ajm.figurama.repository.UsuarioEntity;
 import com.ajm.figurama.repository.ColecaoEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,17 @@ public class ColecaoServiceImpl implements ColecaoService {
 
     private final ColecaoRepository repository;
     private final ColecaoMapper mapper;
+    private final UsuarioRepository usuarioRepository;
 
     @Override
     public ColecaoEntity salvar(ColecaoRecord dto) {
         ColecaoEntity entity = mapper.toEntity(dto);
+
+        UsuarioEntity dono = usuarioRepository.findById(dto.usuarioId())
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    
+        entity.setUsuario(dono);
+
         return repository.save(entity);
     }
 

@@ -65,6 +65,18 @@ public record ActionFigureRecord(String nome, String franquia, String fotoUrl, L
 - `fotoUrl`: URL da foto da figura
 - `colecaoId`: ID da coleção à qual pertence
 
+### UsuarioRecord.java
+```java
+package com.ajm.figurama.model;
+
+public record UsuarioRecord(String nomeUsuario, String email, String senha) {
+}
+```
+**Função**: DTO para transferência de dados de usuários. Contém:
+- `nomeUsuario`: Nome único do usuário
+- `email`: E-mail único do usuário
+- `senha`: Senha do usuário (em produção, usar criptografia)
+
 ---
 
 ## 🗄️ Repository (Entidades e Acesso a Dados)
@@ -108,7 +120,6 @@ package com.ajm.figurama.repository;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 @Entity
 @Table(name = "action_figure")
 @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
@@ -132,6 +143,34 @@ public class ActionFigureEntity {
 - `@ManyToOne`: Relacionamento muitos-para-um com ColecaoEntity
 - `@JoinColumn`: Configura a coluna de chave estrangeira
 - `@Builder`: Padrão Builder (Lombok)
+
+### UsuarioEntity.java
+```java
+package com.ajm.figurama.repository;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class UsuarioEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
+    private String nomeUsuario;
+    
+    @Column(unique = true)
+    private String email;
+    
+    private String senha;
+}
+```
+**Função**: Entidade JPA que representa a tabela de usuários.
+- `@Entity`: Marca como entidade JPA
+- `@Column(unique = true)`: Garante unicidade de nomeUsuario e email
+- `@Builder`: Padrão Builder para construção de objetos
 
 ### ColecaoRepository.java
 ```java
@@ -166,6 +205,22 @@ public interface ActionFigureRepository extends JpaRepository<ActionFigureEntity
 **Função**: Interface Spring Data JPA para acesso a dados de figuras de ação. Inclui métodos customizados:
 - `findByColecaoId()`: Busca figuras por ID da coleção
 - `findByFranquia()`: Busca figuras por franquia
+
+### UsuarioRepository.java
+```java
+package com.ajm.figurama.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
+    boolean existsByEmail(String email);
+    boolean existsByNomeUsuario(String nomeUsuario);
+}
+```
+**Função**: Interface Spring Data JPA para acesso a dados de usuários. Inclui métodos customizados:
+- `existsByEmail()`: Verifica se e-mail já existe
+- `existsByNomeUsuario()`: Verifica se nome de usuário já existe
 
 ---
 
@@ -249,6 +304,8 @@ package com.ajm.figurama.service;
 import com.ajm.figurama.model.ColecaoRecord;
 import com.ajm.figurama.model.dto.mapper.ColecaoMapper;
 import com.ajm.figurama.repository.ColecaoRepository;
+import com.ajm.figurama.repository.UsuarioRepository;
+import com.ajm.figurama.repository.UsuarioEntity;
 import com.ajm.figurama.repository.ColecaoEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -260,10 +317,17 @@ public class ColecaoServiceImpl implements ColecaoService {
 
     private final ColecaoRepository repository;
     private final ColecaoMapper mapper;
+    private final UsuarioRepository usuarioRepository;
 
     @Override
     public ColecaoEntity salvar(ColecaoRecord dto) {
         ColecaoEntity entity = mapper.toEntity(dto);
+
+        UsuarioEntity dono = usuarioRepository.findById(dto.usuarioId())
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    
+        entity.setUsuario(dono);
+
         return repository.save(entity);
     }
 
@@ -276,7 +340,7 @@ public class ColecaoServiceImpl implements ColecaoService {
 **Função**: Implementação dos serviços de coleções.
 - `@Service`: Marca como componente Spring
 - `@RequiredArgsConstructor`: Injeção de dependências via construtor (Lombok)
-- `salvar()`: Converte DTO para Entity e persiste
+- `salvar()`: Converte DTO para Entity, valida usuário e persiste
 - `listarTodos()`: Retorna todas as coleções
 
 ### ActionFigureService.java
@@ -534,6 +598,50 @@ public class ActionFigureController {
 - `@PutMapping(RotaActionFigures.ATUALIZAR)`: PUT `/action-figures/{id}` - Atualiza existente
 - `@DeleteMapping(RotaActionFigures.DELETAR)`: DELETE `/action-figures/{id}` - Deleta
 
+### UsuarioController.java
+```java
+package com.ajm.figurama.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ajm.figurama.model.UsuarioRecord;
+import com.ajm.figurama.repository.UsuarioEntity;
+import com.ajm.figurama.repository.UsuarioRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/usuarios")
+@RequiredArgsConstructor
+public class UsuarioController {
+    private final UsuarioRepository repository;
+
+    @PostMapping("/registrar")
+    public ResponseEntity<?> registrar(@RequestBody UsuarioRecord dto) {
+        if(repository.existsByEmail(dto.email())) {
+            return ResponseEntity.badRequest().body("E-mail já cadastrado");
+        }
+        
+        UsuarioEntity novo = UsuarioEntity.builder()
+                .nomeUsuario(dto.nomeUsuario())
+                .email(dto.email())
+                .senha(dto.senha()) // Em um projeto real, usaríamos criptografia aqui
+                .build();
+        
+        return ResponseEntity.ok(repository.save(novo));
+    }
+}
+```
+**Função**: Controller REST para registro de usuários.
+- `@PostMapping("/registrar")`: POST `/usuarios/registrar` - Registra novo usuário
+- Validação de e-mail duplicado antes do registro
+- Uso do padrão Builder para construir a entidade
+- Observação: Em produção, implementar criptografia de senha
+
 ---
 
 ## 🎯 Resumo das Funcionalidades
@@ -541,11 +649,12 @@ public class ActionFigureController {
 O projeto implementa um sistema completo para gerenciamento de coleções de figuras de ação com:
 
 1. **CRUD Completo**: Criação, leitura, atualização e deleção
-2. **Relacionamentos**: One-to-Many entre Coleções e Action Figures
-3. **Validações**: Verificação de existência de entidades relacionadas
+2. **Relacionamentos**: One-to-Many entre Coleções e Action Figures, Many-to-One entre Coleções e Usuários
+3. **Validações**: Verificação de existência de entidades relacionadas, e-mails duplicados
 4. **Buscas Avançadas**: Por coleção, franquia, ID
-5. **Arquitetura Limpa**: Separação clara de responsabilidades
-6. **Boas Práticas**: Uso de DTOs, mappers, injeção de dependências
+5. **Sistema de Usuários**: Registro de usuários com validação de e-mail único
+6. **Arquitetura Limpa**: Separação clara de responsabilidades
+7. **Boas Práticas**: Uso de DTOs, mappers, injeção de dependências
 
 ---
 
