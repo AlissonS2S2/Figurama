@@ -42,15 +42,14 @@ public class FiguramaApplication {
 ```java
 package com.ajm.figurama.model;
 
-import java.util.List;
-
-public record ColecaoRecord(String titulo, String descricao, Integer quantidade) {
+public record ColecaoRecord(String titulo, String descricao, Integer quantidade, Long usuarioId) {
 }
 ```
 **Função**: DTO (Data Transfer Object) para transferência de dados de coleções. É um record Java que representa uma coleção com:
 - `titulo`: Nome da coleção
 - `descricao`: Descrição da coleção  
 - `quantidade`: Quantidade de itens na coleção
+- `usuarioId`: ID do usuário dono da coleção
 
 ### ActionFigureRecord.java
 ```java
@@ -89,11 +88,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class ColecaoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -105,12 +106,18 @@ public class ColecaoEntity {
 
     @OneToMany(mappedBy = "colecao", cascade = CascadeType.ALL)
     private List<ActionFigureEntity> figures;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private UsuarioEntity usuario;
 }
 ```
 **Função**: Entidade JPA que representa a tabela de coleções no banco de dados.
 - `@Entity`: Marca como entidade JPA
 - `@Id/@GeneratedValue`: Configuração de chave primária auto-incremento
 - `@OneToMany`: Relacionamento um-para-muitos com ActionFigureEntity
+- `@ManyToOne`: Relacionamento muitos-para-um com UsuarioEntity
+- `@JoinColumn(name = "usuario_id")`: Configura a coluna de chave estrangeira para usuário
 - `@Getter/@Setter`: Gera métodos getters e setters (Lombok)
 - `@NoArgsConstructor/@AllArgsConstructor`: Construtores (Lombok)
 
@@ -200,11 +207,14 @@ public interface ActionFigureRepository extends JpaRepository<ActionFigureEntity
     List<ActionFigureEntity> findByColecaoId(Long colecaoId);
     
     List<ActionFigureEntity> findByFranquia(String franquia);
+
+    List<ActionFigureEntity> findTop6ByOrderIdDesc();
 }
 ```
 **Função**: Interface Spring Data JPA para acesso a dados de figuras de ação. Inclui métodos customizados:
 - `findByColecaoId()`: Busca figuras por ID da coleção
 - `findByFranquia()`: Busca figuras por franquia
+- `findTop6ByOrderIdDesc()`: Retorna as 6 figuras mais recentes (ordenadas por ID decrescente)
 
 ### UsuarioRepository.java
 ```java
