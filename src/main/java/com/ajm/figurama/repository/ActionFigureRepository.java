@@ -11,4 +11,6 @@ public interface ActionFigureRepository extends JpaRepository<ActionFigureEntity
     List<ActionFigureEntity> findByColecaoId(Long colecaoId);
     
     List<ActionFigureEntity> findByFranquia(String franquia);
+
+    List<ActionFigureEntity> findTop6ByOrderIdDesc();
 }
