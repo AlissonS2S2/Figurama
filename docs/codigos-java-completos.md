@@ -55,13 +55,25 @@ public record ColecaoRecord(String titulo, String descricao, Integer quantidade,
 ```java
 package com.ajm.figurama.model;
 
-public record ActionFigureRecord(String nome, String franquia, String fotoUrl, Long colecaoId) {
-}
+public record ActionFigureRecord(
+    String nome, 
+    String franquia, 
+    String fotoUrl, 
+    String descricao,       
+    String anoLancamento,   
+    Boolean ativo,
+    String categoria,          
+    Long colecaoId
+) {}
 ```
 **Função**: DTO para transferência de dados de figuras de ação. Contém:
 - `nome`: Nome da figura
 - `franquia`: Franquia (ex: Marvel, DC, etc.)
 - `fotoUrl`: URL da foto da figura
+- `descricao`: Descrição detalhada da figura
+- `anoLancamento`: Ano de lançamento da figura
+- `ativo`: Status se a figura está ativa
+- `categoria`: Categoria da figura
 - `colecaoId`: ID da coleção à qual pertence
 
 ### UsuarioRecord.java
@@ -139,6 +151,10 @@ public class ActionFigureEntity {
     private String nome;
     private String franquia;
     private String fotoUrl;
+    private String descricao;
+    private String anoLancamento;
+    private Boolean ativo;
+    private String categoria;
 
     @ManyToOne
     @JoinColumn(name = "colecao_id")
@@ -150,6 +166,7 @@ public class ActionFigureEntity {
 - `@ManyToOne`: Relacionamento muitos-para-um com ColecaoEntity
 - `@JoinColumn`: Configura a coluna de chave estrangeira
 - `@Builder`: Padrão Builder (Lombok)
+- Campos adicionais: descricao, anoLancamento, ativo, categoria
 
 ### UsuarioEntity.java
 ```java
@@ -204,17 +221,20 @@ import java.util.List;
 @Repository
 public interface ActionFigureRepository extends JpaRepository<ActionFigureEntity, Long> {
     
+    List<ActionFigureEntity> findByNomeContainingIgnoreCase(String nome);
+    
     List<ActionFigureEntity> findByColecaoId(Long colecaoId);
     
     List<ActionFigureEntity> findByFranquia(String franquia);
 
-    List<ActionFigureEntity> findTop6ByOrderIdDesc();
+    List<ActionFigureEntity> findTop6ByOrderByIdDesc();
 }
 ```
 **Função**: Interface Spring Data JPA para acesso a dados de figuras de ação. Inclui métodos customizados:
+- `findByNomeContainingIgnoreCase()`: Busca figuras por nome (case insensitive)
 - `findByColecaoId()`: Busca figuras por ID da coleção
 - `findByFranquia()`: Busca figuras por franquia
-- `findTop6ByOrderIdDesc()`: Retorna as 6 figuras mais recentes (ordenadas por ID decrescente)
+- `findTop6ByOrderByIdDesc()`: Retorna as 6 figuras mais recentes (ordenadas por ID decrescente)
 
 ### UsuarioRepository.java
 ```java
@@ -303,9 +323,11 @@ import java.util.List;
 public interface ColecaoService {
     ColecaoEntity salvar(ColecaoRecord dto);
     List<ColecaoEntity> listarTodos();
+
+    void deletar(Long id);
 }
 ```
-**Função**: Interface que define os contratos de negócio para coleções.
+**Função**: Interface que define os contratos de negócio para coleções com operações CRUD básicas.
 
 ### ColecaoServiceImpl.java
 ```java
@@ -368,17 +390,25 @@ public interface ActionFigureService {
     ActionFigureEntity atualizar(Long id, ActionFigureRecord dto);
     
     void deletar(Long id);
+
+    void excluirDoCatalogo(Long id);
     
     ActionFigureEntity buscarPorId(Long id);
+
+    List<ActionFigureEntity> buscarPorNome(String nome);
     
     List<ActionFigureEntity> listarTodos();
     
     List<ActionFigureEntity> buscarPorColecao(Long colecaoId);
     
     List<ActionFigureEntity> buscarPorFranquia(String franquia);
+
+    List<ActionFigureEntity> buscarNovidades();
+
+    ActionFigureEntity adicionarDaBusca(Long figureId, Long colecaoId);
 }
 ```
-**Função**: Interface que define os contratos de negócio para figuras de ação com operações CRUD completas.
+**Função**: Interface que define os contratos de negócio para figuras de ação com operações CRUD completas e métodos adicionais para busca e gerenciamento.
 
 ### ActionFigureServiceImpl.java
 ```java
@@ -441,9 +471,20 @@ public class ActionFigureServiceImpl implements ActionFigureService {
     }
 
     @Override
+    public void excluirDoCatalogo(Long id) {
+        // Implementação similar ao deletar, mas pode ter lógica diferente no futuro
+        deletar(id);
+    }
+
+    @Override
     public ActionFigureEntity buscarPorId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Action Figure não encontrada com ID: " + id));
+    }
+
+    @Override
+    public List<ActionFigureEntity> buscarPorNome(String nome) {
+        return repository.findByNomeContainingIgnoreCase(nome);
     }
 
     @Override
@@ -460,15 +501,36 @@ public class ActionFigureServiceImpl implements ActionFigureService {
     public List<ActionFigureEntity> buscarPorFranquia(String franquia) {
         return repository.findByFranquia(franquia);
     }
+
+    @Override
+    public List<ActionFigureEntity> buscarNovidades() {
+        return repository.findTop6ByOrderByIdDesc();
+    }
+
+    @Override
+    public ActionFigureEntity adicionarDaBusca(Long figureId, Long colecaoId) {
+        ActionFigureEntity entity = repository.findById(figureId)
+                .orElseThrow(() -> new RuntimeException("Action Figure não encontrada com ID: " + figureId));
+        
+        ColecaoEntity colecao = colecaoRepository.findById(colecaoId)
+                .orElseThrow(() -> new RuntimeException("Coleção não encontrada com ID: " + colecaoId));
+        
+        entity.setColecao(colecao);
+        return repository.save(entity);
+    }
 }
 ```
 **Função**: Implementação completa dos serviços de figuras de ação.
 - `salvar()`: Valida existência da coleção antes de salvar
 - `atualizar()`: Atualiza dados da figura mantendo validações
 - `deletar()`: Verifica existência antes de deletar
+- `excluirDoCatalogo()`: Exclusão definitiva (pode ter lógica diferente futuramente)
 - `buscarPorId()`: Retorna exceção se não encontrado
+- `buscarPorNome()`: Busca por nome (case insensitive)
 - `buscarPorColecao()`: Usa método customizado do repository
 - `buscarPorFranquia()`: Usa método customizado do repository
+- `buscarNovidades()`: Retorna as 6 figuras mais recentes
+- `adicionarDaBusca()`: Adiciona figura existente a uma coleção
 
 ---
 
@@ -494,14 +556,16 @@ public interface RotaActionFigures {
     String ROOT = "/action-figures";
     String LISTAR = "/listar";
     String BUSCAR_POR_ID = "/{id}";
+    String BUSCAR_POR_NOME = "/buscar";
     String BUSCAR_POR_COLECAO = "/colecao/{colecaoId}";
     String BUSCAR_POR_FRANQUIA = "/franquia";
     String SALVAR = "/salvar";
     String ATUALIZAR = "/{id}";
     String DELETAR = "/{id}";
+    String NOVIDADES = "/novidades";
 }
 ```
-**Função**: Interface constante com definições de rotas para figuras de ação.
+**Função**: Interface constante com definições de rotas para figuras de ação, incluindo rota para novidades.
 
 ### ColecaoController.java
 ```java
@@ -572,6 +636,33 @@ public class ActionFigureController {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
+    @GetMapping(RotaActionFigures.BUSCAR_POR_NOME)
+    public ResponseEntity<List<ActionFigureEntity>> buscarPorNome(@RequestParam String termo) {
+        return ResponseEntity.ok(service.buscarPorNome(termo));
+    }
+
+    @PostMapping("/adicionar-existente")
+    public ResponseEntity<ActionFigureEntity> adicionarExistente(
+            @RequestParam Long figureId, 
+            @RequestParam Long colecaoId) {
+        
+        return ResponseEntity.ok(service.adicionarDaBusca(figureId, colecaoId));
+    }
+
+    // Mantém o DELETE normal para o usuário remover da estante
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> removerDaColecao(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // NOVO: DELETE para apagar do banco (Admin)
+    @DeleteMapping("/{id}/definitivo")
+    public ResponseEntity<Void> excluirDoBanco(@PathVariable Long id) {
+        service.excluirDoCatalogo(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping(RotaActionFigures.BUSCAR_POR_COLECAO)
     public ResponseEntity<List<ActionFigureEntity>> buscarPorColecao(@PathVariable Long colecaoId) {
         return ResponseEntity.ok(service.buscarPorColecao(colecaoId));
@@ -591,22 +682,25 @@ public class ActionFigureController {
     public ResponseEntity<ActionFigureEntity> atualizar(@PathVariable Long id, @RequestBody ActionFigureRecord dto) {
         return ResponseEntity.ok(service.atualizar(id, dto));
     }
-
-    @DeleteMapping(RotaActionFigures.DELETAR)
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        service.deletar(id);
-        return ResponseEntity.noContent().build();
+    
+    @GetMapping(RotaActionFigures.NOVIDADES)
+    public ResponseEntity<List<ActionFigureEntity>> buscarNovidades() {
+        return ResponseEntity.ok(service.buscarNovidades());
     }
 }
 ```
-**Função**: Controller REST completo para operações CRUD de figuras de ação.
+**Função**: Controller REST completo para operações CRUD de figuras de ação com funcionalidades adicionais.
 - `@GetMapping(RotaActionFigures.LISTAR)`: GET `/action-figures/listar` - Lista todas
 - `@GetMapping(RotaActionFigures.BUSCAR_POR_ID)`: GET `/action-figures/{id}` - Busca por ID
+- `@GetMapping(RotaActionFigures.BUSCAR_POR_NOME)`: GET `/action-figures/buscar?termo={nome}` - Busca por nome
+- `@PostMapping("/adicionar-existente")`: POST `/action-figures/adicionar-existente` - Adiciona figura existente à coleção
+- `@DeleteMapping("/{id}")`: DELETE `/action-figures/{id}` - Remove da coleção
+- `@DeleteMapping("/{id}/definitivo")`: DELETE `/action-figures/{id}/definitivo` - Exclusão definitiva (Admin)
 - `@GetMapping(RotaActionFigures.BUSCAR_POR_COLECAO)`: GET `/action-figures/colecao/{colecaoId}` - Busca por coleção
 - `@GetMapping(RotaActionFigures.BUSCAR_POR_FRANQUIA)`: GET `/action-figures/franquia?franquia={nome}` - Busca por franquia
 - `@PostMapping(RotaActionFigures.SALVAR)`: POST `/action-figures/salvar` - Cria nova
 - `@PutMapping(RotaActionFigures.ATUALIZAR)`: PUT `/action-figures/{id}` - Atualiza existente
-- `@DeleteMapping(RotaActionFigures.DELETAR)`: DELETE `/action-figures/{id}` - Deleta
+- `@GetMapping(RotaActionFigures.NOVIDADES)`: GET `/action-figures/novidades` - Lista as 6 mais recentes
 
 ### UsuarioController.java
 ```java

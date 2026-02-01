@@ -139,6 +139,10 @@ curl -X GET http://localhost:8080/action-figures/listar
   "nome": "Homem de Ferro",
   "franquia": "Marvel",
   "fotoUrl": "https://exemplo.com/ironman.jpg",
+  "descricao": "Figura do Homem de Ferro",
+  "anoLancamento": "2023",
+  "ativo": true,
+  "categoria": "Heróis",
   "colecao": {
     "id": 1,
     "titulo": "Heróis Marvel",
@@ -167,7 +171,45 @@ curl -X GET http://localhost:8080/action-figures/1
 
 ---
 
-### 3. Buscar Action Figures por Coleção
+### 3. Buscar Action Figures por Nome
+**Endpoint**: `GET /action-figures/buscar?termo={nome}`
+
+**Descrição**: Retorna figuras de ação que contenham o termo de busca no nome (case insensitive).
+
+**Parâmetros**:
+- **Query Parameter**: `termo` (String) - Termo para busca no nome da figura
+
+**Resposta de Sucesso (200 OK)**:
+```json
+[
+  {
+    "id": 1,
+    "nome": "Homem de Ferro",
+    "franquia": "Marvel",
+    "fotoUrl": "https://exemplo.com/ironman.jpg",
+    "descricao": "Figura do Homem de Ferro",
+    "anoLancamento": "2023",
+    "ativo": true,
+    "categoria": "Heróis",
+    "colecao": {
+      "id": 1,
+      "titulo": "Heróis Marvel",
+      "descricao": "Coleção de figuras dos Vingadores",
+      "quantidade": 15,
+      "figures": null
+    }
+  }
+]
+```
+
+**Exemplo de Requisição**:
+```bash
+curl -X GET "http://localhost:8080/action-figures/buscar?termo=Ferro"
+```
+
+---
+
+### 4. Buscar Action Figures por Coleção
 **Endpoint**: `GET /action-figures/colecao/{colecaoId}`
 
 **Descrição**: Retorna todas as figuras de ação pertencentes a uma coleção específica.
@@ -183,6 +225,10 @@ curl -X GET http://localhost:8080/action-figures/1
     "nome": "Homem de Ferro",
     "franquia": "Marvel",
     "fotoUrl": "https://exemplo.com/ironman.jpg",
+    "descricao": "Figura do Homem de Ferro",
+    "anoLancamento": "2023",
+    "ativo": true,
+    "categoria": "Heróis",
     "colecao": {
       "id": 1,
       "titulo": "Heróis Marvel",
@@ -196,6 +242,10 @@ curl -X GET http://localhost:8080/action-figures/1
     "nome": "Capitão América",
     "franquia": "Marvel",
     "fotoUrl": "https://exemplo.com/captain.jpg",
+    "descricao": "Figura do Capitão América",
+    "anoLancamento": "2023",
+    "ativo": true,
+    "categoria": "Heróis",
     "colecao": {
       "id": 1,
       "titulo": "Heróis Marvel",
@@ -214,7 +264,7 @@ curl -X GET http://localhost:8080/action-figures/colecao/1
 
 ---
 
-### 4. Buscar Action Figures por Franquia
+### 5. Buscar Action Figures por Franquia
 **Endpoint**: `GET /action-figures/franquia?franquia={nome}`
 
 **Descrição**: Retorna todas as figuras de ação de uma franquia específica.
@@ -230,6 +280,10 @@ curl -X GET http://localhost:8080/action-figures/colecao/1
     "nome": "Homem de Ferro",
     "franquia": "Marvel",
     "fotoUrl": "https://exemplo.com/ironman.jpg",
+    "descricao": "Figura do Homem de Ferro",
+    "anoLancamento": "2023",
+    "ativo": true,
+    "categoria": "Heróis",
     "colecao": {
       "id": 1,
       "titulo": "Heróis Marvel",
@@ -243,6 +297,10 @@ curl -X GET http://localhost:8080/action-figures/colecao/1
     "nome": "Thor",
     "franquia": "Marvel",
     "fotoUrl": "https://exemplo.com/thor.jpg",
+    "descricao": "Figura do Thor",
+    "anoLancamento": "2023",
+    "ativo": true,
+    "categoria": "Heróis",
     "colecao": {
       "id": 1,
       "titulo": "Heróis Marvel",
@@ -261,7 +319,7 @@ curl -X GET "http://localhost:8080/action-figures/franquia?franquia=Marvel"
 
 ---
 
-### 5. Salvar Nova Action Figure
+### 6. Salvar Nova Action Figure
 **Endpoint**: `POST /action-figures/salvar`
 
 **Descrição**: Cria uma nova figura de ação no sistema.
@@ -273,6 +331,10 @@ curl -X GET "http://localhost:8080/action-figures/franquia?franquia=Marvel"
   "nome": "Batman",
   "franquia": "DC",
   "fotoUrl": "https://exemplo.com/batman.jpg",
+  "descricao": "Figura do Batman",
+  "anoLancamento": "2023",
+  "ativo": true,
+  "categoria": "Heróis",
   "colecaoId": 2
 }
 ```
@@ -284,6 +346,10 @@ curl -X GET "http://localhost:8080/action-figures/franquia?franquia=Marvel"
   "nome": "Batman",
   "franquia": "DC",
   "fotoUrl": "https://exemplo.com/batman.jpg",
+  "descricao": "Figura do Batman",
+  "anoLancamento": "2023",
+  "ativo": true,
+  "categoria": "Heróis",
   "colecao": {
     "id": 2,
     "titulo": "Heróis DC",
@@ -313,13 +379,17 @@ curl -X POST http://localhost:8080/action-figures/salvar \
     "nome": "Batman",
     "franquia": "DC",
     "fotoUrl": "https://exemplo.com/batman.jpg",
+    "descricao": "Figura do Batman",
+    "anoLancamento": "2023",
+    "ativo": true,
+    "categoria": "Heróis",
     "colecaoId": 2
   }'
 ```
 
 ---
 
-### 6. Atualizar Action Figure
+### 7. Atualizar Action Figure
 **Endpoint**: `PUT /action-figures/{id}`
 
 **Descrição**: Atualiza os dados de uma figura de ação existente.
@@ -332,6 +402,10 @@ curl -X POST http://localhost:8080/action-figures/salvar \
   "nome": "Homem de Ferro (Atualizado)",
   "franquia": "Marvel Studios",
   "fotoUrl": "https://exemplo.com/ironman-new.jpg",
+  "descricao": "Figura atualizada do Homem de Ferro",
+  "anoLancamento": "2024",
+  "ativo": true,
+  "categoria": "Heróis",
   "colecaoId": 1
 }
 ```
@@ -343,6 +417,10 @@ curl -X POST http://localhost:8080/action-figures/salvar \
   "nome": "Homem de Ferro (Atualizado)",
   "franquia": "Marvel Studios",
   "fotoUrl": "https://exemplo.com/ironman-new.jpg",
+  "descricao": "Figura atualizada do Homem de Ferro",
+  "anoLancamento": "2024",
+  "ativo": true,
+  "categoria": "Heróis",
   "colecao": {
     "id": 1,
     "titulo": "Heróis Marvel",
@@ -361,19 +439,23 @@ curl -X PUT http://localhost:8080/action-figures/1 \
     "nome": "Homem de Ferro (Atualizado)",
     "franquia": "Marvel Studios",
     "fotoUrl": "https://exemplo.com/ironman-new.jpg",
+    "descricao": "Figura atualizada do Homem de Ferro",
+    "anoLancamento": "2024",
+    "ativo": true,
+    "categoria": "Heróis",
     "colecaoId": 1
   }'
 ```
 
 ---
 
-### 7. Deletar Action Figure
+### 8. Remover Action Figure da Coleção
 **Endpoint**: `DELETE /action-figures/{id}`
 
-**Descrição**: Remove uma figura de ação do sistema.
+**Descrição**: Remove uma figura de ação da coleção do usuário (delete normal).
 
 **Parâmetros**:
-- **Path Parameter**: `id` (Long) - ID da figura de ação a ser deletada
+- **Path Parameter**: `id` (Long) - ID da figura de ação a ser removida
 
 **Resposta de Sucesso (204 No Content)**:
 ```http
@@ -398,6 +480,150 @@ curl -X DELETE http://localhost:8080/action-figures/1
 
 ---
 
+### 9. Excluir Action Figure do Banco (Admin)
+**Endpoint**: `DELETE /action-figures/{id}/definitivo`
+
+**Descrição**: Exclui definitivamente uma figura de ação do banco de dados (função administrativa).
+
+**Parâmetros**:
+- **Path Parameter**: `id` (Long) - ID da figura de ação a ser excluída
+
+**Resposta de Sucesso (204 No Content)**:
+```http
+HTTP/1.1 204 No Content
+```
+
+**Exemplo de Requisição**:
+```bash
+curl -X DELETE http://localhost:8080/action-figures/1/definitivo
+```
+
+---
+
+### 10. Adicionar Figura Existente à Coleção
+**Endpoint**: `POST /action-figures/adicionar-existente`
+
+**Descrição**: Adiciona uma figura existente a uma coleção específica.
+
+**Parâmetros**:
+- **Query Parameter**: `figureId` (Long) - ID da figura existente
+- **Query Parameter**: `colecaoId` (Long) - ID da coleção de destino
+
+**Resposta de Sucesso (200 OK)**:
+```json
+{
+  "id": 1,
+  "nome": "Homem de Ferro",
+  "franquia": "Marvel",
+  "fotoUrl": "https://exemplo.com/ironman.jpg",
+  "descricao": "Figura do Homem de Ferro",
+  "anoLancamento": "2023",
+  "ativo": true,
+  "categoria": "Heróis",
+  "colecao": {
+    "id": 2,
+    "titulo": "Heróis DC",
+    "descricao": "Coleção de figuras da DC Comics",
+    "quantidade": 10,
+    "figures": null
+  }
+}
+```
+
+**Exemplo de Requisição**:
+```bash
+curl -X POST "http://localhost:8080/action-figures/adicionar-existente?figureId=1&colecaoId=2"
+```
+
+---
+
+### 11. Listar Novidades
+**Endpoint**: `GET /action-figures/novidades`
+
+**Descrição**: Retorna as 6 figuras de ação mais recentes cadastradas no sistema.
+
+**Parâmetros**: Nenhum
+
+**Resposta de Sucesso (200 OK)**:
+```json
+[
+  {
+    "id": 10,
+    "nome": "Spider-Man",
+    "franquia": "Marvel",
+    "fotoUrl": "https://exemplo.com/spiderman.jpg",
+    "descricao": "Figura do Spider-Man",
+    "anoLancamento": "2024",
+    "ativo": true,
+    "categoria": "Heróis",
+    "colecao": {
+      "id": 1,
+      "titulo": "Heróis Marvel",
+      "descricao": "Coleção de figuras dos Vingadores",
+      "quantidade": 15,
+      "figures": null
+    }
+  }
+]
+```
+
+**Exemplo de Requisição**:
+```bash
+curl -X GET http://localhost:8080/action-figures/novidades
+```
+
+---
+
+## 👤 Endpoints de Usuários
+
+### 1. Registrar Novo Usuário
+**Endpoint**: `POST /usuarios/registrar`
+
+**Descrição**: Registra um novo usuário no sistema.
+
+**Parâmetros**:
+- **Corpo da Requisição (JSON)**:
+```json
+{
+  "nomeUsuario": "joao123",
+  "email": "joao@example.com",
+  "senha": "senha123"
+}
+```
+
+**Resposta de Sucesso (200 OK)**:
+```json
+{
+  "id": 1,
+  "nomeUsuario": "joao123",
+  "email": "joao@example.com",
+  "senha": "senha123"
+}
+```
+
+**Resposta de Erro (400 Bad Request)**:
+```json
+{
+  "timestamp": "2026-01-31T15:30:00.000+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "E-mail já cadastrado"
+}
+```
+
+**Exemplo de Requisição**:
+```bash
+curl -X POST http://localhost:8080/usuarios/registrar \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nomeUsuario": "joao123",
+    "email": "joao@example.com",
+    "senha": "senha123"
+  }'
+```
+
+---
+
 ## 📊 Resumo dos Endpoints
 
 | Método | Endpoint | Descrição | Parâmetros |
@@ -406,11 +632,16 @@ curl -X DELETE http://localhost:8080/action-figures/1
 | POST | `/colecoes/salvar` | Criar nova coleção | ColecaoRecord no corpo |
 | GET | `/action-figures/listar` | Listar todas as figuras | Nenhum |
 | GET | `/action-figures/{id}` | Buscar figura por ID | id (path) |
+| GET | `/action-figures/buscar` | Buscar figuras por nome | termo (query) |
 | GET | `/action-figures/colecao/{colecaoId}` | Buscar figuras por coleção | colecaoId (path) |
 | GET | `/action-figures/franquia` | Buscar figuras por franquia | franquia (query) |
+| GET | `/action-figures/novidades` | Listar 6 figuras mais recentes | Nenhum |
 | POST | `/action-figures/salvar` | Criar nova figura | ActionFigureRecord no corpo |
+| POST | `/action-figures/adicionar-existente` | Adicionar figura existente à coleção | figureId, colecaoId (query) |
 | PUT | `/action-figures/{id}` | Atualizar figura existente | id (path) + ActionFigureRecord |
-| DELETE | `/action-figures/{id}` | Deletar figura | id (path) |
+| DELETE | `/action-figures/{id}` | Remover figura da coleção | id (path) |
+| DELETE | `/action-figures/{id}/definitivo` | Excluir figura do banco (Admin) | id (path) |
+| POST | `/usuarios/registrar` | Registrar novo usuário | UsuarioRecord no corpo |
 
 ---
 
@@ -435,7 +666,8 @@ curl -X POST http://localhost:8080/colecoes/salvar \
   -d '{
     "titulo": "Animes Clássicos",
     "descricao": "Figuras de animes dos anos 90",
-    "quantidade": 5
+    "quantidade": 5,
+    "usuarioId": 1
   }'
 ```
 
@@ -447,6 +679,10 @@ curl -X POST http://localhost:8080/action-figures/salvar \
     "nome": "Goku",
     "franquia": "Dragon Ball",
     "fotoUrl": "https://exemplo.com/goku.jpg",
+    "descricao": "Figura do Goku Super Saiyajin",
+    "anoLancamento": "2023",
+    "ativo": true,
+    "categoria": "Animes",
     "colecaoId": 3
   }'
 ```
@@ -464,6 +700,30 @@ curl -X GET "http://localhost:8080/action-figures/franquia?franquia=Marvel"
 
 # Buscar todas as figuras DC
 curl -X GET "http://localhost:8080/action-figures/franquia?franquia=DC"
+```
+
+### Fluxo 3: Buscar por Nome
+
+```bash
+# Buscar figuras com "Ferro" no nome
+curl -X GET "http://localhost:8080/action-figures/buscar?termo=Ferro"
+
+# Buscar figuras com "homem" no nome (case insensitive)
+curl -X GET "http://localhost:8080/action-figures/buscar?termo=homem"
+```
+
+### Fluxo 4: Adicionar Figura Existente a Outra Coleção
+
+```bash
+# Adicionar figura existente (ID=1) à coleção (ID=2)
+curl -X POST "http://localhost:8080/action-figures/adicionar-existente?figureId=1&colecaoId=2"
+```
+
+### Fluxo 5: Ver Novidades
+
+```bash
+# Listar as 6 figuras mais recentes
+curl -X GET http://localhost:8080/action-figures/novidades
 ```
 
 ---
