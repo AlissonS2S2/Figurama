@@ -26,4 +26,10 @@ public class ColecaoController {
     public ResponseEntity<ColecaoEntity> salvar(@RequestBody ColecaoRecord dto) {
         return ResponseEntity.ok(service.salvar(dto));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

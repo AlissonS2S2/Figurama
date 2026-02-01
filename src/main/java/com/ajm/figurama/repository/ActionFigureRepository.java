@@ -8,6 +8,8 @@ import java.util.List;
 @Repository
 public interface ActionFigureRepository extends JpaRepository<ActionFigureEntity, Long> {
     
+    List<ActionFigureEntity> findByNomeContainingIgnoreCase(String nome);
+
     List<ActionFigureEntity> findByColecaoId(Long colecaoId);
     
     List<ActionFigureEntity> findByFranquia(String franquia);

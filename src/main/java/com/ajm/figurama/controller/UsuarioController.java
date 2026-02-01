@@ -10,6 +10,9 @@ import com.ajm.figurama.model.UsuarioRecord;
 import com.ajm.figurama.repository.UsuarioEntity;
 import com.ajm.figurama.repository.UsuarioRepository;
 
+import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -23,13 +26,19 @@ public class UsuarioController {
         if(repository.existsByEmail(dto.email())) {
             return ResponseEntity.badRequest().body("E-mail já cadastrado");
         }
-        
+
         UsuarioEntity novo = UsuarioEntity.builder()
                 .nomeUsuario(dto.nomeUsuario())
                 .email(dto.email())
                 .senha(dto.senha()) // Em um projeto real, usaríamos criptografia aqui
                 .build();
         
-        return ResponseEntity.ok(repository.save(novo));
+        repository.save(novo);
+        return ResponseEntity.ok("Usuário registrado");
+    }
+
+    @GetMapping("/listar")
+    public ResponseEntity<List<UsuarioEntity>> listarTodos() {
+        return ResponseEntity.ok(repository.findAll());
     }
 }

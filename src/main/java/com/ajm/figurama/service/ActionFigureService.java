@@ -11,8 +11,12 @@ public interface ActionFigureService {
     ActionFigureEntity atualizar(Long id, ActionFigureRecord dto);
     
     void deletar(Long id);
+
+    void excluirDoCatalogo(Long id);
     
     ActionFigureEntity buscarPorId(Long id);
+
+    List<ActionFigureEntity> buscarPorNome(String nome);
     
     List<ActionFigureEntity> listarTodos();
     
@@ -21,4 +25,7 @@ public interface ActionFigureService {
     List<ActionFigureEntity> buscarPorFranquia(String franquia);
 
     List<ActionFigureEntity> buscarNovidades();
+
+    // Adicione a assinatura
+ActionFigureEntity adicionarDaBusca(Long figureId, Long colecaoId);
 }
