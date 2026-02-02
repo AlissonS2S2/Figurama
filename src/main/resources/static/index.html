@@ -14,16 +14,16 @@
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="openTab('colecoes')">📚 Coleções</button>
-        <button class="tab-btn" onclick="openTab('actionFigures')">🎭 Action Figures</button>
-        <button class="tab-btn" onclick="openTab('dashboard')">📊 Dashboard</button>
+        <button class="tab-btn active">📚 Coleções</button>
+        <button class="tab-btn">🎭 Action Figures</button>
+        <button class="tab-btn">📊 Dashboard</button>
     </div>
 
     <!-- Tab: Coleções -->
     <div id="colecoes" class="tab-content active">
         <div class="card">
             <h2>➕ Cadastrar Nova Coleção</h2>
-            <form id="formColecao" onsubmit="cadastrarColecao(event)">
+            <form id="formColecao">
                 <div class="form-group">
                     <label for="colecaoNome">Nome da Coleção *</label>
                     <input type="text" id="colecaoNome" required placeholder="Ex: Heróis da Marvel">
@@ -45,8 +45,8 @@
 
         <div class="card">
             <h2>📚 Minhas Coleções</h2>
-            <button onclick="listarColecoes()" class="btn btn-primary">🔄 Atualizar Lista</button>
-            <button onclick="listarColecoesPublicas()" class="btn btn-secondary">👁️ Ver Públicas</button>
+            <button class="btn btn-primary">🔄 Atualizar Lista</button>
+            <button class="btn btn-secondary">👁️ Ver Públicas</button>
             <div id="listaColecoes" class="grid"></div>
         </div>
     </div>
@@ -55,7 +55,7 @@
     <div id="actionFigures" class="tab-content">
         <div class="card">
             <h2>➕ Cadastrar Nova Action Figure</h2>
-            <form id="formActionFigure" onsubmit="cadastrarActionFigure(event)">
+            <form id="formActionFigure">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="afNome">Nome *</label>
@@ -83,10 +83,10 @@
 
         <div class="card">
             <h2>🎭 Todas as Action Figures</h2>
-            <button onclick="listarActionFigures()" class="btn btn-primary">🔄 Atualizar Lista</button>
+            <button class="btn btn-primary">🔄 Atualizar Lista</button>
             <div class="form-group" style="margin-top: 20px;">
                 <label for="filtroCategoria">Filtrar por Franquia:</label>
-                <input type="text" id="filtroCategoria" placeholder="Digite a franquia e pressione Enter" onkeypress="if(event.key==='Enter') filtrarPorCategoria()">
+                <input type="text" id="filtroCategoria" placeholder="Digite a franquia e pressione Enter">
             </div>
             <div id="listaActionFigures" class="grid"></div>
         </div>
@@ -96,7 +96,7 @@
     <div id="dashboard" class="tab-content">
         <div class="card">
             <h2>📊 Estatísticas do Sistema</h2>
-            <button onclick="carregarDashboard()" class="btn btn-primary">🔄 Atualizar Dashboard</button>
+            <button class="btn btn-primary">🔄 Atualizar Dashboard</button>
             <div class="stats" style="margin-top: 20px;">
                 <div class="stat-card">
                     <h3 id="totalColecoes">0</h3>

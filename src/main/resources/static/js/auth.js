@@ -2,10 +2,6 @@
 // AUTH.JS - SISTEMA DE AUTENTICAÇÃO INTEGRADO
 // ============================================
 
-const CONFIG = {
-    API_BASE_URL: "http://localhost:8080/api"
-};
-
 // ============================================
 // REGISTRO DE NOVO USUÁRIO
 // ============================================

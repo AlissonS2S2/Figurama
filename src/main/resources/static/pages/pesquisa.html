@@ -143,7 +143,7 @@
             <span>👤 <span class="nome-usuario">Usuário</span></span>
             <a href="dashboard.html">Dashboard</a>
             <input type="text" id="search-input" placeholder="Pesquisar">
-            <button class="btn-add" onclick="window.location.href='criando_colecao.html'">Adicionar +</button>
+            <button class="btn-add">Adicionar +</button>
         </nav>
     </header>
     
@@ -177,7 +177,7 @@
         <div id="no-results" class="no-results" style="display: none;">
             <h2>Nenhum resultado encontrado</h2>
             <p>Tente usar outros termos de busca ou navegue pelas categorias</p>
-            <button class="btn-primary" onclick="window.location.href='dashboard.html'" style="padding: 12px 30px;">
+            <button class="btn-primary" style="padding: 12px 30px;">
                 Voltar ao Dashboard
             </button>
         </div>
@@ -185,132 +185,8 @@
     </div>
     
     <!-- Scripts -->
-
      <script src="../../static/js/consolidated/config.js"></script>
      <script src="../../static/js/consolidated/api.js"></script>
-    <script>
-        let allResults = [];
-        let currentFilter = 'all';
-        
-        // Carregar resultados ao iniciar
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadSearchResults();
-            setupFilters();
-            setupSearch();
-        });
-        
-        // Carregar resultados da pesquisa
-        async function loadSearchResults() {
-            const params = new URLSearchParams(window.location.search);
-            const query = params.get('q');
-            
-            if (!query) {
-                window.location.href = 'dashboard.html';
-                return;
-            }
-            
-            const searchInfo = document.getElementById('search-info');
-            searchInfo.textContent = `Buscando por: "${query}"`;
-            
-            const loading = document.getElementById('loading');
-            const grid = document.getElementById('results-grid');
-            const noResults = document.getElementById('no-results');
-            
-            loading.style.display = 'block';
-            grid.innerHTML = '';
-            noResults.style.display = 'none';
-            
-            try {
-                allResults = await CatalogoAPI.pesquisar(query);
-                
-                loading.style.display = 'none';
-                
-                if (allResults.length === 0) {
-                    noResults.style.display = 'block';
-                    searchInfo.textContent = `Nenhum resultado para: "${query}"`;
-                } else {
-                    searchInfo.textContent = `${allResults.length} resultado${allResults.length > 1 ? 's' : ''} para: "${query}"`;
-                    renderResults(allResults);
-                }
-                
-            } catch (error) {
-                console.error('Erro ao buscar:', error);
-                loading.style.display = 'none';
-                noResults.style.display = 'block';
-                searchInfo.textContent = 'Erro ao realizar busca';
-            }
-        }
-        
-        // Renderizar cards de resultados
-        function renderResults(results) {
-            const grid = document.getElementById('results-grid');
-            grid.innerHTML = '';
-            
-            results.forEach(figure => {
-                const card = document.createElement('div');
-                card.className = 'result-card';
-                
-                card.innerHTML = `
-                    <img src="${figure.urlFoto || '../images/placeholder.png'}" alt="${figure.nome}">
-                    <div class="result-info">
-                        <h3>${figure.nome}</h3>
-                        <p class="result-category">${figure.categoria}</p>
-                        <p class="result-price">
-                            ${figure.precoSugerido ? 'R$ ' + figure.precoSugerido.toFixed(2) : 'Consultar'}
-                        </p>
-                    </div>
-                `;
-                
-                card.addEventListener('click', () => {
-                    window.location.href = `action_figure.html?id=${figure.id}`;
-                });
-                
-                grid.appendChild(card);
-            });
-        }
-        
-        // Configurar filtros
-        function setupFilters() {
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Remover active de todos
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    
-                    // Adicionar active no clicado
-                    btn.classList.add('active');
-                    
-                    // Aplicar filtro
-                    const filter = btn.dataset.filter;
-                    currentFilter = filter;
-                    
-                    if (filter === 'all') {
-                        renderResults(allResults);
-                    } else {
-                        const filtered = allResults.filter(f => f.categoria === filter);
-                        renderResults(filtered);
-                    }
-                });
-            });
-        }
-        
-        // Configurar nova pesquisa
-        function setupSearch() {
-            const searchInput = document.getElementById('search-input');
-            
-            if (searchInput) {
-                searchInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        const termo = e.target.value.trim();
-                        if (termo) {
-                            window.location.href = `pesquisa.html?q=${encodeURIComponent(termo)}`;
-                        }
-                    }
-                });
-            }
-        }
-    </script>
     
 </body>
 </html>

@@ -51,50 +51,12 @@
             </div>
 
             <div class="aside-buttons">
-                <button id="btn-edit" onclick="goToEditPage()">Editar Coleção</button>
+                <button id="btn-edit">Editar Coleção</button>
                 <small class="update-date">Ultima modificação: **/**/**</small>
-                <button id="btn-delete" onlclick="deleteCollection()">Excluir Coleção</button>
+                <button id="btn-delete">Excluir Coleção</button>
             </div>
         </aside>
     </main>
 
-    <script>
-    function getCollectionId() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('id');
-}
-
-
-    function goToEditPage() {
-    const id = getCollectionId();
-    window.location.href = `criando-uma-colecao.html?id=${id}`;
-}
-
-async function deleteCollection() {
-    const id = getCollectionId();
-    
-    if (confirm("Tem certeza que deseja excluir esta coleção? Esta ação não pode ser desfeita.")) {
-        console.log("Chamando banco para excluir coleção ID:", id);
-        
-        try {
-            const response = await fetch(`${API_BASE_URL}/collections/${id}`, {
-                method: 'DELETE'
-            });
-            if (response.ok) {
-                alert("Coleção excluída!");
-                window.location.href = "dashboard.html";
-            }
-        } catch (error) {
-            console.error("Erro ao excluir coleção:", error);
-        }
-    }
-}
-
-async function loadCollectionDetails() {
-    const id = getCollectionId();
-}
-
-document.addEventListener('DOMContentLoaded', loadCollectionDetails);
-    </script>
 </body>
 </html>

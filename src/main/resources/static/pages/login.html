@@ -1,0 +1,48 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components/buttons.css">
+    <link rel="stylesheet" href="../css/components/forms.css">
+    <link rel="stylesheet" href="../css/pages/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: comum}"></div>
+    
+    <main class="login-content">
+      <h1 class="title-login">Bem-Vindo de Volta</h1>
+
+      <div id="error-message" style="display: none;"></div>
+    
+      <form id="login-form" class="login-area">
+          <input type="text" id="username" name="username" placeholder="Email / Nome de usuário" required>
+        
+          <div class="password-area">
+              <input type="password" id="password" name="password" placeholder="Senha" required>
+              <button type="button" id="toggle-password" title="Mostrar/Ocultar Senha">
+                👁️
+              </button>
+          </div>
+
+          <label class="remember">
+            <input type="checkbox" id="remember"> Lembre-se de mim
+          </label>
+
+          <button type="submit" id="btn-login" class="btn-login">Entrar</button>
+
+          <a href="#" class="forgot">Esqueceu sua senha?</a>
+      </form>
+
+      <p class="register-link">
+        Não tem uma conta? <a href="register.html">Registre-se</a>
+      </p>
+    </main>
+    
+</body>
+</html>
