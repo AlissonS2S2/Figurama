@@ -3,8 +3,8 @@
 Este documento descreve todos os endpoints REST disponíveis na API do projeto Figurama, incluindo métodos, parâmetros, respostas e exemplos de uso.
 
 **📅 ÚLTIMA ATUALIZAÇÃO: 02/02/2026**
-**🔄 VERSÃO: 2.0.0 - Projeto Funcional Corrigido**
-**✅ STATUS: Banco configurado, frontend estático, CORS habilitado**
+**🔄 VERSÃO: 2.1.0 - Integração Frontend/Backend sem Thymeleaf**
+**✅ STATUS: CSS/JS linkados com HTML, backend funcional, sem Thymeleaf**
 
 ---
 
@@ -412,7 +412,7 @@ mvn spring-boot:run
 
 ---
 
-## ✅ Correções Aplicadas (02/02/2026)
+## ✅ Correções Aplicadas (02/02/2026 - v2.1.0)
 
 ### 🔧 **Problemas Resolvidos:**
 1. **✅ Banco de Dados**: Adicionado MySQL dialect no `application.properties`
@@ -420,13 +420,19 @@ mvn spring-boot:run
 3. **✅ Docker**: Substituído PostgreSQL por MySQL 8.0
 4. **✅ CORS**: Configurado para desenvolvimento
 5. **✅ Compilação**: Projeto compila sem erros (23 arquivos Java)
+6. **✅ Integração Frontend/Backend**: CSS/JS linkados sem Thymeleaf
+7. **✅ WebConfig**: Criado para servir arquivos estáticos
+8. **✅ Scripts específicos**: Implementados para login e registro
+9. **✅ Endpoint login**: Adicionado ao UsuarioController
+10. **✅ findByEmail()**: Adicionado ao UsuarioRepository
 
 ### 📊 **Status Atual:**
 - **Backend**: ✅ Funcional
 - **Banco**: ✅ Configurado
-- **Frontend**: ✅ Estático servido
+- **Frontend**: ✅ Estático servido e integrado
 - **API**: ✅ Endpoints disponíveis
 - **CORS**: ✅ Configurado
+- **Integração**: ✅ CSS/JS/HTML conectados ao backend
 
 ---
     "descricao": "Coleção de figuras dos Vingadores",

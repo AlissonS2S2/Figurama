@@ -3,8 +3,8 @@
 Este documento contém todos os códigos Java do projeto Figurama com explicações detalhadas do que cada arquivo faz.
 
 **📅 ÚLTIMA ATUALIZAÇÃO: 02/02/2026**
-**🔄 VERSÃO: 2.0.0 - Projeto Funcional Corrigido**
-**✅ STATUS: Banco configurado, frontend estático, CORS habilitado**
+**🔄 VERSÃO: 2.1.0 - Integração Frontend/Backend sem Thymeleaf**
+**✅ STATUS: CSS/JS linkados com HTML, backend funcional, sem Thymeleaf**
 
 ---
 
@@ -705,6 +705,18 @@ volumes:
 
 ## 🔄 Mudanças Recentes
 
+### ✅ Concluído em 02/02/2026 (v2.1.0):
+- **WebController atualizado** para servir arquivos estáticos com `forward:`
+- **Banco MySQL configurado** com dialect correto
+- **CORS configurado** para desenvolvimento
+- **Projeto funcional** pronto para execução
+- **Frontend estático** sendo servido corretamente
+- **Integração CSS/JS/HTML** implementada sem Thymeleaf
+- **WebConfig criado** para servir arquivos estáticos
+- **Scripts específicos** para login e registro criados
+- **Endpoint login** adicionado ao UsuarioController
+- **findByEmail()** adicionado ao UsuarioRepository
+
 ### ✅ Concluído em 02/02/2026:
 - **WebController atualizado** para servir arquivos estáticos com `forward:`
 - **Banco MySQL configurado** com dialect correto no `application.properties`
@@ -779,8 +791,8 @@ mvn spring-boot:run
 ---
 
 *Documentação atualizada em: 02/02/2026*
-*Versão: 2.0.0*
-*Status: Projeto Funcional*
+*Versão: 2.1.0*
+*Status: Integração Frontend/Backend Completa*
         SpringApplication.run(FiguramaApplication.class, args);
     }
 }

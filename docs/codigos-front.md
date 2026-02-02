@@ -5,8 +5,8 @@
 Este documento contém todos os códigos front-end do projeto Figurama, organizados por tecnologia e funcionalidade.
 
 **📅 ÚLTIMA ATUALIZAÇÃO: 02/02/2026**
-**🔄 VERSÃO: 2.0.0 - Projeto Funcional Corrigido**
-**✅ STATUS: Frontend estático servido, backend funcional, CORS configurado**
+**🔄 VERSÃO: 2.1.0 - Integração Frontend/Backend sem Thymeleaf**
+**✅ STATUS: CSS/JS linkados com HTML, backend funcional, sem Thymeleaf**
 
 ## 📁 ESTRUTURA FINAL DE ARQUIVOS
 
@@ -63,6 +63,10 @@ static/
 - **CORS configurado** para desenvolvimento
 - **Projeto funcional** pronto para execução
 - **Frontend estático** sendo servido corretamente
+- **Integração CSS/JS/HTML** implementada sem Thymeleaf
+- **WebConfig criado** para servir arquivos estáticos
+- **Scripts específicos** para login e registro criados
+- **Endpoint login** adicionado ao UsuarioController
 
 ### ✅ Concluído em 01/02/2026:
 - **Removido 473 linhas** de JavaScript inline dos HTMLs
@@ -71,6 +75,15 @@ static/
 - **Removidos atributos** `onclick`, `onsubmit`, `onkeypress`
 - **Padronizada estrutura** front-end puro (HTML/CSS/JS)
 - **Mantida pasta `templates/` vazia** (sem uso)
+
+### ✅ Concluído em 02/02/2026 (Integração):
+- **Criado WebConfig.java** para configuração de recursos estáticos
+- **Adicionado endpoint /api/usuarios/login** no backend
+- **Criado método findByEmail()** no UsuarioRepository
+- **Implementado register.js** para página de registro
+- **Implementado login.js** para página de login
+- **Atualizado HTMLs** para incluir scripts específicos
+- **Configurada integração** frontend/backend via AJAX
 
 ### 📊 Estatísticas da Limpeza:
 - **Arquivos HTML limpos**: 14
