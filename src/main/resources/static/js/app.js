@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api';
+const API_URL = 'http://localhost:8080';
 
 // Funções de Tabs
 function openTab(tabName, event) {
@@ -30,14 +30,14 @@ async function cadastrarColecao(event) {
     event.preventDefault();
 
     const colecao = {
-        nome: document.getElementById('colecaoNome').value,
+        titulo: document.getElementById('colecaoNome').value,
         descricao: document.getElementById('colecaoDescricao').value,
-        visibilidade: document.getElementById('colecaoVisibilidade').value,
-        colecionadorId: parseInt(document.getElementById('colecionadorId').value)
+        quantidade: 0,
+        usuarioId: parseInt(document.getElementById('colecionadorId').value)
     };
 
     try {
-        const response = await fetch(`${API_URL}/colecoes`, {
+        const response = await fetch(`${API_URL}/colecoes/salvar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(colecao)
@@ -63,7 +63,7 @@ async function listarColecoes() {
     container.innerHTML = '<div class="loading">Carregando...</div>';
 
     try {
-        const response = await fetch(`${API_URL}/colecoes`);
+        const response = await fetch(`${API_URL}/colecoes/listar`);
         const colecoes = await response.json();
 
         if (!Array.isArray(colecoes) || colecoes.length === 0) {
@@ -73,13 +73,11 @@ async function listarColecoes() {
 
         container.innerHTML = colecoes.map(col => `
             <div class="item-card">
-                <h3>${col.nome}</h3>
+                <h3>${col.titulo}</h3>
                 <p><strong>ID:</strong> ${col.id}</p>
                 <p>${col.descricao || 'Sem descrição'}</p>
-                <p><strong>Colecionador ID:</strong> ${col.colecionadorId}</p>
-                <span class="badge ${col.visibilidade === 'PUBLICA' ? 'badge-public' : 'badge-private'}">
-                    ${col.visibilidade}
-                </span>
+                <p><strong>Quantidade:</strong> ${col.quantidade || 0}</p>
+                <p><strong>Usuário ID:</strong> ${col.usuario ? col.usuario.id : 'N/A'}</p>
                 <div class="actions">
                     <button class="btn btn-danger" onclick="deletarColecao(${col.id})">🗑️ Deletar</button>
                 </div>
@@ -97,17 +95,17 @@ async function listarColecoesPublicas() {
     container.innerHTML = '<div class="loading">Carregando...</div>';
 
     try {
-        const response = await fetch(`${API_URL}/colecoes/publicas`);
+        const response = await fetch(`${API_URL}/colecoes/listar`);
         const colecoes = await response.json();
 
         if (!Array.isArray(colecoes) || colecoes.length === 0) {
-            container.innerHTML = '<div class="empty-state"><p>Nenhuma coleção pública encontrada</p></div>';
+            container.innerHTML = '<div class="empty-state"><p>Nenhuma coleção encontrada</p></div>';
             return;
         }
 
         container.innerHTML = colecoes.map(col => `
             <div class="item-card">
-                <h3>${col.nome}</h3>
+                <h3>${col.titulo}</h3>
                 <p><strong>ID:</strong> ${col.id}</p>
                 <p>${col.descricao || 'Sem descrição'}</p>
                 <span class="badge badge-public">PÚBLICA</span>
@@ -145,15 +143,17 @@ async function cadastrarActionFigure(event) {
 
     const actionFigure = {
         nome: document.getElementById('afNome').value,
+        franquia: document.getElementById('afCategoria').value,
+        fotoUrl: document.getElementById('afUrlFoto').value,
         descricao: document.getElementById('afDescricao').value,
+        anoLancamento: new Date().getFullYear().toString(),
+        ativo: true,
         categoria: document.getElementById('afCategoria').value,
-        urlFoto: document.getElementById('afUrlFoto').value,
-        preco: parseFloat(document.getElementById('afPreco').value) || null,
-        fabricante: document.getElementById('afFabricante').value
+        colecaoId: null
     };
 
     try {
-        const response = await fetch(`${API_URL}/action-figures`, {
+        const response = await fetch(`${API_URL}/action-figures/salvar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(actionFigure)
@@ -179,7 +179,7 @@ async function listarActionFigures() {
     container.innerHTML = '<div class="loading">Carregando...</div>';
 
     try {
-        const response = await fetch(`${API_URL}/action-figures`);
+        const response = await fetch(`${API_URL}/action-figures/listar`);
         const figures = await response.json();
 
         if (!Array.isArray(figures) || figures.length === 0) {
@@ -192,9 +192,11 @@ async function listarActionFigures() {
                 <h3>${af.nome}</h3>
                 <p><strong>ID:</strong> ${af.id}</p>
                 <p>${af.descricao || 'Sem descrição'}</p>
-                <p><strong>Fabricante:</strong> ${af.fabricante || 'N/A'}</p>
-                <p><strong>Preço:</strong> ${af.preco ? 'R$ ' + af.preco.toFixed(2) : 'N/A'}</p>
-                <span class="badge badge-category">${af.categoria}</span>
+                <p><strong>Franquia:</strong> ${af.franquia || 'N/A'}</p>
+                <p><strong>Categoria:</strong> ${af.categoria || 'N/A'}</p>
+                <p><strong>Ano:</strong> ${af.anoLancamento || 'N/A'}</p>
+                ${af.fotoUrl ? `<img src="${af.fotoUrl}" alt="${af.nome}" style="max-width: 100%; border-radius: 8px; margin-top: 10px;">` : ''}
+                <span class="badge badge-category">${af.categoria || 'Sem categoria'}</span>
                 <div class="actions">
                     <button class="btn btn-danger" onclick="deletarActionFigure(${af.id})">🗑️ Deletar</button>
                 </div>
@@ -218,7 +220,7 @@ async function filtrarPorCategoria() {
     container.innerHTML = '<div class="loading">Carregando...</div>';
 
     try {
-        const response = await fetch(`${API_URL}/action-figures/categoria/${encodeURIComponent(categoria)}`);
+        const response = await fetch(`${API_URL}/action-figures/franquia?franquia=${encodeURIComponent(categoria)}`);
         const figures = await response.json();
 
         if (!Array.isArray(figures) || figures.length === 0) {
@@ -231,9 +233,9 @@ async function filtrarPorCategoria() {
                 <h3>${af.nome}</h3>
                 <p><strong>ID:</strong> ${af.id}</p>
                 <p>${af.descricao || 'Sem descrição'}</p>
-                <p><strong>Fabricante:</strong> ${af.fabricante || 'N/A'}</p>
-                <p><strong>Preço:</strong> ${af.preco ? 'R$ ' + af.preco.toFixed(2) : 'N/A'}</p>
-                <span class="badge badge-category">${af.categoria}</span>
+                <p><strong>Franquia:</strong> ${af.franquia || 'N/A'}</p>
+                <p><strong>Categoria:</strong> ${af.categoria || 'N/A'}</p>
+                <span class="badge badge-category">${af.categoria || 'Sem categoria'}</span>
                 <div class="actions">
                     <button class="btn btn-danger" onclick="deletarActionFigure(${af.id})">🗑️ Deletar</button>
                 </div>
@@ -268,10 +270,9 @@ async function deletarActionFigure(id) {
 // ========== DASHBOARD ==========
 async function carregarDashboard() {
     try {
-        const [colecoes, actionFigures, publicas] = await Promise.all([
-            fetch(`${API_URL}/colecoes`).then(r => r.json()),
-            fetch(`${API_URL}/action-figures`).then(r => r.json()),
-            fetch(`${API_URL}/colecoes/publicas`).then(r => r.json())
+        const [colecoes, actionFigures] = await Promise.all([
+            fetch(`${API_URL}/colecoes/listar`).then(r => r.json()),
+            fetch(`${API_URL}/action-figures/listar`).then(r => r.json())
         ]);
 
         const totalColecoesEl = document.getElementById('totalColecoes');
@@ -280,7 +281,7 @@ async function carregarDashboard() {
 
         if (totalColecoesEl) totalColecoesEl.textContent = Array.isArray(colecoes) ? colecoes.length : 0;
         if (totalActionFiguresEl) totalActionFiguresEl.textContent = Array.isArray(actionFigures) ? actionFigures.length : 0;
-        if (colecoesPublicasEl) colecoesPublicasEl.textContent = Array.isArray(publicas) ? publicas.length : 0;
+        if (colecoesPublicasEl) colecoesPublicasEl.textContent = Array.isArray(colecoes) ? colecoes.length : 0;
 
         const recentes = Array.isArray(colecoes) ? colecoes.slice(-3).reverse() : [];
         const container = document.getElementById('colecoesRecentes');
@@ -293,11 +294,9 @@ async function carregarDashboard() {
 
         container.innerHTML = recentes.map(col => `
             <div class="item-card">
-                <h3>${col.nome}</h3>
+                <h3>${col.titulo}</h3>
                 <p>${col.descricao || 'Sem descrição'}</p>
-                <span class="badge ${col.visibilidade === 'PUBLICA' ? 'badge-public' : 'badge-private'}">
-                    ${col.visibilidade}
-                </span>
+                <p><strong>Quantidade:</strong> ${col.quantidade || 0}</p>
             </div>
         `).join('');
     } catch (error) {

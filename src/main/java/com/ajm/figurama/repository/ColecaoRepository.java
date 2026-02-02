@@ -1,19 +1,8 @@
 package com.ajm.figurama.repository;
 
-import com.ajm.figurama.model.Colecao;
-import org.springframework.data.jpa.repository.*;
-import org.springframework.stereotype.Repository;
-import java.util.List;
+import com.ajm.figurama.repository.ColecaoEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public interface ColecaoRepository
-        extends JpaRepository<Colecao, Long> {
-
-    List<Colecao> findByColecionadorId(
-            Long colecionadorId
-    );
-
-    List<Colecao> findByVisibilidade(
-            String visibilidade
-    );
+public interface ColecaoRepository extends JpaRepository<ColecaoEntity, Long>{
+    
 }
