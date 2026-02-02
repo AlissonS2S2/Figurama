@@ -14,45 +14,24 @@
 <body>
     <header></header>
 
-    <main class="creating-container">
-        <div class="content-wrapper">
-            <h1 class="create-title">Criando uma coleção</h1>
+    <main>
+    <h1>Criar Nova Coleção</h1>
+    <input type="text" id="nome-colecao" placeholder="Título da Coleção">
+    <textarea id="descricao-colecao" placeholder="Descrição"></textarea>
 
-            <form id="collection-form">
-                <div class="form-group">
-                    <label>Título</label>
-                    <input type="text" id="collection-title" name="title" required class="input-short" placeholder="Ex: Meus Vilões Favoritos">
-                </div>
+    <div class="search-area">
+        <h3>Adicione Action Figures</h3>
+        <input type="text" id="input-pesquisa-figure" placeholder="Pesquisar figura no catálogo...">
+        <div id="resultados-pesquisa"></div> <!-- Aqui aparecem os resultados da busca -->
+    </div>
 
-                <div class="form-group">
-                    <label>Descrição</label>
-                    <textarea name="description" id="collection-description" cols="60" rows="5" required placeholder="Descreva sua coleção..."></textarea>
-                </div>
+    <div class="selected-area">
+        <h3>Figuras na Coleção</h3>
+        <div id="lista-selecionadas"></div> <!-- Aqui aparecem as selecionadas -->
+    </div>
 
-                <div class="figures-section">
-                    <label class="add-label">Adicionar Action Figures</label>
-                    
-                    <div class="search-and-buttons">
-                        <div class="search-wrapper" style="flex-grow: 1; margin-right: 20px;">
-                            <input type="text" class="search-figures" id="search-figures" placeholder="Pesquise por nome (Ex: Batman, Naruto...)">
-                        </div>
-
-                        <div class="form-buttons">
-                            <button type="submit" class="btn-save">Salvar Coleção</button>
-                            <button type="button" class="btn-cancel">Cancelar</button>
-                        </div>
-                    </div>
-
-                    <hr class="section-divider">
-                    
-                    <h4 style="color: #bbb; margin-bottom: 15px;">Selecione as figuras:</h4>
-                    <div class="figure-grid" id="figures-grid">
-                        <p style="color: #666;">Carregando catálogo...</p>
-                    </div>
-                </div>
-            </form>   
-        </div>
-    </main>
+    <button id="btn-salvar-colecao" disabled>Finalizar e Criar Coleção</button>
+</main>
 
     <footer></footer>
     

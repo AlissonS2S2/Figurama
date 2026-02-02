@@ -1,30 +1,32 @@
-document.getElementById('login-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const dados = {
-        // Altere os IDs conforme seu HTML (username ou email)
-        nomeUsuario: document.getElementById('username').value,
-        senha: document.getElementById('password').value
-    };
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('login-form');
 
-    try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/usuarios/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
-        });
+    loginForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        if (response.ok) {
-            const usuarioLogado = await response.json();
-            // Salva os dados no navegador
-            localStorage.setItem('user', JSON.stringify(usuarioLogado));
-            localStorage.setItem('token', 'fake-token-por-enquanto'); // Se não usar JWT
-            
-            window.location.href = 'dashboard.html';
-        } else {
-            alert("Usuário ou senha inválidos.");
+        // Usando os IDs que você confirmou
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+
+        try {
+            const response = await fetch(`${CONFIG.API_BASE_URL}/usuarios/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.sucesso) {
+                localStorage.setItem('token', result.data.token);
+                localStorage.setItem('user', JSON.stringify(result.data.usuario));
+                window.location.href = '/pages/dashboard.html';
+            } else {
+                alert(result.mensagem || "Usuário ou senha incorretos.");
+            }
+        } catch (error) {
+            console.error("Erro no login:", error);
+            alert("Erro ao conectar com o servidor.");
         }
-    } catch (error) {
-        alert("Erro ao conectar com o servidor.");
-    }
+    });
 });

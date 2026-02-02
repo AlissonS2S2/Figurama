@@ -1,41 +1,43 @@
-// js/script.js
-
-// Função para criar o HTML do card seguindo o padrão do seu Java
-function createFigureCard(figure) {
-    const card = document.createElement('div');
-    card.className = 'card';
-    
-    // fotoUrl e franquia são os nomes que estão no seu ActionFigureEntity.java
-    card.innerHTML = `
-        <div onclick="window.location.href='pages/action_figure.html?id=${figure.id}'" style="cursor:pointer">
-            <img src="${figure.fotoUrl || 'images/placeholder.png'}" alt="${figure.nome}">
-            <h3>${figure.nome}</h3>
-            <p>${figure.franquia || 'Franquia não informada'}</p>
-        </div>
-    `;
-    
-    return card;
-}
-
-// Busca as 6 figuras mais recentes do Back-end
-async function loadNovidades() {
-    const grid = document.getElementById('novidadesGrid');
-    if (!grid) return;
+async function carregarLandingPage() {
+    const novidadesGrid = document.getElementById('novidadesGrid');
+    const popularGrid = document.getElementById('popularGrid');
 
     try {
-        const response = await fetch(`${window.CONFIG.API_BASE_URL}/action-figures/novidades`);
-        const novidades = await response.json();
-        
-        grid.innerHTML = '';
-        novidades.forEach(figure => {
-            grid.appendChild(createFigureCard(figure));
-        });
+        // Busca no catálogo do seu Back-end
+        const response = await fetch(`${CONFIG.API_BASE_URL}/catalogo`);
+        const figures = await response.json();
+
+        if (novidadesGrid) {
+            novidadesGrid.innerHTML = '';
+            // Pega as últimas 6 figuras (Novidades)
+            figures.slice(0, 6).forEach(fig => {
+                novidadesGrid.appendChild(criarCardFigura(fig));
+            });
+        }
+
+        if (popularGrid) {
+            popularGrid.innerHTML = '';
+            // Simula populares pegando outra fatia (ou a mesma se houver poucos)
+            figures.slice(0, 6).forEach(fig => {
+                popularGrid.appendChild(criarCardFigura(fig));
+            });
+        }
     } catch (error) {
-        console.error('Erro ao carregar novidades:', error);
-        grid.innerHTML = '<p>Erro ao conectar com o servidor.</p>';
+        console.error("Erro ao carregar Landing Page:", error);
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadNovidades();
-});
+function criarCardFigura(fig) {
+    const card = document.createElement('div');
+    card.className = 'card'; // Classe CSS que você já tem
+    card.innerHTML = `
+        <a href="/pages/action_figure.html?id=${fig.id}">
+            <img src="${fig.urlFoto || '/img/placeholder.png'}" alt="${fig.nome}">
+            <h3>${fig.nome}</h3>
+            <p>${fig.franquia}</p>
+        </a>
+    `;
+    return card;
+}
+
+document.addEventListener('DOMContentLoaded', carregarLandingPage);

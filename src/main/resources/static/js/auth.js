@@ -5,55 +5,54 @@ class AuthManager {
     }
 
     isAuthenticated() {
-        return !!localStorage.getItem('user'); // Simples verificação se há usuário no storage
+        return !!this.token;
     }
 
-    async configurarGeral() {
-        await this.configurarHeader();
-        await this.configurarFooter();
-    }
-    
-    async configurarHeader() {
-        const headerElement = document.querySelector('header');
-        if (!headerElement) return;
+    // Carrega Header e Footer dinamicamente
+    async carregarComponentes() {
+        const header = document.querySelector('header');
+        const footer = document.querySelector('footer');
 
-        const logado = this.isAuthenticated();
-        // Define qual fragmento carregar
-        const fragmento = logado ? 'header_logged.html' : 'header.html';
-        
-        try {
-            const response = await fetch(`/fragments/${fragmento}`);
-            const html = await response.text();
-            headerElement.innerHTML = html;
+        if (header) {
+            // Regra: se não houver token, usa header.html. Se houver, usa header_logged.html
+            const fragmento = this.isAuthenticated() ? 'header_logged.html' : 'header.html';
+            const resp = await fetch(`/fragments/${fragmento}`);
+            header.innerHTML = await resp.text();
 
-            if (logado && this.user) {
+            if (this.isAuthenticated() && this.user) {
                 const nameDisplay = document.getElementById('header-user-name');
-                if (nameDisplay) nameDisplay.textContent = this.user.nomeUsuario;
+                if (nameDisplay) nameDisplay.textContent = this.user.nome || this.user.username;
             }
             this.configurarLogout();
-        } catch (e) { console.error("Erro ao carregar header", e); }
-    }
+        }
 
-    async configurarFooter() {
-        const footerElement = document.querySelector('footer');
-        if (!footerElement) return;
-        try {
-            // Carrega o footer único para todas as páginas
-            const response = await fetch('/fragments/footer.html');
-            footerElement.innerHTML = await response.text();
-        } catch (e) { console.error("Erro no footer", e); }
+        if (footer) {
+            const resp = await fetch('/fragments/footer.html');
+            footer.innerHTML = await resp.text();
+        }
     }
 
     configurarLogout() {
-        const btn = document.getElementById('logoutBtn');
-        if (btn) {
-            btn.onclick = () => {
-                localStorage.clear();
-                window.location.href = '/index.html';
-            };
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.clear();
+            window.location.href = '/index.html';
+        });
+    }
+
+    // Protege páginas que exigem login
+    verificarAcessoPrivado() {
+        const path = window.location.pathname;
+        const paginasPrivadas = ['dashboard.html', 'criando_colecao.html', 'minha_colecao.html'];
+        
+        if (paginasPrivadas.some(p => path.includes(p)) && !this.isAuthenticated()) {
+            window.location.href = '/pages/login.html';
         }
     }
 }
 
 const auth = new AuthManager();
-document.addEventListener('DOMContentLoaded', () => auth.configurarGeral());
+document.addEventListener('DOMContentLoaded', () => {
+    auth.carregarComponentes();
+    auth.verificarAcessoPrivado();
+});
