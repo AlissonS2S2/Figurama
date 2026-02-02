@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Figurama - Explorar</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav>
+        <div class="logo"><h1>FIGURAMA</h1></div>
+        <div>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/explorar}">Explorar</a>
+            <a th:href="@{/dashboard}">Minha Estante</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>🔍 Explorar Coleções</h2>
+        <input type="text" id="searchInput" placeholder="Digite o nome da figura (ex: Batman, Jean Grey...)" onkeyup="search()">
+        
+        <div id="search-results" class="grid" style="margin-top: 2rem;">
+            <!-- Resultados da busca -->
+        </div>
+    </div>
+
+    <script>
+        async function search() {
+            const termo = document.getElementById('searchInput').value;
+            if (termo.length < 2) return;
+
+            const response = await fetch(`/api/catalogo/pesquisar?nome=${termo}`);
+            const results = await response.json();
+            const grid = document.getElementById('search-results');
+            
+            grid.innerHTML = results.map(f => `
+                <div class="card">
+                    <div class="card-body">
+                        <h3>${f.nome}</h3>
+                        <p><strong>Franquia:</strong> ${f.franquia}</p>
+                        <button onclick="adicionar(${f.id})" class="btn">+ Adicionar à Coleção</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function adicionar(id) {
+            alert('Funcionalidade: Adicionar figura ' + id + ' à sua coleção logada!');
+        }
+    </script>
+</body>
+</html>
