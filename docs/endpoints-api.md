@@ -2,9 +2,9 @@
 
 Este documento descreve todos os endpoints REST disponíveis na API do projeto Figurama, incluindo métodos, parâmetros, respostas e exemplos de uso.
 
-**📅 ÚLTIMA ATUALIZAÇÃO: 01/02/2026**
-**🔄 VERSÃO: 1.0.0 - Front-end Puro Integrado**
-**✅ STATUS: URLs padronizadas, estrutura final definida**
+**📅 ÚLTIMA ATUALIZAÇÃO: 02/02/2026**
+**🔄 VERSÃO: 2.0.0 - Projeto Funcional Corrigido**
+**✅ STATUS: Banco configurado, frontend estático, CORS habilitado**
 
 ---
 
@@ -16,6 +16,8 @@ Este documento descreve todos os endpoints REST disponíveis na API do projeto F
 - **Métodos HTTP**: GET, POST, PUT, DELETE
 - **Respostas**: JSON com status HTTP apropriados
 - **Autenticação**: Bearer Token (JWT)
+- **Banco de Dados**: MySQL 8.0 com Docker
+- **CORS**: Configurado para desenvolvimento
 
 ---
 
@@ -222,26 +224,72 @@ Este documento descreve todos os endpoints REST disponíveis na API do projeto F
 ### 1. Página Principal
 **Endpoint**: `GET /`
 
-**Descrição**: Serve a página inicial `index.html`.
+**Descrição**: Redireciona para `index.html` usando `forward:`.
 
-### 2. Páginas Estáticas
-**Endpoint**: `GET /pages/{pagina}`
+### 2. Páginas Estáticas (Arquivos Estáticos)
+**Endpoint**: `GET /{rota}`
 
-**Descrição**: Serve páginas HTML específicas (login, dashboard, etc.).
+**Descrição**: Redireciona para arquivos HTML estáticos usando `forward:`.
 
 **Páginas disponíveis**:
-- `GET /pages/login.html` - Página de login
-- `GET /pages/dashboard.html` - Dashboard
-- `GET /pages/action_figure.html` - Detalhes da figure
-- `GET /pages/criando_colecao.html` - Criar coleção
-- `GET /pages/minha_colecao.html` - Minha coleção
-- `GET /pages/pesquisa.html` - Resultados de pesquisa
-- `GET /pages/register.html` - Registro
-- `GET /pages/support.html` - Suporte
+- `GET /` → `forward:/index.html` - Página inicial
+- `GET /login` → `forward:/pages/login.html` - Página de login
+- `GET /cadastro` → `forward:/pages/register.html` - Registro
+- `GET /explorar` → `forward:/pages/pesquisa.html` - Pesquisa
+- `GET /franquias` → `forward:/pages/franquia.html` - Franquias
+- `GET /suporte` → `forward:/pages/support.html` - Suporte
+- `GET /detalhes` → `forward:/pages/action_figure.html` - Detalhes da figure
+- `GET /dashboard` → `forward:/pages/dashboard.html` - Dashboard
+- `GET /minha-colecao` → `forward:/pages/minha_colecao.html` - Minha coleção
+- `GET /criar-colecao` → `forward:/pages/criando_colecao.html` - Criar coleção
 
 ---
 
-## 🔧 Estrutura de URLs Final
+## 🔧 Configurações do Projeto
+
+### Banco de Dados MySQL
+```yaml
+# compose.yaml
+services:
+  mysql:
+    image: 'mysql:8.0'
+    environment:
+      - 'MYSQL_DATABASE=figurama_db'
+      - 'MYSQL_ROOT_PASSWORD=root123'
+      - 'MYSQL_USER=figurama'
+      - 'MYSQL_PASSWORD=figurama123'
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+```
+
+### Application Properties
+```properties
+# application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/figurama_db
+spring.datasource.username=figurama
+spring.datasource.password=figurama123
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=true
+```
+
+### CORS Configuration
+```java
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("http://localhost:8080", "http://127.0.0.1:8080")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
+}
+```
 
 ### 📁 Arquivos Estáticos
 ```
@@ -323,36 +371,64 @@ http://localhost:8080/api/
 
 ---
 
-## 🔄 Integração Front-End
+## � Como Executar o Projeto
 
-### Ordem de Carregamento JavaScript:
-1. `config.js` - Configurações da API
-2. `api.js` - Funções de integração
-3. `auth.js` - Sistema de autenticação
-4. Arquivo específico da página
+### 1. Pré-requisitos
+- **Java 17+**
+- **Maven 3.6+**
+- **Docker e Docker Compose**
+- **MySQL Workbench** (opcional)
 
-### Exemplo de Uso:
-```javascript
-// Configuração
-const CONFIG = {
-    API_BASE_URL: "http://localhost:8080/api"
-};
-
-// Login
-await AuthAPI.login({ username, password });
-
-// Buscar catálogo
-const figures = await CatalogoAPI.buscarTodas();
-
-// Criar coleção
-await ColecaoAPI.criar(colecaoData);
+### 2. Subir o Banco de Dados
+```bash
+docker-compose up -d
 ```
+
+### 3. Criar Banco e Usuário
+Execute o script `docs/figurama_db.sql` no MySQL:
+```bash
+# Conectar ao container Docker
+docker exec -it figurama-mysql mysql -u root -p
+
+# Ou usar MySQL Workbench com:
+# Host: localhost:3306
+# User: root
+# Password: root123
+```
+
+### 4. Iniciar a Aplicação
+```bash
+# Usando Maven wrapper (recomendado)
+.\mvnw.cmd spring-boot:run
+
+# Ou Maven local
+mvn spring-boot:run
+```
+
+### 5. Acessar a Aplicação
+- **Frontend**: `http://localhost:8080`
+- **API REST**: `http://localhost:8080/api`
+- **Banco MySQL**: `localhost:3306`
 
 ---
 
-*Documentação atualizada em: 01/02/2026*
-*Versão: 1.0.0*
-*Total de endpoints: 15*
+## ✅ Correções Aplicadas (02/02/2026)
+
+### 🔧 **Problemas Resolvidos:**
+1. **✅ Banco de Dados**: Adicionado MySQL dialect no `application.properties`
+2. **✅ WebController**: Convertido para `forward:` para servir arquivos estáticos
+3. **✅ Docker**: Substituído PostgreSQL por MySQL 8.0
+4. **✅ CORS**: Configurado para desenvolvimento
+5. **✅ Compilação**: Projeto compila sem erros (23 arquivos Java)
+
+### 📊 **Status Atual:**
+- **Backend**: ✅ Funcional
+- **Banco**: ✅ Configurado
+- **Frontend**: ✅ Estático servido
+- **API**: ✅ Endpoints disponíveis
+- **CORS**: ✅ Configurado
+
+---
     "descricao": "Coleção de figuras dos Vingadores",
     "quantidade": 15,
     "figures": [

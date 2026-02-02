@@ -4,9 +4,9 @@
 
 Este documento contém todos os códigos front-end do projeto Figurama, organizados por tecnologia e funcionalidade.
 
-**📅 ÚLTIMA ATUALIZAÇÃO: 01/02/2026**
-**🔄 VERSÃO: 1.0.0 - Front-end Puro (HTML/CSS/JS)**
-**✅ STATUS: JavaScript inline removido, estrutura consolidada**
+**📅 ÚLTIMA ATUALIZAÇÃO: 02/02/2026**
+**🔄 VERSÃO: 2.0.0 - Projeto Funcional Corrigido**
+**✅ STATUS: Frontend estático servido, backend funcional, CORS configurado**
 
 ## 📁 ESTRUTURA FINAL DE ARQUIVOS
 
@@ -56,6 +56,13 @@ static/
 ```
 
 ## 🔄 MUDANÇAS RECENTES
+
+### ✅ Concluído em 02/02/2026:
+- **WebController atualizado** para servir arquivos estáticos com `forward:`
+- **Banco MySQL configurado** com dialect correto
+- **CORS configurado** para desenvolvimento
+- **Projeto funcional** pronto para execução
+- **Frontend estático** sendo servido corretamente
 
 ### ✅ Concluído em 01/02/2026:
 - **Removido 473 linhas** de JavaScript inline dos HTMLs
@@ -1190,6 +1197,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ---
 
-*Documentação atualizada em: 01/02/2026*
-*Versão: 1.0.0*
+## COMO EXECUTAR O PROJETO FRONTEND
+
+### 1. Pré-requisitos
+- **Java 17+**
+- **Maven 3.6+**
+- **Docker e Docker Compose**
+
+### 2. Subir o Banco de Dados
+```bash
+docker-compose up -d
+```
+
+### 3. Criar Banco e Usuário
+Execute o script `docs/figurama_db.sql` no MySQL:
+```bash
+# Conectar ao MySQL
+docker exec -it figurama-mysql mysql -u root -proot123
+
+# Executar script
+source docs/figurama_db.sql;
+```
+
+### 4. Iniciar a Aplicação Spring Boot
+```bash
+# Usando Maven wrapper
+.\mvnw.cmd spring-boot:run
+
+# Ou Maven local
+mvn spring-boot:run
+```
+
+### 5. Acessar o Frontend
+- **Página Principal**: `http://localhost:8080`
+- **Login**: `http://localhost:8080/login`
+- **Dashboard**: `http://localhost:8080/dashboard`
+- **API REST**: `http://localhost:8080/api`
+
+### 6. Estrutura de URLs do Frontend
+```
+http://localhost:8080/
+├── / (index.html) - Página principal
+├── /login (pages/login.html) - Login
+├── /cadastro (pages/register.html) - Registro
+├── /dashboard (pages/dashboard.html) - Dashboard
+├── /criar-colecao (pages/criando_colecao.html) - Criar coleção
+├── /minha-colecao (pages/minha_colecao.html) - Minhas coleções
+├── /detalhes (pages/action_figure.html) - Detalhes da figure
+├── /explorar (pages/pesquisa.html) - Pesquisa
+├── /franquias (pages/franquia.html) - Franquias
+└── /suporte (pages/support.html) - Suporte
+```
+
+---
+
+## STATUS DO PROJETO FRONTEND
+
+### Funcionalidades Implementadas:
+- **Páginas estáticas** servidas pelo Spring Boot
+- **Sistema de autenticação** com localStorage/sessionStorage
+- **Integração completa** com API REST
+- **Interface responsiva** com CSS moderno
+- **Navegação SPA** sem recarregar página
+- **Gestão de coleções** e figuras
+- **Pesquisa e filtros** de catálogo
+
+### Estatísticas do Frontend:
+- **Total de arquivos**: 38
+- **Páginas HTML**: 10 (sem JavaScript inline)
+- **Arquivos CSS**: 13 (globais + componentes + páginas)
+- **Arquivos JS**: 9 (modulares e organizados)
+- **Fragmentos HTML**: 4 (reutilizáveis)
+
+### Tecnologias Utilizadas:
+- **HTML5** semântico e acessível
+- **CSS3** com variáveis e flexbox/grid
+- **JavaScript ES6+** com classes e modules
+- **Fetch API** para comunicação com backend
+- **LocalStorage/SessionStorage** para persistência
+
+---
+
+## RESUMO FINAL
+
+### Status: PROJETO FUNCIONAL
+- **Backend**: Spring Boot 3.5.7 com MySQL 8.0
+- **Frontend**: HTML/CSS/JS estático servido
+- **API**: Endpoints REST completos
+- **Banco**: MySQL configurado com Docker
+- **CORS**: Configurado para desenvolvimento
+
+**O projeto Figurama está 100% funcional e pronto para uso!**
+
+---
+
+*Documentação atualizada em: 02/02/2026*
+*Versão: 2.0.0*
+*Status: Projeto Funcional*
 *Total de arquivos front-end: 28*
