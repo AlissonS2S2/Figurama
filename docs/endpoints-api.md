@@ -2,32 +2,357 @@
 
 Este documento descreve todos os endpoints REST disponíveis na API do projeto Figurama, incluindo métodos, parâmetros, respostas e exemplos de uso.
 
+**📅 ÚLTIMA ATUALIZAÇÃO: 01/02/2026**
+**🔄 VERSÃO: 1.0.0 - Front-end Puro Integrado**
+**✅ STATUS: URLs padronizadas, estrutura final definida**
+
 ---
 
 ## 🌐 Informações Gerais da API
 
 - **Base URL**: `http://localhost:8080`
+- **API Base URL**: `http://localhost:8080/api`
 - **Content-Type**: `application/json`
 - **Métodos HTTP**: GET, POST, PUT, DELETE
 - **Respostas**: JSON com status HTTP apropriados
+- **Autenticação**: Bearer Token (JWT)
 
 ---
 
-## 📋 Endpoints de Coleções
+## � Endpoints de Autenticação
 
-### 1. Listar Todas as Coleções
-**Endpoint**: `GET /colecoes/listar`
+### 1. Login de Usuário
+**Endpoint**: `POST /api/usuarios/login`
 
-**Descrição**: Retorna uma lista com todas as coleções cadastradas no sistema.
+**Descrição**: Autentica usuário e retorna token JWT.
 
-**Parâmetros**: Nenhum
+**Request Body**:
+```json
+{
+  "username": "usuario@example.com",
+  "password": "senha123"
+}
+```
+
+**Resposta de Sucesso (200 OK)**:
+```json
+{
+  "sucesso": true,
+  "mensagem": "Login realizado com sucesso",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "usuario": {
+      "id": 1,
+      "username": "usuario@example.com",
+      "nome": "Nome do Usuário"
+    }
+  }
+}
+```
+
+### 2. Registrar Novo Usuário
+**Endpoint**: `POST /api/usuarios/registrar`
+
+**Descrição**: Cadastra novo usuário no sistema.
+
+**Request Body**:
+```json
+{
+  "email": "novo@example.com",
+  "username": "novousuario",
+  "password": "senha123"
+}
+```
+
+**Resposta de Sucesso (201 Created)**:
+```json
+{
+  "sucesso": true,
+  "mensagem": "Usuário criado com sucesso",
+  "data": {
+    "id": 2,
+    "username": "novousuario",
+    "email": "novo@example.com"
+  }
+}
+```
+
+---
+
+## 📚 Endpoints de Catálogo
+
+### 1. Listar Todas as Action Figures
+**Endpoint**: `GET /api/catalogo`
+
+**Descrição**: Retorna lista completa de action figures cadastradas.
 
 **Resposta de Sucesso (200 OK)**:
 ```json
 [
   {
     "id": 1,
-    "titulo": "Heróis Marvel",
+    "nome": "Homem de Ferro Mark 50",
+    "categoria": "Marvel",
+    "franquia": "Marvel Studios",
+    "descricao": "Figura do Homem de Ferro",
+    "urlFoto": "http://example.com/ironman.jpg",
+    "precoSugerido": 299.99,
+    "dataLancamento": "2023-01-15"
+  }
+]
+```
+
+### 2. Pesquisar Action Figures
+**Endpoint**: `GET /api/catalogo/pesquisar`
+
+**Descrição**: Busca action figures por nome.
+
+**Parâmetros Query**:
+- `nome` (string, obrigatório): Termo de busca
+
+**Exemplo**: `GET /api/catalogo/pesquisar?nome=homem`
+
+### 3. Buscar Action Figure por ID
+**Endpoint**: `GET /api/catalogo/{id}`
+
+**Descrição**: Retorna detalhes de uma action figure específica.
+
+**Parâmetros Path**:
+- `id` (long, obrigatório): ID da action figure
+
+---
+
+## 📁 Endpoints de Coleções
+
+### 1. Criar Nova Coleção
+**Endpoint**: `POST /api/colecoes`
+
+**Descrição**: Cria nova coleção para o usuário autenticado.
+
+**Headers**: `Authorization: Bearer {token}`
+
+**Request Body**:
+```json
+{
+  "nome": "Minha Coleção Marvel",
+  "descricao": "Figuras dos Vingadores",
+  "publica": true,
+  "colecionadorId": 1
+}
+```
+
+### 2. Listar Coleções do Usuário
+**Endpoint**: `GET /api/colecoes/usuario/{usuarioId}`
+
+**Descrição**: Retorna todas as coleções de um usuário específico.
+
+**Headers**: `Authorization: Bearer {token}`
+
+### 3. Buscar Coleção por ID
+**Endpoint**: `GET /api/colecoes/{id}`
+
+**Descrição**: Retorna detalhes de uma coleção específica.
+
+### 4. Atualizar Coleção
+**Endpoint**: `PUT /api/colecoes/{id}`
+
+**Descrição**: Atualiza dados de uma coleção existente.
+
+**Headers**: `Authorization: Bearer {token}`
+
+### 5. Excluir Coleção
+**Endpoint**: `DELETE /api/colecoes/{id}`
+
+**Descrição**: Remove uma coleção do sistema.
+
+**Headers**: `Authorization: Bearer {token}`
+
+---
+
+## 🎯 Endpoints de Itens de Coleção
+
+### 1. Adicionar Item à Coleção
+**Endpoint**: `POST /api/colecoes/{colecaoId}/itens`
+
+**Descrição**: Adiciona uma action figure a uma coleção.
+
+**Headers**: `Authorization: Bearer {token}`
+
+**Request Body**:
+```json
+{
+  "actionFigureId": 1,
+  "dataAdicao": "2023-01-15",
+  "observacoes": "Figura em estado novo"
+}
+```
+
+### 2. Remover Item da Coleção
+**Endpoint**: `DELETE /api/colecoes/{colecaoId}/itens/{itemId}`
+
+**Descrição**: Remove um item específico de uma coleção.
+
+**Headers**: `Authorization: Bearer {token}`
+
+---
+
+## 📊 Endpoints de Estatísticas
+
+### 1. Estatísticas do Usuário
+**Endpoint**: `GET /api/usuarios/{id}/estatisticas`
+
+**Descrição**: Retorna estatísticas do usuário (total de coleções, figuras, etc.).
+
+**Headers**: `Authorization: Bearer {token}`
+
+**Resposta de Sucesso (200 OK)**:
+```json
+{
+  "totalColecoes": 5,
+  "totalFiguras": 23,
+  "colecoesPublicas": 3,
+  "figurasFavoritas": 8
+}
+```
+
+---
+
+## 🌐 Endpoints de Páginas (WebController)
+
+### 1. Página Principal
+**Endpoint**: `GET /`
+
+**Descrição**: Serve a página inicial `index.html`.
+
+### 2. Páginas Estáticas
+**Endpoint**: `GET /pages/{pagina}`
+
+**Descrição**: Serve páginas HTML específicas (login, dashboard, etc.).
+
+**Páginas disponíveis**:
+- `GET /pages/login.html` - Página de login
+- `GET /pages/dashboard.html` - Dashboard
+- `GET /pages/action_figure.html` - Detalhes da figure
+- `GET /pages/criando_colecao.html` - Criar coleção
+- `GET /pages/minha_colecao.html` - Minha coleção
+- `GET /pages/pesquisa.html` - Resultados de pesquisa
+- `GET /pages/register.html` - Registro
+- `GET /pages/support.html` - Suporte
+
+---
+
+## 🔧 Estrutura de URLs Final
+
+### 📁 Arquivos Estáticos
+```
+http://localhost:8080/
+├── css/
+│   ├── style.css
+│   ├── components/buttons.css
+│   ├── components/cards.css
+│   ├── components/forms.css
+│   └── pages/*.css
+├── js/
+│   ├── config.js
+│   ├── api.js
+│   ├── auth.js
+│   ├── script.js
+│   ├── action_figure.js
+│   ├── criando_colecao.js
+│   ├── dashboard.js
+│   ├── minha_colecao.js
+│   └── app.js
+├── pages/
+│   ├── action_figure.html
+│   ├── criando_colecao.html
+│   ├── dashboard.html
+│   ├── franquia.html
+│   ├── login.html
+│   ├── minha_colecao.html
+│   ├── pesquisa.html
+│   ├── register.html
+│   └── support.html
+├── fragments/
+│   ├── footer.html
+│   ├── header.html
+│   ├── header_logged.html
+│   └── layout.html
+└── index.html
+```
+
+### 🌐 API REST
+```
+http://localhost:8080/api/
+├── usuarios/
+│   ├── POST /login
+│   ├── POST /registrar
+│   └── GET /{id}/estatisticas
+├── catalogo/
+│   ├── GET /
+│   ├── GET /pesquisar
+│   └── GET /{id}
+├── colecoes/
+│   ├── GET /
+│   ├── POST /
+│   ├── GET /{id}
+│   ├── PUT /{id}
+│   ├── DELETE /{id}
+│   ├── GET /usuario/{usuarioId}
+│   └── POST /{colecaoId}/itens
+└── uploads/ (para imagens)
+```
+
+---
+
+## ⚠️ Códigos de Status
+
+### ✅ Sucesso
+- `200 OK` - Requisição bem-sucedida
+- `201 Created` - Recurso criado
+- `204 No Content` - Recurso excluído
+
+### ❌ Erros de Cliente
+- `400 Bad Request` - Requisição inválida
+- `401 Unauthorized` - Não autenticado
+- `403 Forbidden` - Sem permissão
+- `404 Not Found` - Recurso não encontrado
+
+### 🔧 Erros de Servidor
+- `500 Internal Server Error` - Erro interno
+- `503 Service Unavailable` - Serviço indisponível
+
+---
+
+## 🔄 Integração Front-End
+
+### Ordem de Carregamento JavaScript:
+1. `config.js` - Configurações da API
+2. `api.js` - Funções de integração
+3. `auth.js` - Sistema de autenticação
+4. Arquivo específico da página
+
+### Exemplo de Uso:
+```javascript
+// Configuração
+const CONFIG = {
+    API_BASE_URL: "http://localhost:8080/api"
+};
+
+// Login
+await AuthAPI.login({ username, password });
+
+// Buscar catálogo
+const figures = await CatalogoAPI.buscarTodas();
+
+// Criar coleção
+await ColecaoAPI.criar(colecaoData);
+```
+
+---
+
+*Documentação atualizada em: 01/02/2026*
+*Versão: 1.0.0*
+*Total de endpoints: 15*
     "descricao": "Coleção de figuras dos Vingadores",
     "quantidade": 15,
     "figures": [

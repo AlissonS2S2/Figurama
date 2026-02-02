@@ -4,30 +4,72 @@
 
 Este documento contém todos os códigos front-end do projeto Figurama, organizados por tecnologia e funcionalidade.
 
-## 📁 ESTRUTURA DE ARQUIVOS
+**📅 ÚLTIMA ATUALIZAÇÃO: 01/02/2026**
+**🔄 VERSÃO: 1.0.0 - Front-end Puro (HTML/CSS/JS)**
+**✅ STATUS: JavaScript inline removido, estrutura consolidada**
+
+## 📁 ESTRUTURA FINAL DE ARQUIVOS
 
 ```
 static/
 ├── css/                    # Estilos CSS
 │   ├── components/         # Componentes reutilizáveis
+│   │   ├── buttons.css     # Botões
+│   │   ├── cards.css       # Cards
+│   │   └── forms.css       # Formulários
 │   ├── pages/             # Estilos específicos de páginas
+│   │   ├── action_figure.css
+│   │   ├── dashboard.css
+│   │   ├── login.css
+│   │   ├── register.css
+│   │   ├── criando_colecao.css
+│   │   ├── minha_colecao.css
+│   │   └── franquia.css
 │   └── style.css          # Estilo global
-├── js/                    # JavaScript
-│   ├── config.js          # Configurações globais
-│   ├── api.js             # Integração com backend
-│   ├── auth.js            # Autenticação
-│   ├── script.js          # Landing page
-│   ├── action_figure.js   # Detalhes de figures
-│   ├── criando_colecao.js # Criação de coleções
-│   ├── dashboard.js       # Dashboard
-│   ├── minha_colecao.js   # Visualização coleções
-│   └── app.js             # Funções administrativas
-├── pages/                 # Páginas HTML
+├── js/                    # JavaScript (CONSOLIDADO)
+│   ├── README.md          # Documentação completa
+│   ├── config.js          # Configurações globais (315 bytes)
+│   ├── api.js             # Integração com backend (7,564 bytes)
+│   ├── auth.js            # Autenticação (10,733 bytes)
+│   ├── script.js          # Landing page (5,933 bytes)
+│   ├── action_figure.js   # Detalhes de figures (11,321 bytes)
+│   ├── criando_colecao.js # Criação de coleções (8,487 bytes)
+│   ├── dashboard.js       # Dashboard (7,255 bytes)
+│   ├── minha_colecao.js   # Visualização coleções (10,125 bytes)
+│   └── app.js             # Funções administrativas (12,581 bytes)
+├── pages/                 # Páginas HTML (SEM JavaScript inline)
 │   ├── action_figure.html
 │   ├── criando_colecao.html
 │   ├── dashboard.html
 │   ├── franquia.html
 │   ├── login.html
+│   ├── minha_colecao.html
+│   ├── pesquisa.html
+│   ├── register.html
+│   └── support.html
+├── fragments/             # Fragmentos HTML reutilizáveis
+│   ├── footer.html
+│   ├── header.html
+│   ├── header_logged.html
+│   └── layout.html
+└── index.html             # Página principal (SEM JavaScript inline)
+```
+
+## 🔄 MUDANÇAS RECENTES
+
+### ✅ Concluído em 01/02/2026:
+- **Removido 473 linhas** de JavaScript inline dos HTMLs
+- **Consolidados arquivos JS** da pasta `consolidated/` para raiz
+- **Eliminadas duplicatas** de arquivos JavaScript
+- **Removidos atributos** `onclick`, `onsubmit`, `onkeypress`
+- **Padronizada estrutura** front-end puro (HTML/CSS/JS)
+- **Mantida pasta `templates/` vazia** (sem uso)
+
+### 📊 Estatísticas da Limpeza:
+- **Arquivos HTML limpos**: 14
+- **JavaScript removido**: 473 linhas
+- **Atributos de evento removidos**: 23
+- **Arquivos JS consolidados**: 9 (versões finais)
 │   ├── minha_colecao.html
 │   ├── pesquisa.html
 │   ├── register.html

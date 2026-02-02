@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div th:replace="~{fragments/header_logged :: logado}"></div>
+    <header></header>
 
     <main class="figure-page">
         <section class="figure-container">
@@ -67,28 +67,11 @@
         </section>
     </main>
 
-    <footer class="main-footer">
-        <div class="container-wrapper">
-            <nav class="footer-nav">
-                <a href="#">Sobre</a>
-                <a href="#">Contato</a>
-                <a href="#">Ajuda</a>
-                <a href="#">Termos</a>
-            </nav>
+    <footer></footer>
 
-            <div class="footer-copy">
-                <span>© Figurama. Projeto integrador</span>
-            </div>
-
-            <div class="footer-social">
-            <!-- BACK-END: Ícones de redes sociais -->
-                <a href="#"><img src="../icons/Instagram-icon.png" alt="Instagram"></a>
-                <a href="#"><img src="../icons/Youtube-Icon.png" alt="Youtube"></a>
-                <a href="#"><img src="../icons/X-Icon.png" alt="X"></a>
-                <a href="#"><img src="../icons/Discord-Icon.png" alt="Discord"></a>
-            </div>
-        </div>
-    </footer>
-
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <!-- O script específico da página vem por último -->
 </body>
 </html>

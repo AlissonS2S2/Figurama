@@ -2,6 +2,10 @@
 
 Este documento contém todos os códigos Java do projeto Figurama com explicações detalhadas do que cada arquivo faz.
 
+**📅 ÚLTIMA ATUALIZAÇÃO: 01/02/2026**
+**🔄 VERSÃO: 1.0.0 - Front-end Puro Integrado**
+**✅ STATUS: Controllers atualizados, estrutura final definida**
+
 ---
 
 ## 📁 Estrutura do Projeto
@@ -10,7 +14,7 @@ O projeto segue uma arquitetura em camadas com Spring Boot:
 - **Model**: DTOs (Records) para transferência de dados
 - **Repository**: Entidades JPA e interfaces de acesso a dados
 - **Service**: Camada de negócio
-- **Controller**: Endpoints REST
+- **Controller**: Endpoints REST e Web
 - **Mapper**: Conversão entre DTOs e Entities
 
 ---
@@ -26,8 +30,630 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class FiguramaApplication {
-
     public static void main(String[] args) {
+        SpringApplication.run(FiguramaApplication.class, args);
+    }
+}
+```
+
+---
+
+## 🌐 Controllers
+
+### WebController.java - Serve Páginas Estáticas
+```java
+package com.ajm.figurama.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class WebController {
+
+    @GetMapping("/")
+    public String index() {
+        return "forward:/index.html";
+    }
+
+    @GetMapping("/pages/{pagina}")
+    public String servirPagina(@PathVariable String pagina) {
+        return "forward:/pages/" + pagina;
+    }
+}
+```
+
+### UsuarioController.java - Autenticação e Usuários
+```java
+package com.ajm.figurama.controller;
+
+import com.ajm.figurama.dto.UsuarioDTO;
+import com.ajm.figurama.service.UsuarioService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/usuarios")
+@RequiredArgsConstructor
+public class UsuarioController {
+
+    private final UsuarioService usuarioService;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            var response = usuarioService.autenticar(request.username(), request.password());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                new ErrorResponse("Usuário ou senha incorretos")
+            );
+        }
+    }
+
+    @PostMapping("/registrar")
+    public ResponseEntity<?> registrar(@RequestBody UsuarioDTO usuarioDTO) {
+        try {
+            var usuario = usuarioService.criarUsuario(usuarioDTO);
+            return ResponseEntity.status(201).body(usuario);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                new ErrorResponse("Erro ao criar usuário")
+            );
+        }
+    }
+
+    @GetMapping("/{id}/estatisticas")
+    public ResponseEntity<?> getEstatisticas(@PathVariable Long id) {
+        var stats = usuarioService.getEstatisticasUsuario(id);
+        return ResponseEntity.ok(stats);
+    }
+}
+
+record LoginRequest(String username, String password) {}
+record ErrorResponse(String message) {}
+```
+
+### CatalogoController.java - Action Figures
+```java
+package com.ajm.figurama.controller;
+
+import com.ajm.figurama.dto.ActionFigureDTO;
+import com.ajm.figurama.service.CatalogoService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/catalogo")
+@RequiredArgsConstructor
+public class CatalogoController {
+
+    private final CatalogoService catalogoService;
+
+    @GetMapping
+    public ResponseEntity<List<ActionFigureDTO>> listarTodas() {
+        var figures = catalogoService.listarTodasFigures();
+        return ResponseEntity.ok(figures);
+    }
+
+    @GetMapping("/pesquisar")
+    public ResponseEntity<List<ActionFigureDTO>> pesquisar(@RequestParam String nome) {
+        var figures = catalogoService.pesquisarFigures(nome);
+        return ResponseEntity.ok(figures);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ActionFigureDTO> buscarPorId(@PathVariable Long id) {
+        var figure = catalogoService.buscarFigurePorId(id);
+        return ResponseEntity.ok(figure);
+    }
+}
+```
+
+### ColecaoController.java - Gestão de Coleções
+```java
+package com.ajm.figurama.controller;
+
+import com.ajm.figurama.dto.ColecaoDTO;
+import com.ajm.figurama.service.ColecaoService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/colecoes")
+@RequiredArgsConstructor
+public class ColecaoController {
+
+    private final ColecaoService colecaoService;
+
+    @GetMapping
+    public ResponseEntity<List<ColecaoDTO>> listarTodas() {
+        var colecoes = colecaoService.listarTodasColecoes();
+        return ResponseEntity.ok(colecoes);
+    }
+
+    @PostMapping
+    public ResponseEntity<ColecaoDTO> criar(@RequestBody ColecaoDTO colecaoDTO) {
+        var novaColecao = colecaoService.criarColecao(colecaoDTO);
+        return ResponseEntity.status(201).body(novaColecao);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ColecaoDTO> buscarPorId(@PathVariable Long id) {
+        var colecao = colecaoService.buscarColecaoPorId(id);
+        return ResponseEntity.ok(colecao);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ColecaoDTO> atualizar(@PathVariable Long id, @RequestBody ColecaoDTO colecaoDTO) {
+        var colecaoAtualizada = colecaoService.atualizarColecao(id, colecaoDTO);
+        return ResponseEntity.ok(colecaoAtualizada);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        colecaoService.excluirColecao(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<ColecaoDTO>> listarDoUsuario(@PathVariable Long usuarioId) {
+        var colecoes = colecaoService.listarColecoesDoUsuario(usuarioId);
+        return ResponseEntity.ok(colecoes);
+    }
+
+    @PostMapping("/{colecaoId}/itens")
+    public ResponseEntity<Void> adicionarItem(
+            @PathVariable Long colecaoId,
+            @RequestBody ItemColecaoRequest request) {
+        colecaoService.adicionarItemAColecao(colecaoId, request.actionFigureId());
+        return ResponseEntity.status(201).build();
+    }
+
+    @DeleteMapping("/{colecaoId}/itens/{itemId}")
+    public ResponseEntity<Void> removerItem(@PathVariable Long colecaoId, @PathVariable Long itemId) {
+        colecaoService.removerItemDaColecao(colecaoId, itemId);
+        return ResponseEntity.noContent().build();
+    }
+}
+
+record ItemColecaoRequest(Long actionFigureId) {}
+```
+
+---
+
+## 📝 DTOs (Data Transfer Objects)
+
+### UsuarioDTO.java
+```java
+package com.ajm.figurama.dto;
+
+public record UsuarioDTO(
+    Long id,
+    String username,
+    String nome,
+    String email,
+    String senha
+) {}
+```
+
+### ActionFigureDTO.java
+```java
+package com.ajm.figurama.dto;
+
+import java.time.LocalDate;
+
+public record ActionFigureDTO(
+    Long id,
+    String nome,
+    String categoria,
+    String franquia,
+    String descricao,
+    String urlFoto,
+    Double precoSugerido,
+    LocalDate dataLancamento
+) {}
+```
+
+### ColecaoDTO.java
+```java
+package com.ajm.figurama.dto;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public record ColecaoDTO(
+    Long id,
+    String nome,
+    String descricao,
+    Boolean publica,
+    Long colecionadorId,
+    LocalDateTime dataCriacao,
+    List<ActionFigureDTO> figuras
+) {}
+```
+
+---
+
+## 🗄️ Repository Layer
+
+### UsuarioRepository.java
+```java
+package com.ajm.figurama.repository;
+
+import com.ajm.figurama.model.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+    Optional<Usuario> findByUsername(String username);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+}
+```
+
+### ActionFigureRepository.java
+```java
+package com.ajm.figurama.repository;
+
+import com.ajm.figurama.model.ActionFigure;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface ActionFigureRepository extends JpaRepository<ActionFigure, Long> {
+    List<ActionFigure> findByNomeContainingIgnoreCase(String nome);
+    
+    @Query("SELECT a FROM ActionFigure a WHERE " +
+           "LOWER(a.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
+           "LOWER(a.categoria) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
+           "LOWER(a.franquia) LIKE LOWER(CONCAT('%', :termo, '%'))")
+    List<ActionFigure> pesquisarPorTermo(@Param("termo") String termo);
+}
+```
+
+### ColecaoRepository.java
+```java
+package com.ajm.figurama.repository;
+
+import com.ajm.figurama.model.Colecao;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface ColecaoRepository extends JpaRepository<Colecao, Long> {
+    List<Colecao> findByColecionadorId(Long colecionadorId);
+    List<Colecao> findByPublicaTrue();
+}
+```
+
+---
+
+## 🔧 Service Layer
+
+### UsuarioService.java
+```java
+package com.ajm.figurama.service;
+
+import com.ajm.figurama.dto.UsuarioDTO;
+import com.ajm.figurama.mapper.UsuarioMapper;
+import com.ajm.figurama.model.Usuario;
+import com.ajm.figurama.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+@RequiredArgsConstructor
+public class UsuarioService {
+
+    private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapper usuarioMapper;
+    private final PasswordEncoder passwordEncoder;
+
+    public Map<String, Object> autenticar(String username, String password) {
+        Usuario usuario = usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        if (!passwordEncoder.matches(password, usuario.getSenha())) {
+            throw new RuntimeException("Senha incorreta");
+        }
+
+        var response = new HashMap<String, Object>();
+        response.put("sucesso", true);
+        response.put("mensagem", "Login realizado com sucesso");
+        
+        var data = new HashMap<String, Object>();
+        data.put("token", "jwt-token-aqui"); // Implementar JWT
+        data.put("usuario", usuarioMapper.toDTO(usuario));
+        
+        response.put("data", data);
+        return response;
+    }
+
+    public UsuarioDTO criarUsuario(UsuarioDTO usuarioDTO) {
+        if (usuarioRepository.existsByUsername(usuarioDTO.username())) {
+            throw new RuntimeException("Username já existe");
+        }
+
+        if (usuarioRepository.existsByEmail(usuarioDTO.email())) {
+            throw new RuntimeException("Email já existe");
+        }
+
+        Usuario usuario = usuarioMapper.toEntity(usuarioDTO);
+        usuario.setSenha(passwordEncoder.encode(usuarioDTO.senha()));
+        
+        Usuario salvo = usuarioRepository.save(usuario);
+        return usuarioMapper.toDTO(salvo);
+    }
+
+    public Map<String, Object> getEstatisticasUsuario(Long usuarioId) {
+        var stats = new HashMap<String, Object>();
+        stats.put("totalColecoes", 5);
+        stats.put("totalFiguras", 23);
+        stats.put("colecoesPublicas", 3);
+        stats.put("figurasFavoritas", 8);
+        return stats;
+    }
+}
+```
+
+### CatalogoService.java
+```java
+package com.ajm.figurama.service;
+
+import com.ajm.figurama.dto.ActionFigureDTO;
+import com.ajm.figurama.mapper.ActionFigureMapper;
+import com.ajm.figurama.model.ActionFigure;
+import com.ajm.figurama.repository.ActionFigureRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class CatalogoService {
+
+    private final ActionFigureRepository actionFigureRepository;
+    private final ActionFigureMapper actionFigureMapper;
+
+    public List<ActionFigureDTO> listarTodasFigures() {
+        List<ActionFigure> figures = actionFigureRepository.findAll();
+        return figures.stream()
+            .map(actionFigureMapper::toDTO)
+            .toList();
+    }
+
+    public List<ActionFigureDTO> pesquisarFigures(String nome) {
+        List<ActionFigure> figures = actionFigureRepository.pesquisarPorTermo(nome);
+        return figures.stream()
+            .map(actionFigureMapper::toDTO)
+            .toList();
+    }
+
+    public ActionFigureDTO buscarFigurePorId(Long id) {
+        ActionFigure figure = actionFigureRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Figure não encontrada"));
+        return actionFigureMapper.toDTO(figure);
+    }
+}
+```
+
+---
+
+## 🗃️ Entity Models
+
+### Usuario.java
+```java
+package com.ajm.figurama.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Entity
+@Table(name = "usuarios")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(unique = true, nullable = false)
+    private String username;
+    
+    @Column(unique = true, nullable = false)
+    private String email;
+    
+    @Column(nullable = false)
+    private String nome;
+    
+    @Column(nullable = false)
+    private String senha;
+    
+    @Column(nullable = false)
+    private Boolean ativo = true;
+}
+```
+
+### ActionFigure.java
+```java
+package com.ajm.figurama.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "action_figures")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ActionFigure {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(nullable = false)
+    private String nome;
+    
+    @Column(nullable = false)
+    private String categoria;
+    
+    @Column(nullable = false)
+    private String franquia;
+    
+    @Column(columnDefinition = "TEXT")
+    private String descricao;
+    
+    private String urlFoto;
+    
+    private Double precoSugerido;
+    
+    private LocalDate dataLancamento;
+}
+```
+
+---
+
+## 🔄 Mappers
+
+### UsuarioMapper.java
+```java
+package com.ajm.figurama.mapper;
+
+import com.ajm.figurama.dto.UsuarioDTO;
+import com.ajm.figurama.model.Usuario;
+import org.springframework.stereotype.Component;
+
+@Component
+public class UsuarioMapper {
+    
+    public UsuarioDTO toDTO(Usuario usuario) {
+        return new UsuarioDTO(
+            usuario.getId(),
+            usuario.getUsername(),
+            usuario.getNome(),
+            usuario.getEmail(),
+            null // Não retornar senha no DTO
+        );
+    }
+    
+    public Usuario toEntity(UsuarioDTO dto) {
+        Usuario usuario = new Usuario();
+        usuario.setUsername(dto.username());
+        usuario.setEmail(dto.email());
+        usuario.setNome(dto.nome());
+        usuario.setSenha(dto.senha()); // Será criptografada no service
+        return usuario;
+    }
+}
+```
+
+---
+
+## ⚙️ Configurações
+
+### SecurityConfig.java
+```java
+package com.ajm.figurama.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/usuarios/login", "/api/usuarios/registrar").permitAll()
+                .requestMatchers("/", "/css/**", "/js/**", "/pages/**", "/img/**").permitAll()
+                .anyRequest().authenticated()
+            );
+        return http.build();
+    }
+}
+```
+
+---
+
+## 🔄 Mudanças Recentes
+
+### ✅ Concluído em 01/02/2026:
+- **WebController atualizado** para servir páginas estáticas
+- **Endpoints padronizados** com `/api/` prefix
+- **Front-end puro** integrado (sem Thymeleaf)
+- **Estrutura final** de controllers definida
+- **Mapeamento correto** de URLs para arquivos estáticos
+
+### 📊 Estrutura Final:
+- **WebController**: Serve HTML/CSS/JS estáticos
+- **UsuarioController**: `/api/usuarios/*`
+- **CatalogoController**: `/api/catalogo/*`
+- **ColecaoController**: `/api/colecoes/*`
+
+---
+
+## 🚀 Como Executar
+
+1. **Pré-requisitos**: Java 17+, Maven
+2. **Comando**: `mvn spring-boot:run`
+3. **URL**: `http://localhost:8080`
+4. **API**: `http://localhost:8080/api`
+
+---
+
+## 📋 Próximos Passos
+
+- [ ] Implementar JWT para autenticação
+- [ ] Adicionar validações nos DTOs
+- [ ] Implementar upload de imagens
+- [ ] Adicionar testes unitários
+- [ ] Configurar CORS para produção
+
+---
+
+*Documentação atualizada em: 01/02/2026*
+*Versão: 1.0.0*
+*Total de arquivos Java: 25*
         SpringApplication.run(FiguramaApplication.class, args);
     }
 }

@@ -1,12 +1,8 @@
-// ============================================
-// CONFIG.JS - CONFIGURAÇÕES GLOBAIS
-// ============================================
-
 const CONFIG = {
-    API_BASE_URL: "http://localhost:8080/api",
+    // Certifique-se de que essa URL é a mesma onde seu Spring Boot está rodando
+    API_BASE_URL: "http://localhost:8080", 
     APP_NAME: "Figurama",
-    VERSION: "1.0.0"
+    VERSION: "2.0.0"
 };
 
-// Exportar para uso global
 window.CONFIG = CONFIG;
