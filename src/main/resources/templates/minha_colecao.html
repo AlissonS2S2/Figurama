@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Coleção - Figurama</title>
+    <link rel="icon" type="web-icon" th:href="@{/images/Logo.png}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/minha_colecao.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header-logged"></header>
+
+    <main class="colecao-container">
+
+        <div class="left-container">
+            <section class="colecao-info">
+                <h1 id="title-colecao"></h1>
+                <p id="description"></p>
+                <small id="total-items">Action Figures</small>
+                <hr class="divider">
+            </section>
+
+            <section class="card-grid" id="collection-grid-container">
+                <p>Carregando coleção...</p>
+            </section>
+        </div>
+
+        <div class="right-container">
+            <section class="add-figure-section">
+                <h3>Adicionar Figura</h3>
+                <div class="search-box">
+                    <input type="text" id="search-figure" placeholder="Buscar figura para adicionar...">
+                    <button id="search-btn">Buscar</button>
+                </div>
+                <div id="search-results" class="search-results">
+                    <!-- Resultados da busca aparecerão aqui -->
+                </div>
+            </section>
+
+            <section class="collection-stats">
+                <h3>Estatísticas</h3>
+                <div class="stat-item">
+                    <span>Total de Figuras:</span>
+                    <span id="total-figures">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Valor Estimado:</span>
+                    <span id="estimated-value">R$ 0,00</span>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <footer></footer>
+
+    <script th:src="@{/js/config.js}"></script>
+    <script th:src="@{/js/api.js}"></script>
+    <script th:src="@{/js/auth.js}"></script>
+    <script th:src="@{/js/minha_colecao.js}"></script>
+</body>
+</html>

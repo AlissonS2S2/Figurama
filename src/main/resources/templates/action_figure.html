@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes Action Figure</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/action_figure.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header></header>
+
+    <main class="figure-page">
+        <section class="figure-container">
+            <div class="figure-image-box">
+                <div class="image-placeholder">
+                    <img id="main-figure-img" th:src="@{/uploads/Vampira-X-men-97.jpg}" alt="Vampira-X-men-97">
+                </div>
+                <a href="/dashboard" class="btn-add" style="text-decoration: none; display: inline-block;">Adicionar</a>
+            </div>
+
+            <div class="figure-info">
+                <div class="info-header">
+                    <h1 id="figure-name"></h1>
+                    <span id="figure-franchise"></span>
+                </div>
+
+                <div class="info-details">
+                    <p><strong>Lançamento:</strong> <span id="figure-release"></span></p>
+                    <p><strong>Preço:</strong> <span id="figure-price"></span></p>
+                    <p><strong>Descrição:</strong></p>
+                    <p id="figure-description"></p>
+                </div>
+
+                <div class="info-actions">
+                    <button class="btn-favorite" id="btn-favorite">
+                        <span id="favorite-text">❤️ Favoritar</span>
+                    </button>
+                    <button class="btn-share" id="btn-share">
+                        📤 Compartilhar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="similar-figures">
+            <h3>Figuras Similares</h3>
+            <div class="figures-grid" id="similar-figures-grid">
+                <p>Carregando figuras similares...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer></footer>
+
+    <script th:src="@{/js/config.js}"></script>
+    <script th:src="@{/js/api.js}"></script>
+    <script th:src="@{/js/auth.js}"></script>
+    <script th:src="@{/js/action_figure.js}"></script>
+</body>
+</html>

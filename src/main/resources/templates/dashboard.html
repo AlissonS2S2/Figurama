@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Figurama</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/dashboard.css}">
+</head>
+<body>
+    <header></header>
+
+    <main class="dashboard">
+        <h2 class="wb">Bem-vindo de volta <span id="username">Colecionador</span>, suas coleções te esperam...</h2>
+
+        <section class="stats">
+            <div class="stat">
+                <span class="stat-number" id="total-figures">0</span>
+                <span>Figuras salvas</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="total-collections">0</span>
+                <span>Coleções criadas</span>
+            </div>
+
+            <div class="recent">
+                <h4>Últimas adicionadas</h4>
+                <div id="recent-figures">
+                    <p>Carregando...</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-actions">
+            <h3>Ações Rápidas</h3>
+            <div class="action-buttons">
+                <a href="/criar-colecao" class="btn-primary">Nova Coleção</a>
+                <a href="/explorar" class="btn-secondary">Explorar Figuras</a>
+            </div>
+        </section>
+    </main>
+
+    <footer></footer>
+
+    <script th:src="@{/js/config.js}"></script>
+    <script th:src="@{/js/api.js}"></script>
+    <script th:src="@{/js/auth.js}"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>
