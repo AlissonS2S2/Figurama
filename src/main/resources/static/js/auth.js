@@ -5,54 +5,55 @@ class AuthManager {
     }
 
     isAuthenticated() {
-        return !!this.token;
+        return !!localStorage.getItem('user'); // Simples verificação se há usuário no storage
     }
 
-    // Carrega Header e Footer dinamicamente
-    async carregarComponentes() {
-        const header = document.querySelector('header');
-        const footer = document.querySelector('footer');
+    async configurarGeral() {
+        await this.configurarHeader();
+        await this.configurarFooter();
+    }
+    
+    async configurarHeader() {
+        const headerElement = document.querySelector('header');
+        if (!headerElement) return;
 
-        if (header) {
-            // Regra: se não houver token, usa header.html. Se houver, usa header_logged.html
-            const fragmento = this.isAuthenticated() ? 'header_logged.html' : 'header.html';
-            const resp = await fetch(`/fragments/${fragmento}`);
-            header.innerHTML = await resp.text();
+        const logado = this.isAuthenticated();
+        // Define qual fragmento carregar
+        const fragmento = logado ? 'header_logged.html' : 'header.html';
+        
+        try {
+            const response = await fetch(`/fragments/${fragmento}`);
+            const html = await response.text();
+            headerElement.innerHTML = html;
 
-            if (this.isAuthenticated() && this.user) {
+            if (logado && this.user) {
                 const nameDisplay = document.getElementById('header-user-name');
-                if (nameDisplay) nameDisplay.textContent = this.user.nome || this.user.username;
+                if (nameDisplay) nameDisplay.textContent = this.user.nomeUsuario;
             }
             this.configurarLogout();
-        }
+        } catch (e) { console.error("Erro ao carregar header", e); }
+    }
 
-        if (footer) {
-            const resp = await fetch('/fragments/footer.html');
-            footer.innerHTML = await resp.text();
-        }
+    async configurarFooter() {
+        const footerElement = document.querySelector('footer');
+        if (!footerElement) return;
+        try {
+            // Carrega o footer único para todas as páginas
+            const response = await fetch('/fragments/footer.html');
+            footerElement.innerHTML = await response.text();
+        } catch (e) { console.error("Erro no footer", e); }
     }
 
     configurarLogout() {
-        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.clear();
-            window.location.href = '/index.html';
-        });
-    }
-
-    // Protege páginas que exigem login
-    verificarAcessoPrivado() {
-        const path = window.location.pathname;
-        const paginasPrivadas = ['dashboard.html', 'criando_colecao.html', 'minha_colecao.html'];
-        
-        if (paginasPrivadas.some(p => path.includes(p)) && !this.isAuthenticated()) {
-            window.location.href = '/pages/login.html';
+        const btn = document.getElementById('logoutBtn');
+        if (btn) {
+            btn.onclick = () => {
+                localStorage.clear();
+                window.location.href = '/index.html';
+            };
         }
     }
 }
 
 const auth = new AuthManager();
-document.addEventListener('DOMContentLoaded', () => {
-    auth.carregarComponentes();
-    auth.verificarAcessoPrivado();
-});
+document.addEventListener('DOMContentLoaded', () => auth.configurarGeral());

@@ -17,33 +17,55 @@
     <header></header>
 
     <main class="figure-page">
-    <section class="details-top">
-        <div class="image-aside">
-            <img id="figure-img" src="" alt="Action Figure">
-            <div id="add-to-collection-area"></div> <!-- Botão de adicionar entra aqui -->
-        </div>
-        
-        <div class="info-main">
-            <h1 id="figure-name">Carregando...</h1>
-            <p>Lançada em: <span id="figure-year"></span></p>
-            <p>Franquia: <span id="franchise-name"></span></p>
-            <p id="figure-description"></p>
-            <div class="tags">
-                <span id="category-tag" class="tag"></span>
+        <section class="figure-container">
+            <div class="figure-image-box">
+                <div class="image-placeholder">
+                    <img id="main-figure-img" src="uploads/Vampira-X-men-97.jpg" alt="Vampira-X-men-97">
+                </div>
+                <button class="btn-add">Adicionar</button>
             </div>
-        </div>
-    </section>
 
-    <section>
-        <h3>Da mesma franquia</h3>
-        <div id="franchise-grid" class="cards-grid-row"></div>
-    </section>
+            <div class="figure-info">
+                <div class="info-header">
+                    <h1 id="figure-name"></h1>
+                    <div class="release-date">
+                        Lançada em <span id="figure-date"></span>
+                    </div>
+                </div>
 
-    <section>
-        <h3>Figuras relacionadas (Mesma Categoria)</h3>
-        <div id="related-grid" class="cards-grid-row"></div>
-    </section>
-</main>
+                <p class="figure-subtitle">de franquia <span id="franchise-name"></span></p>
+
+                <hr class="info-divider">
+
+                <p class="description" id="figure-description"></p>
+
+                <hr class="info-divider">
+
+                <div class="category-area">
+                    <p>Categorias</p>
+                    <div class="tags-container" id="category-tags">
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <p class="section-title">Da mesma franquia</p>
+            <hr class="section-divider">
+            <div class="cards-grid-row" id="franchise-figures-grid">
+            
+            </div>
+        </section>
+
+        <section class="section-block">
+            <p class="section-title">Figuras relacionadas</p>
+            <hr class="section-divider">
+            <div class="cards-grid-row" id="related-figures-grid">
+
+            </div>
+        </section>
+    </main>
 
     <footer></footer>
 
