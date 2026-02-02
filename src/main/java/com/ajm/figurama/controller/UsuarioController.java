@@ -37,6 +37,18 @@ public class UsuarioController {
         return ResponseEntity.ok("Usuário registrado");
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UsuarioRecord dto) {
+        UsuarioEntity usuario = repository.findByEmail(dto.email())
+            .orElse(null);
+            
+        if (usuario == null || !usuario.getSenha().equals(dto.senha())) {
+            return ResponseEntity.badRequest().body("Credenciais inválidas");
+        }
+        
+        return ResponseEntity.ok(usuario);
+    }
+
     @GetMapping("/listar")
     public ResponseEntity<List<UsuarioEntity>> listarTodos() {
         return ResponseEntity.ok(repository.findAll());
