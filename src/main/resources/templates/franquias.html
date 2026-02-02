@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Figurama - Franquias</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .franquia-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+        .franquia-card { 
+            background: var(--dark); 
+            padding: 1.5rem; 
+            border-radius: 10px; 
+            text-align: center; 
+            border: 2px solid var(--primary);
+            transition: transform 0.3s;
+        }
+        .franquia-card:hover { transform: translateY(-5px); }
+        .franquia-icon { font-size: 3rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><h1>FIGURAMA</h1></div>
+        <div>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/explorar}">Explorar</a>
+            <a th:href="@{/franquias}">Franquias</a>
+            <a th:href="@{/login}">Login</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>🎬 Franquias Populares</h2>
+        <div id="franquia-grid" class="franquia-grid">
+            <!-- Conteúdo será carregado via JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        async function loadFranquias() {
+            try {
+                // Buscar todas as figuras para extrair as franquias únicas
+                const response = await fetch('/action-figures/listar');
+                const figures = await response.json();
+                
+                // Extrair franquias únicas e contar figuras
+                const franquiasMap = new Map();
+                figures.forEach(figure => {
+                    if (figure.franquia) {
+                        const count = franquiasMap.get(figure.franquia) || 0;
+                        franquiasMap.set(figure.franquia, count + 1);
+                    }
+                });
+
+                const franquiaGrid = document.getElementById('franquia-grid');
+                franquiaGrid.innerHTML = Array.from(franquiasMap.entries())
+                    .map(([franquia, count]) => `
+                        <div class="franquia-card" onclick="buscarPorFranquia('${franquia}')">
+                            <div class="franquia-icon">🎭</div>
+                            <h3>${franquia}</h3>
+                            <p>${count} figuras</p>
+                        </div>
+                    `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar franquias:', error);
+                document.getElementById('franquia-grid').innerHTML = '<p>Erro ao carregar franquias.</p>';
+            }
+        }
+
+        function buscarPorFranquia(franquia) {
+            window.location.href = `/explorar?franquia=${encodeURIComponent(franquia)}`;
+        }
+
+        loadFranquias();
+    </script>
+</body>
+</html>

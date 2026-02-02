@@ -23,13 +23,13 @@
 
     <script>
         async function loadCatalog() {
-            const response = await fetch('/api/catalogo');
+            const response = await fetch('/action-figures/listar');
             const figures = await response.json();
             const grid = document.getElementById('catalog-grid');
             
             grid.innerHTML = figures.map(f => `
                 <div class="card">
-                    <img src="${f.urlFoto || 'https://via.placeholder.com/250'}" alt="${f.nome}">
+                    <img src="${f.fotoUrl || 'https://via.placeholder.com/250'}" alt="${f.nome}">
                     <div class="card-body">
                         <h3>${f.nome}</h3>
                         <p>${f.franquia}</p>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Figurama - Cadastro</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .register-box { max-width: 500px; margin: 50px auto; background: var(--dark); padding: 2rem; border-radius: 10px; }
+        .register-box h2 { text-align: center; color: var(--primary); margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="register-box">
+        <h2>Criar sua Conta</h2>
+        <form id="registerForm">
+            <label>Nome de Usuário:</label>
+            <input type="text" id="username" required>
+            
+            <label>Email:</label>
+            <input type="email" id="email" required>
+            
+            <label>Senha:</label>
+            <input type="password" id="password" required>
+            
+            <label>Confirmar Senha:</label>
+            <input type="password" id="confirmPassword" required>
+            
+            <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Cadastrar</button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 1rem;">
+            Já tem conta? <a th:href="@{/login}" style="color: var(--secondary);">Faça login</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+
+            const data = {
+                nomeUsuario: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                senha: password
+            };
+
+            try {
+                const response = await fetch('/api/usuarios', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Cadastro realizado com sucesso! Faça login para continuar.');
+                    window.location.href = '/login';
+                } else {
+                    const error = await response.json();
+                    alert('Erro ao cadastrar: ' + (error.message || 'Verifique os dados e tente novamente'));
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao realizar cadastro. Tente novamente.');
+            }
+        };
+    </script>
+</body>
+</html>
