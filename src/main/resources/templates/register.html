@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/register.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header></header>
+
+    <main class="register-content">
+        <h1 class="title-register">Registrar</h1>
+
+        <form id="register-form" class="register-container">
+            <input type="email" id="email" name="email" placeholder="Endereço de E-mail">
+
+            <input type="text" id="username" name="username" placeholder="Nome de usuário" maxlength="16">
+            <small id="max-char">Máximo de 16 caracteres</small>
+
+            <input type="password" id="password" name="password" placeholder="Senha">
+            <small id="min-char">Mínimo de 6 caracteres</small>
+
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirmar Senha">
+
+            <label class="terms">
+                <input type="checkbox" id="terms" name="terms" required>
+                <a>Eu aceito os Termos de Serviço e Política de Privacidade</a>
+            </label>
+
+            <button type="submit" class="btn-register">Registrar</button>
+    
+            <p>
+                Já tem uma conta? <a th:href="@{/login}">Faça login</a>
+            </p>
+        </form>
+    </main>
+
+    <footer></footer>
+
+    <script th:src="@{/js/config.js}"></script>
+<script th:src="@{/js/api.js}"></script>
+<script th:src="@{/js/auth.js}"></script>
+<script th:src="@{/js/pages/register.js}"></script>
+</body>
+</html>

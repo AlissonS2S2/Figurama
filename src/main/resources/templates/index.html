@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Figurama</title>
+  <link rel="icon" type="image/png" th:href="@{/icons/head-icon.png}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/pages/index.css}">
+  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+  <link rel="stylesheet" th:href="@{/css/components/cards.css}">
+  <link rel="stylesheet" th:href="@{/css/components/forms.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- O Header será injetado aqui pelo auth.js -->
+    <header></header>
+
+    <section class="main">
+        <div class="main-image">
+            <img th:src="@{/images/Deadpool img.png}" alt="Deadpool Figurama">
+        </div>
+        <div class="main-text">
+            <h1>
+                Adicione Figuras que você tem.<br>
+                Favorite as que deseja.<br>
+                Compartilhe com seus amigos.
+            </h1>
+            <a th:href="@{/register}">
+                <button class="cta-btn" id="startBtn">Comece agora - é de graça</button>
+            </a>
+        </div>
+    </section>
+
+    <section class="novidades">
+        <h2>Novidades</h2>
+        <div class="cards-grid" id="novidadesGrid">
+            <p>Carregando novidades...</p>
+        </div>
+    </section>
+
+    <!-- O Footer será injetado aqui pelo auth.js -->
+    <footer></footer>
+
+    <!-- SCRIPTS NA ORDEM CORRETA -->
+    <script th:src="@{/js/config.js}"></script>
+    <script th:src="@{/js/api.js}"></script>
+    <script th:src="@{/js/auth.js}"></script>
+    <script th:src="@{/js/script.js}"></script> <!-- Lógica da Landing Page -->
+</body>
+</html>
