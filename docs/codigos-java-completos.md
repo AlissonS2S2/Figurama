@@ -3,8 +3,8 @@
 Este documento contém todos os códigos Java do projeto Figurama com explicações detalhadas do que cada arquivo faz.
 
 **📅 ÚLTIMA ATUALIZAÇÃO: 02/02/2026**
-**🔄 VERSÃO: 2.1.0 - Integração Frontend/Backend sem Thymeleaf**
-**✅ STATUS: CSS/JS linkados com HTML, backend funcional, sem Thymeleaf**
+**🔄 VERSÃO: 2.1.0 - Integração Frontend/Backend com Spring Boot**
+**✅ STATUS: Backend funcional com MySQL, frontend estático servido, API REST completa**
 
 ---
 

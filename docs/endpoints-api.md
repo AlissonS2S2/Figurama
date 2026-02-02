@@ -3,8 +3,8 @@
 Este documento descreve todos os endpoints REST disponíveis na API do projeto Figurama, incluindo métodos, parâmetros, respostas e exemplos de uso.
 
 **📅 ÚLTIMA ATUALIZAÇÃO: 02/02/2026**
-**🔄 VERSÃO: 2.1.0 - Integração Frontend/Backend sem Thymeleaf**
-**✅ STATUS: CSS/JS linkados com HTML, backend funcional, sem Thymeleaf**
+**🔄 VERSÃO: 2.1.0 - Integração Frontend/Backend com Spring Boot**
+**✅ STATUS: Backend funcional com MySQL, frontend estático servido, API REST completa**
 
 ---
 
@@ -15,7 +15,7 @@ Este documento descreve todos os endpoints REST disponíveis na API do projeto F
 - **Content-Type**: `application/json`
 - **Métodos HTTP**: GET, POST, PUT, DELETE
 - **Respostas**: JSON com status HTTP apropriados
-- **Autenticação**: Bearer Token (JWT)
+- **Autenticação**: Simples (email/senha sem JWT por enquanto)
 - **Banco de Dados**: MySQL 8.0 com Docker
 - **CORS**: Configurado para desenvolvimento
 
@@ -26,29 +26,23 @@ Este documento descreve todos os endpoints REST disponíveis na API do projeto F
 ### 1. Login de Usuário
 **Endpoint**: `POST /api/usuarios/login`
 
-**Descrição**: Autentica usuário e retorna token JWT.
+**Descrição**: Autentica usuário e retorna dados do usuário.
 
 **Request Body**:
 ```json
 {
-  "username": "usuario@example.com",
-  "password": "senha123"
+  "email": "usuario@example.com",
+  "senha": "senha123"
 }
 ```
 
 **Resposta de Sucesso (200 OK)**:
 ```json
 {
-  "sucesso": true,
-  "mensagem": "Login realizado com sucesso",
-  "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "usuario": {
-      "id": 1,
-      "username": "usuario@example.com",
-      "nome": "Nome do Usuário"
-    }
-  }
+  "id": 1,
+  "nomeUsuario": "joao123",
+  "email": "usuario@example.com",
+  "senha": "senha123"
 }
 ```
 
@@ -60,31 +54,40 @@ Este documento descreve todos os endpoints REST disponíveis na API do projeto F
 **Request Body**:
 ```json
 {
+  "nomeUsuario": "novousuario",
   "email": "novo@example.com",
-  "username": "novousuario",
-  "password": "senha123"
+  "senha": "senha123"
 }
 ```
 
-**Resposta de Sucesso (201 Created)**:
+**Resposta de Sucesso (200 OK)**:
 ```json
-{
-  "sucesso": true,
-  "mensagem": "Usuário criado com sucesso",
-  "data": {
-    "id": 2,
-    "username": "novousuario",
-    "email": "novo@example.com"
+"Usuário registrado"
+```
+
+### 3. Listar Todos os Usuários
+**Endpoint**: `GET /api/usuarios/listar`
+
+**Descrição**: Retorna lista de todos os usuários cadastrados.
+
+**Resposta de Sucesso (200 OK)**:
+```json
+[
+  {
+    "id": 1,
+    "nomeUsuario": "joao123",
+    "email": "joao@example.com",
+    "senha": "senha123"
   }
-}
+]
 ```
 
 ---
 
-## 📚 Endpoints de Catálogo
+## 📚 Endpoints de Action Figures
 
 ### 1. Listar Todas as Action Figures
-**Endpoint**: `GET /api/catalogo`
+**Endpoint**: `GET /api/action-figures/listar`
 
 **Descrição**: Retorna lista completa de action figures cadastradas.
 
@@ -93,133 +96,110 @@ Este documento descreve todos os endpoints REST disponíveis na API do projeto F
 [
   {
     "id": 1,
-    "nome": "Homem de Ferro Mark 50",
+    "nome": "Jean Grey",
+    "descricao": "Figura da poderosa telepata Jean Grey",
     "categoria": "Marvel",
-    "franquia": "Marvel Studios",
-    "descricao": "Figura do Homem de Ferro",
-    "urlFoto": "http://example.com/ironman.jpg",
-    "precoSugerido": 299.99,
-    "dataLancamento": "2023-01-15"
+    "urlFoto": "/uploads/JeanGrey-X-men-97.jpg",
+    "franquia": "X-Men 97",
+    "anoLancamento": "2024",
+    "ativo": true,
+    "colecao": null
   }
 ]
 ```
 
-### 2. Pesquisar Action Figures
-**Endpoint**: `GET /api/catalogo/pesquisar`
-
-**Descrição**: Busca action figures por nome.
-
-**Parâmetros Query**:
-- `nome` (string, obrigatório): Termo de busca
-
-**Exemplo**: `GET /api/catalogo/pesquisar?nome=homem`
-
-### 3. Buscar Action Figure por ID
-**Endpoint**: `GET /api/catalogo/{id}`
+### 2. Buscar Action Figure por ID
+**Endpoint**: `GET /api/action-figures/{id}`
 
 **Descrição**: Retorna detalhes de uma action figure específica.
 
 **Parâmetros Path**:
 - `id` (long, obrigatório): ID da action figure
 
+### 3. Pesquisar Action Figures por Nome
+**Endpoint**: `GET /api/action-figures/buscar?termo={nome}`
+
+**Descrição**: Busca action figures por nome (case insensitive).
+
+**Parâmetros Query**:
+- `termo` (string, obrigatório): Termo de busca
+
+**Exemplo**: `GET /api/action-figures/buscar?termo=jean`
+
+### 4. Adicionar Figura Existente à Coleção
+**Endpoint**: `POST /api/action-figures/adicionar-existente?figureId={id}&colecaoId={id}`
+
+**Descrição**: Adiciona uma figura existente a uma coleção específica.
+
+**Parâmetros Query**:
+- `figureId` (long, obrigatório): ID da figura
+- `colecaoId` (long, obrigatório): ID da coleção
+
+### 5. Remover Action Figure da Coleção
+**Endpoint**: `DELETE /api/action-figures/{id}`
+
+**Descrição**: Remove uma action figure da coleção do usuário.
+
 ---
 
 ## 📁 Endpoints de Coleções
 
-### 1. Criar Nova Coleção
-**Endpoint**: `POST /api/colecoes`
+### 1. Listar Todas as Coleções
+**Endpoint**: `GET /api/colecoes/listar`
 
-**Descrição**: Cria nova coleção para o usuário autenticado.
+**Descrição**: Retorna lista completa de coleções cadastradas.
 
-**Headers**: `Authorization: Bearer {token}`
+**Resposta de Sucesso (200 OK)**:
+```json
+[
+  {
+    "id": 1,
+    "nome": "Minha Coleção Marvel",
+    "descricao": "Figuras dos Vingadores",
+    "colecionadorId": 1,
+    "dataCriacao": "2023-01-15T10:30:00",
+    "dataAtualizacao": null
+  }
+]
+```
+
+### 2. Criar Nova Coleção
+**Endpoint**: `POST /api/colecoes/salvar`
+
+**Descrição**: Cria nova coleção no sistema.
 
 **Request Body**:
 ```json
 {
-  "nome": "Minha Coleção Marvel",
-  "descricao": "Figuras dos Vingadores",
-  "publica": true,
+  "nome": "Minha Coleção DC",
+  "descricao": "Figuras da DC Comics",
   "colecionadorId": 1
 }
 ```
 
-### 2. Listar Coleções do Usuário
-**Endpoint**: `GET /api/colecoes/usuario/{usuarioId}`
-
-**Descrição**: Retorna todas as coleções de um usuário específico.
-
-**Headers**: `Authorization: Bearer {token}`
-
-### 3. Buscar Coleção por ID
-**Endpoint**: `GET /api/colecoes/{id}`
-
-**Descrição**: Retorna detalhes de uma coleção específica.
-
-### 4. Atualizar Coleção
-**Endpoint**: `PUT /api/colecoes/{id}`
-
-**Descrição**: Atualiza dados de uma coleção existente.
-
-**Headers**: `Authorization: Bearer {token}`
-
-### 5. Excluir Coleção
-**Endpoint**: `DELETE /api/colecoes/{id}`
-
-**Descrição**: Remove uma coleção do sistema.
-
-**Headers**: `Authorization: Bearer {token}`
-
----
-
-## 🎯 Endpoints de Itens de Coleção
-
-### 1. Adicionar Item à Coleção
-**Endpoint**: `POST /api/colecoes/{colecaoId}/itens`
-
-**Descrição**: Adiciona uma action figure a uma coleção.
-
-**Headers**: `Authorization: Bearer {token}`
-
-**Request Body**:
-```json
-{
-  "actionFigureId": 1,
-  "dataAdicao": "2023-01-15",
-  "observacoes": "Figura em estado novo"
-}
-```
-
-### 2. Remover Item da Coleção
-**Endpoint**: `DELETE /api/colecoes/{colecaoId}/itens/{itemId}`
-
-**Descrição**: Remove um item específico de uma coleção.
-
-**Headers**: `Authorization: Bearer {token}`
-
----
-
-## 📊 Endpoints de Estatísticas
-
-### 1. Estatísticas do Usuário
-**Endpoint**: `GET /api/usuarios/{id}/estatisticas`
-
-**Descrição**: Retorna estatísticas do usuário (total de coleções, figuras, etc.).
-
-**Headers**: `Authorization: Bearer {token}`
-
 **Resposta de Sucesso (200 OK)**:
 ```json
 {
-  "totalColecoes": 5,
-  "totalFiguras": 23,
-  "colecoesPublicas": 3,
-  "figurasFavoritas": 8
+  "id": 2,
+  "nome": "Minha Coleção DC",
+  "descricao": "Figuras da DC Comics",
+  "colecionadorId": 1,
+  "dataCriacao": "2023-01-15T10:35:00",
+  "dataAtualizacao": null
 }
 ```
 
+### 3. Excluir Coleção
+**Endpoint**: `DELETE /api/colecoes/{id}`
+
+**Descrição**: Remove uma coleção do sistema (cascade remove figuras associadas).
+
+**Parâmetros Path**:
+- `id` (long, obrigatório): ID da coleção
+
 ---
 
-## 🌐 Endpoints de Páginas (WebController)
+##  Endpoints de Páginas (WebController)
 
 ### 1. Página Principal
 **Endpoint**: `GET /`
@@ -1035,20 +1015,17 @@ curl -X POST http://localhost:8080/usuarios/registrar \
 
 | Método | Endpoint | Descrição | Parâmetros |
 |--------|----------|-----------|------------|
-| GET | `/colecoes/listar` | Listar todas as coleções | Nenhum |
-| POST | `/colecoes/salvar` | Criar nova coleção | ColecaoRecord no corpo |
-| GET | `/action-figures/listar` | Listar todas as figuras | Nenhum |
-| GET | `/action-figures/{id}` | Buscar figura por ID | id (path) |
-| GET | `/action-figures/buscar` | Buscar figuras por nome | termo (query) |
-| GET | `/action-figures/colecao/{colecaoId}` | Buscar figuras por coleção | colecaoId (path) |
-| GET | `/action-figures/franquia` | Buscar figuras por franquia | franquia (query) |
-| GET | `/action-figures/novidades` | Listar 6 figuras mais recentes | Nenhum |
-| POST | `/action-figures/salvar` | Criar nova figura | ActionFigureRecord no corpo |
-| POST | `/action-figures/adicionar-existente` | Adicionar figura existente à coleção | figureId, colecaoId (query) |
-| PUT | `/action-figures/{id}` | Atualizar figura existente | id (path) + ActionFigureRecord |
-| DELETE | `/action-figures/{id}` | Remover figura da coleção | id (path) |
-| DELETE | `/action-figures/{id}/definitivo` | Excluir figura do banco (Admin) | id (path) |
-| POST | `/usuarios/registrar` | Registrar novo usuário | UsuarioRecord no corpo |
+| POST | `/api/usuarios/login` | Autenticar usuário | UsuarioRecord no corpo |
+| POST | `/api/usuarios/registrar` | Registrar novo usuário | UsuarioRecord no corpo |
+| GET | `/api/usuarios/listar` | Listar todos os usuários | Nenhum |
+| GET | `/api/colecoes/listar` | Listar todas as coleções | Nenhum |
+| POST | `/api/colecoes/salvar` | Criar nova coleção | ColecaoRecord no corpo |
+| DELETE | `/api/colecoes/{id}` | Excluir coleção | id (path) |
+| GET | `/api/action-figures/listar` | Listar todas as figuras | Nenhum |
+| GET | `/api/action-figures/{id}` | Buscar figura por ID | id (path) |
+| GET | `/api/action-figures/buscar` | Buscar figuras por nome | termo (query) |
+| POST | `/api/action-figures/adicionar-existente` | Adicionar figura existente à coleção | figureId, colecaoId (query) |
+| DELETE | `/api/action-figures/{id}` | Remover figura da coleção | id (path) |
 
 ---
 

@@ -1,8 +1,8 @@
-# Figurama - Integração Frontend/Backend com Thymeleaf
+# Figurama - Integração Frontend/Backend com Spring Boot
 
 ## 🏗️ Arquitetura
 
-Este projeto usa **Spring Boot com Thymeleaf**, permitindo templates HTML dinâmicos com integração server-side enquanto mantém a API REST para operações AJAX.
+Este projeto usa **Spring Boot com frontend estático**, permitindo servir arquivos HTML/CSS/JavaScript diretamente enquanto mantém a API REST para operações AJAX.
 
 ## 📁 Estrutura de Arquivos
 
@@ -10,17 +10,16 @@ Este projeto usa **Spring Boot com Thymeleaf**, permitindo templates HTML dinâm
 src/main/
 ├── java/com/ajm/figurama/
 │   ├── controller/
-│   │   ├── PageController.java      # Controller para páginas Thymeleaf
+│   │   ├── WebController.java       # Controller para páginas estáticas
 │   │   ├── UsuarioController.java   # API REST de usuários
+│   │   ├── ActionFigureController.java  # API REST de figures
+│   │   ├── ColecaoController.java   # API REST de coleções
 │   │   └── ...
 │   ├── config/
-│   │   └── WebConfig.java          # Configuração de recursos estáticos
+│   │   ├── WebConfig.java          # Configuração de recursos estáticos
+│   │   └── CorsConfig.java         # Configuração de CORS
 │   └── ...
 └── resources/
-    ├── templates/                   # Templates Thymeleaf
-    │   ├── index.html              # Página inicial
-    │   ├── login.html              # Página de login
-    │   └── register.html           # Página de registro
     ├── static/                      # Arquivos estáticos servidos diretamente
     │   ├── css/                    # Arquivos CSS
     │   ├── js/                     # Arquivos JavaScript
@@ -28,6 +27,11 @@ src/main/
     │   │   ├── api.js              # Funções de API
     │   │   ├── auth.js             # Gestão de autenticação
     │   │   └── pages/              # Scripts específicos por página
+    │   ├── pages/                  # Páginas HTML
+    │   │   ├── index.html          # Página inicial
+    │   │   ├── login.html          # Página de login
+    │   │   ├── register.html       # Página de registro
+    │   │   └── ...
     │   ├── images/                 # Imagens
     │   └── icons/                  # Ícones
     └── application.properties      # Configuração do banco
@@ -35,19 +39,19 @@ src/main/
 
 ## 🔗 Como Funciona a Integração
 
-### 1. Frontend (Thymeleaf + JavaScript)
-- **Templates Thymeleaf**: HTML com sintaxe `th:*` para server-side rendering
-- **CSS**: Links usando `th:href="@{/...}"` para paths relativos
+### 1. Frontend (HTML/CSS/JavaScript)
+- **HTML Puro**: Arquivos HTML estáticos servidos diretamente
+- **CSS**: Links relativos para arquivos CSS na pasta /css/
 - **JavaScript**: Faz chamadas AJAX para a API REST
 
 ### 2. Backend (Spring Boot)
-- **PageController**: Serve templates Thymeleaf
+- **WebController**: Serve arquivos estáticos usando `forward:`
 - **API Controllers**: Fornecem endpoints REST (`/api/*`)
-- **Banco de Dados**: JPA + MySQL/H2
+- **Banco de Dados**: JPA + MySQL
 
 ### 3. Conexão
 - JavaScript usa `fetch()` para chamar endpoints da API
-- Thymeleaf processa links estáticos com `@{/path}`
+- WebController redireciona rotas para arquivos estáticos
 - Configuração em `js/config.js` define a URL base: `http://localhost:8080/api`
 
 ## 🚀 Como Usar
@@ -74,28 +78,30 @@ O backend estará rodando em `http://localhost:8080`
 ## 🔧 Endpoints da API
 
 ### Usuários
-- `POST /api/usuarios/registrar` - Criar novo usuário
 - `POST /api/usuarios/login` - Autenticar usuário
+- `POST /api/usuarios/registrar` - Criar novo usuário
 - `GET /api/usuarios/listar` - Listar todos os usuários
 
 ### Coleções
-- `GET /api/colecoes` - Listar coleções
-- `POST /api/colecoes` - Criar coleção
-- `GET /api/colecoes/{id}` - Buscar coleção específica
+- `GET /api/colecoes/listar` - Listar coleções
+- `POST /api/colecoes/salvar` - Criar coleção
+- `DELETE /api/colecoes/{id}` - Excluir coleção
 
 ### Action Figures
-- `GET /api/action-figures` - Listar figuras
-- `POST /api/action-figures` - Adicionar figura
+- `GET /api/action-figures/listar` - Listar figuras
 - `GET /api/action-figures/{id}` - Buscar figura específica
+- `GET /api/action-figures/buscar?termo={nome}` - Buscar figuras por nome
+- `POST /api/action-figures/adicionar-existente` - Adicionar figura à coleção
+- `DELETE /api/action-figures/{id}` - Remover figura
 
 ## 🎯 Vantagens desta Abordagem
 
-1. **Templates Dinâmicos**: Thymeleaf permite server-side rendering
-2. **Links Relativos**: `@{/path}` garante paths corretos
+1. **Frontend Estático**: HTML/CSS/JS servidos diretamente sem processamento server-side
+2. **Links Relativos**: Paths relativos garantem funcionamento em qualquer ambiente
 3. **API Reutilizável**: A mesma API pode ser consumida por mobile apps
 4. **Desenvolvimento Paralelo**: Frontend e Backend podem ser desenvolvidos separadamente
-5. **Performance**: Arquivos estáticos servidos rapidamente
-6. **Integração Server-Side**: Possibilidade de passar dados do backend para frontend
+5. **Performance**: Arquivos estáticos servidos rapidamente pelo Spring Boot
+6. **Simplicidade**: Menos complexidade que templates server-side
 
 ## 🔧 Configuração Importante
 
@@ -128,24 +134,24 @@ public class WebConfig implements WebMvcConfigurer {
 }
 ```
 
-### PageController.java
-Controller para servir templates Thymeleaf:
+### WebController.java
+Controller para servir arquivos estáticos:
 ```java
 @Controller
-public class PageController {
+public class WebController {
     @GetMapping("/")
-    public String index() {
-        return "index";
+    public String home() {
+        return "forward:/index.html";
     }
 
     @GetMapping("/login")
     public String login() {
-        return "login";
+        return "forward:/pages/login.html";
     }
 
-    @GetMapping("/register")
-    public String register() {
-        return "register";
+    @GetMapping("/cadastro")
+    public String cadastro() {
+        return "forward:/pages/register.html";
     }
 }
 ```
@@ -159,16 +165,16 @@ const CONFIG = {
 };
 ```
 
-## 📝 Exemplo de Template Thymeleaf
+## 📝 Exemplo de HTML Estático
 
 ```html
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/pages/login.css}">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/pages/login.css">
 </head>
 <body>
     <main class="login-content">
@@ -178,13 +184,13 @@ const CONFIG = {
             <input type="password" id="login-password" placeholder="Senha" required>
             <button type="submit" class="btn-login">Entrar</button>
         </form>
-        <p class="register-link">Não tem uma conta? <a th:href="@{/register}">Registre-se</a></p>
+        <p class="register-link">Não tem uma conta? <a href="/cadastro">Registre-se</a></p>
     </main>
     
-    <script th:src="@{/js/config.js}"></script>
-    <script th:src="@{/js/api.js}"></script>
-    <script th:src="@{/js/auth.js}"></script>
-    <script th:src="@{/js/pages/login.js}"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/pages/login.js"></script>
 </body>
 </html>
 ```
@@ -204,9 +210,9 @@ fetch(`${CONFIG.API_BASE_URL}/usuarios/registrar`, {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userData)
 })
-.then(response => response.json())
+.then(response => response.text())
 .then(data => console.log('Sucesso:', data))
 .catch(error => console.error('Erro:', error));
 ```
 
-Esta abordagem combina o melhor dos dois mundos: templates server-side com Thymeleaf para renderização inicial e API REST para operações dinâmicas, permitindo fácil evolução para SPA frameworks como React, Vue ou Angular no futuro.
+Esta abordagem combina simplicidade com flexibilidade: frontend estático puro para desenvolvimento rápido e API REST completa para operações dinâmicas, permitindo fácil evolução para SPA frameworks como React, Vue ou Angular no futuro.

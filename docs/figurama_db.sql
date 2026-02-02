@@ -1,6 +1,7 @@
 -- ========================================
 -- SCRIPT COMPLETO E ATUALIZADO - FIGURAMA
--- Data: 01/02/2026
+-- Data: 02/02/2026
+-- Versão: 2.1.0 - Compatível com entidades Java
 -- ========================================
 
 -- 1. Criação do Banco e Usuário
