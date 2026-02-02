@@ -16,6 +16,7 @@ public interface ActionFigureMapper {
     
     // Mapeamento de SAÍDA (Banco -> DTO)
     @Mapping(target = "colecaoId", source = "colecao.id", qualifiedByName = "mapColecaoId")
+    @Mapping(target = "urlFoto", source = "urlFoto")
     // Os campos descricao, anoLancamento e ativo serão mapeados automaticamente por nome
     ActionFigureRecord toDto(ActionFigureEntity entity);
     

@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioController {
     private final UsuarioRepository repository;
 
-    @PostMapping("/registrar")
+    @PostMapping
     public ResponseEntity<?> registrar(@RequestBody UsuarioRecord dto) {
         if(repository.existsByEmail(dto.email())) {
             return ResponseEntity.badRequest().body("E-mail já cadastrado");
@@ -39,7 +39,7 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UsuarioRecord dto) {
-        UsuarioEntity usuario = repository.findByEmail(dto.email())
+        UsuarioEntity usuario = repository.findByNomeUsuarioAndSenha(dto.nomeUsuario(), dto.senha())
             .orElse(null);
             
         if (usuario == null || !usuario.getSenha().equals(dto.senha())) {

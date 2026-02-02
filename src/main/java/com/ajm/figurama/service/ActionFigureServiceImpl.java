@@ -39,7 +39,7 @@ public class ActionFigureServiceImpl implements ActionFigureService {
         
         entity.setNome(dto.nome());
         entity.setFranquia(dto.franquia());
-        entity.setUrlFoto(dto.fotoUrl());
+        entity.setUrlFoto(dto.urlFoto());
         entity.setDescricao(dto.descricao());
         entity.setCategoria(dto.categoria());
         entity.setAnoLancamento(dto.anoLancamento());
