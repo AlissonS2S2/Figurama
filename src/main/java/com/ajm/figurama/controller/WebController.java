@@ -18,31 +18,9 @@ public class WebController {
         return "login"; // Busca /templates/login.html
     }
 
-    @GetMapping("/cadastro")
-    public String cadastro() {
-        return "register"; // Busca /templates/register.html
-    }
-
     @GetMapping("/explorar")
     public String pesquisar() {
         return "pesquisa"; // Busca /templates/pesquisa.html
-    }
-    
-    @GetMapping("/franquias")
-    public String franquia() {
-        return "franquia"; // Busca /templates/franquia.html
-    }
-    
-    @GetMapping("/suporte")
-    public String suporte() {
-        return "support"; // Busca /templates/support.html
-    }
-
-    // --- Páginas que exigem um ID (Detalhes) ---
-
-    @GetMapping("/detalhes")
-    public String detalhesActionFigure() {
-        return "action_figure"; // Busca /templates/action_figure.html
     }
 
     // --- Páginas Privadas (Dashboard/Coleção) ---
@@ -50,15 +28,5 @@ public class WebController {
     @GetMapping("/dashboard")
     public String dashboard() {
         return "dashboard"; // Busca /templates/dashboard.html
-    }
-
-    @GetMapping("/minha-colecao")
-    public String minhaColecao() {
-        return "minha_colecao"; // Busca /templates/minha_colecao.html
-    }
-
-    @GetMapping("/criar-colecao")
-    public String criarColecao() {
-        return "criando_colecao"; // Busca /templates/criando_colecao.html
     }
 }
