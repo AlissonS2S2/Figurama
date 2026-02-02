@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Figurama - Home</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <nav>
+        <div class="logo"><h1>FIGURAMA</h1></div>
+        <div>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/explorar}">Explorar</a>
+            <a th:href="@{/login}">Login</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>🔥 Destaques do Catálogo</h2>
+        <div id="catalog-grid" class="grid">
+            <!-- JS carregará os itens aqui -->
+        </div>
+    </div>
+
+    <script>
+        async function loadCatalog() {
+            const response = await fetch('/api/action-figures/listar');
+            const figures = await response.json();
+            const grid = document.getElementById('catalog-grid');
+            
+            grid.innerHTML = figures.map(f => `
+                <div class="card">
+                    <img src="${f.urlFoto || 'https://via.placeholder.com/250'}" alt="${f.nome}">
+                    <div class="card-body">
+                        <h3>${f.nome}</h3>
+                        <p>${f.franquia}</p>
+                        <a href="/detalhes?id=${f.id}" class="btn">Ver Detalhes</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        loadCatalog();
+    </script>
+</body>
+</html>

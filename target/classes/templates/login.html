@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Figurama - Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .login-box { max-width: 400px; margin: 100px auto; background: var(--dark); padding: 2rem; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2 style="text-align: center;">Acesse sua Coleção</h2>
+        <form id="loginForm">
+            <label>Usuário:</label>
+            <input type="text" id="username" required>
+            <label>Senha:</label>
+            <input type="password" id="password" required>
+            <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Entrar</button>
+        </form>
+        <p style="text-align: center; margin-top: 1rem;">
+            Não tem conta? <a th:href="@{/cadastro}" style="color: var(--secondary);">Cadastre-se</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const data = {
+                nomeUsuario: document.getElementById('username').value,
+                senha: document.getElementById('password').value
+            };
+
+            const response = await fetch('/api/usuarios/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                localStorage.setItem('user', JSON.stringify(result));
+                window.location.href = '/dashboard';
+            } else {
+                alert('Erro: Usuário ou senha incorretos');
+            }
+        };
+    </script>
+</body>
+</html>

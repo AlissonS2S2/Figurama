@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Figurama - Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav>
+        <h1>Painel do Colecionador</h1>
+        <div>
+            <a th:href="@{/minha-colecao}">Minhas Figuras</a>
+            <a href="#" onclick="logout()">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 id="welcome">Olá!</h2>
+        <div class="grid">
+            <div class="card" style="padding: 2rem; text-align: center; background: #34495e;">
+                <h1 id="total-figs">0</h1>
+                <p>Figuras na Coleção</p>
+            </div>
+            <div class="card" style="padding: 2rem; text-align: center; background: #8e44ad;">
+                <h1 id="total-cols">0</h1>
+                <p>Coleções Criadas</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if(!user) window.location.href = '/login';
+
+        document.getElementById('welcome').innerText = `Bem-vindo, ${user.nomeUsuario}!`;
+
+        async function loadStats() {
+            const response = await fetch(`/api/usuarios/${user.id}/estatisticas`);
+            const stats = await response.json();
+            document.getElementById('total-figs').innerText = stats.totalFiguras;
+            document.getElementById('total-cols').innerText = stats.totalColecoes;
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Figurama - Detalhes</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .figure-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .figure-image img { width: 100%; border-radius: 10px; }
+        .figure-info h1 { color: var(--primary); margin-bottom: 1rem; }
+        .figure-info p { line-height: 1.6; margin-bottom: 1rem; }
+        .actions { margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><h1>FIGURAMA</h1></div>
+        <div>
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/explorar}">Explorar</a>
+            <a th:href="@{/dashboard}">Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="figure-detail" class="figure-detail">
+            <!-- Conteúdo será carregado via JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        async function loadFigureDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const figureId = urlParams.get('id');
+            
+            if (!figureId) {
+                window.location.href = '/';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/action-figures/${figureId}`);
+                const figure = await response.json();
+                
+                const detailContainer = document.getElementById('figure-detail');
+                detailContainer.innerHTML = `
+                    <div class="figure-image">
+                        <img src="${figure.urlFoto || 'https://via.placeholder.com/400'}" alt="${figure.nome}">
+                    </div>
+                    <div class="figure-info">
+                        <h1>${figure.nome}</h1>
+                        <p><strong>Franquia:</strong> ${figure.franquia}</p>
+                        <p><strong>Categoria:</strong> ${figure.categoria}</p>
+                        <p><strong>Ano de Lançamento:</strong> ${figure.anoLancamento}</p>
+                        <p><strong>Descrição:</strong> ${figure.descricao || 'Sem descrição disponível'}</p>
+                        <p><strong>Status:</strong> ${figure.ativo ? 'Ativo' : 'Inativo'}</p>
+                        
+                        <div class="actions">
+                            <button class="btn" onclick="addToCollection(${figure.id})">Adicionar à Minha Coleção</button>
+                            <a th:href="@{/explorar}" class="btn">Voltar para Explorar</a>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Erro ao carregar detalhes:', error);
+                document.getElementById('figure-detail').innerHTML = '<p>Erro ao carregar detalhes da figura.</p>';
+            }
+        }
+
+        async function addToCollection(figureId) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                alert('Você precisa estar logado para adicionar figuras à sua coleção');
+                window.location.href = '/login';
+                return;
+            }
+
+            // Aqui você precisaria implementar a lógica para obter o ID da coleção do usuário
+            // Por enquanto, vamos usar um ID fixo como exemplo
+            const colecaoId = 1; // Substitua com a lógica real
+
+            try {
+                const response = await fetch(`/action-figures/adicionar-existente?figureId=${figureId}&colecaoId=${colecaoId}`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    alert('Figura adicionada à sua coleção com sucesso!');
+                } else {
+                    alert('Erro ao adicionar figura à coleção');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao adicionar figura à coleção');
+            }
+        }
+
+        loadFigureDetails();
+    </script>
+</body>
+</html>
