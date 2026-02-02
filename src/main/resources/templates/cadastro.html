@@ -11,7 +11,7 @@
 <body>
     <div class="register-box">
         <h2>Criar sua Conta</h2>
-        <form id="registerForm">
+        <form id="cadastroForm">
             <label>Nome de Usuário:</label>
             <input type="text" id="username" required>
             
@@ -32,43 +32,6 @@
         </p>
     </div>
 
-    <script>
-        document.getElementById('registerForm').onsubmit = async (e) => {
-            e.preventDefault();
-            
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                alert('As senhas não coincidem!');
-                return;
-            }
-
-            const data = {
-                nomeUsuario: document.getElementById('username').value,
-                email: document.getElementById('email').value,
-                senha: password
-            };
-
-            try {
-                const response = await fetch('/usuarios', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok) {
-                    alert('Cadastro realizado com sucesso! Faça login para continuar.');
-                    window.location.href = '/login';
-                } else {
-                    const error = await response.json();
-                    alert('Erro ao cadastrar: ' + (error.message || 'Verifique os dados e tente novamente'));
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao realizar cadastro. Tente novamente.');
-            }
-        };
-    </script>
+    <script th:src="@{/js/cadastro-usuario.js}"></script>
 </body>
 </html>

@@ -12,6 +12,7 @@ body {
     background-color: var(--bg);
     color: var(--light);
     margin: 0;
+    unicode-bidi: embed;
 }
 
 nav {
