@@ -3,8 +3,8 @@
 Este documento descreve todos os endpoints REST disponíveis na API do projeto Figurama, incluindo métodos, parâmetros, respostas e exemplos de uso.
 
 **📅 ÚLTIMA ATUALIZAÇÃO: 02/02/2026**
-**🔄 VERSÃO: 2.1.0 - Integração Frontend/Backend com Spring Boot**
-**✅ STATUS: Backend funcional com MySQL, frontend estático servido, API REST completa**
+**🔄 VERSÃO: 3.0.0 - Thymeleaf Templates Implementados**
+**✅ STATUS: Backend funcional com Thymeleaf, MySQL, API REST completa**
 
 ---
 
@@ -204,24 +204,24 @@ Este documento descreve todos os endpoints REST disponíveis na API do projeto F
 ### 1. Página Principal
 **Endpoint**: `GET /`
 
-**Descrição**: Redireciona para `index.html` usando `forward:`.
+**Descrição**: Retorna o template Thymeleaf `index.html`.
 
-### 2. Páginas Estáticas (Arquivos Estáticos)
+### 2. Páginas com Templates Thymeleaf
 **Endpoint**: `GET /{rota}`
 
-**Descrição**: Redireciona para arquivos HTML estáticos usando `forward:`.
+**Descrição**: Retorna templates HTML processados pelo Thymeleaf.
 
 **Páginas disponíveis**:
-- `GET /` → `forward:/index.html` - Página inicial
-- `GET /login` → `forward:/pages/login.html` - Página de login
-- `GET /cadastro` → `forward:/pages/register.html` - Registro
-- `GET /explorar` → `forward:/pages/pesquisa.html` - Pesquisa
-- `GET /franquias` → `forward:/pages/franquia.html` - Franquias
-- `GET /suporte` → `forward:/pages/support.html` - Suporte
-- `GET /detalhes` → `forward:/pages/action_figure.html` - Detalhes da figure
-- `GET /dashboard` → `forward:/pages/dashboard.html` - Dashboard
-- `GET /minha-colecao` → `forward:/pages/minha_colecao.html` - Minha coleção
-- `GET /criar-colecao` → `forward:/pages/criando_colecao.html` - Criar coleção
+- `GET /` → `index` - Página inicial
+- `GET /login` → `login` - Página de login
+- `GET /cadastro` → `register` - Registro
+- `GET /explorar` → `pesquisa` - Pesquisa
+- `GET /franquias` → `franquia` - Franquias
+- `GET /suporte` → `support` - Suporte
+- `GET /detalhes` → `action_figure` - Detalhes da figure
+- `GET /dashboard` → `dashboard` - Dashboard
+- `GET /minha-colecao` → `minha_colecao` - Minha coleção
+- `GET /criar-colecao` → `criando_colecao` - Criar coleção
 
 ---
 
@@ -271,7 +271,7 @@ public class CorsConfig implements WebMvcConfigurer {
 }
 ```
 
-### 📁 Arquivos Estáticos
+### 📁 Templates Thymeleaf
 ```
 http://localhost:8080/
 ├── css/
@@ -290,22 +290,22 @@ http://localhost:8080/
 │   ├── dashboard.js
 │   ├── minha_colecao.js
 │   └── app.js
-├── pages/
-│   ├── action_figure.html
-│   ├── criando_colecao.html
-│   ├── dashboard.html
-│   ├── franquia.html
-│   ├── login.html
-│   ├── minha_colecao.html
-│   ├── pesquisa.html
-│   ├── register.html
-│   └── support.html
 ├── fragments/
 │   ├── footer.html
 │   ├── header.html
 │   ├── header_logged.html
 │   └── layout.html
-└── index.html
+└── templates/
+    ├── action_figure.html
+    ├── criando_colecao.html
+    ├── dashboard.html
+    ├── franquia.html
+    ├── index.html
+    ├── login.html
+    ├── minha_colecao.html
+    ├── pesquisa.html
+    ├── register.html
+    └── support.html
 ```
 
 ### 🌐 API REST
@@ -392,27 +392,27 @@ mvn spring-boot:run
 
 ---
 
-## ✅ Correções Aplicadas (02/02/2026 - v2.1.0)
+## ✅ Correções Aplicadas (02/02/2026 - v3.0.0)
 
 ### 🔧 **Problemas Resolvidos:**
 1. **✅ Banco de Dados**: Adicionado MySQL dialect no `application.properties`
-2. **✅ WebController**: Convertido para `forward:` para servir arquivos estáticos
+2. **✅ WebController**: Convertido para Thymeleaf templates
 3. **✅ Docker**: Substituído PostgreSQL por MySQL 8.0
 4. **✅ CORS**: Configurado para desenvolvimento
-5. **✅ Compilação**: Projeto compila sem erros (23 arquivos Java)
-6. **✅ Integração Frontend/Backend**: CSS/JS linkados sem Thymeleaf
-7. **✅ WebConfig**: Criado para servir arquivos estáticos
-8. **✅ Scripts específicos**: Implementados para login e registro
-9. **✅ Endpoint login**: Adicionado ao UsuarioController
-10. **✅ findByEmail()**: Adicionado ao UsuarioRepository
+5. **✅ Compilação**: Projeto compila sem erros (24 arquivos Java)
+6. **✅ Thymeleaf**: Templates implementados com sintaxe correta
+7. **✅ WebConfig**: Criado para servir recursos estáticos
+8. **✅ Links CSS/JS**: Configurados com `th:href` e `th:src`
+9. **✅ Templates**: 10 arquivos HTML convertidos para Thymeleaf
+10. **✅ Integração**: Frontend/backend integrado via Thymeleaf
 
 ### 📊 **Status Atual:**
 - **Backend**: ✅ Funcional
 - **Banco**: ✅ Configurado
-- **Frontend**: ✅ Estático servido e integrado
+- **Frontend**: ✅ Thymeleaf implementado
 - **API**: ✅ Endpoints disponíveis
 - **CORS**: ✅ Configurado
-- **Integração**: ✅ CSS/JS/HTML conectados ao backend
+- **Templates**: ✅ Integrados ao backend
 
 ---
     "descricao": "Coleção de figuras dos Vingadores",

@@ -3,8 +3,8 @@
 Este documento contém todos os códigos Java do projeto Figurama com explicações detalhadas do que cada arquivo faz.
 
 **📅 ÚLTIMA ATUALIZAÇÃO: 02/02/2026**
-**🔄 VERSÃO: 2.1.0 - Integração Frontend/Backend com Spring Boot**
-**✅ STATUS: Backend funcional com MySQL, frontend estático servido, API REST completa**
+**🔄 VERSÃO: 3.0.0 - Thymeleaf Templates Implementados**
+**✅ STATUS: Backend funcional com Thymeleaf, MySQL, API REST completa**
 
 ---
 
@@ -40,7 +40,7 @@ public class FiguramaApplication {
 
 ## 🌐 Controllers
 
-### WebController.java - Serve Páginas Estáticas
+### WebController.java - Serve Páginas Thymeleaf
 ```java
 package com.ajm.figurama.controller;
 
@@ -50,60 +50,60 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WebController {
 
-    // --- Páginas Públicas (Redirecionando para arquivos estáticos) ---
+    // --- Páginas Públicas (Usando Thymeleaf Templates) ---
 
     @GetMapping("/")
     public String home() {
-        return "forward:/index.html"; // Redireciona para o arquivo estático
+        return "index"; // Busca /templates/index.html
     }
 
     @GetMapping("/login")
     public String login() {
-        return "forward:/pages/login.html";
+        return "login"; // Busca /templates/login.html
     }
 
     @GetMapping("/cadastro")
     public String cadastro() {
-        return "forward:/pages/register.html";
+        return "register"; // Busca /templates/register.html
     }
 
     @GetMapping("/explorar")
     public String pesquisar() {
-        return "forward:/pages/pesquisa.html";
+        return "pesquisa"; // Busca /templates/pesquisa.html
     }
     
     @GetMapping("/franquias")
     public String franquia() {
-        return "forward:/pages/franquia.html";
+        return "franquia"; // Busca /templates/franquia.html
     }
     
     @GetMapping("/suporte")
     public String suporte() {
-        return "forward:/pages/support.html";
+        return "support"; // Busca /templates/support.html
     }
 
     // --- Páginas que exigem um ID (Detalhes) ---
 
     @GetMapping("/detalhes")
     public String detalhesActionFigure() {
-        return "forward:/pages/action_figure.html"; 
+        return "action_figure"; // Busca /templates/action_figure.html
     }
 
     // --- Páginas Privadas (Dashboard/Coleção) ---
 
     @GetMapping("/dashboard")
     public String dashboard() {
-        return "forward:/pages/dashboard.html"; 
+        return "dashboard"; // Busca /templates/dashboard.html
     }
 
     @GetMapping("/minha-colecao")
     public String minhaColecao() {
-        return "forward:/pages/minha_colecao.html"; 
+        return "minha_colecao"; // Busca /templates/minha_colecao.html
     }
 
     @GetMapping("/criar-colecao")
     public String criarColecao() {
-        return "forward:/pages/criando_colecao.html"; 
+        return "criando_colecao"; // Busca /templates/criando_colecao.html
     }
 }
 ```
@@ -705,17 +705,16 @@ volumes:
 
 ## 🔄 Mudanças Recentes
 
-### ✅ Concluído em 02/02/2026 (v2.1.0):
-- **WebController atualizado** para servir arquivos estáticos com `forward:`
+### ✅ Concluído em 02/02/2026 (v3.0.0):
+- **WebController atualizado** para usar Thymeleaf templates
 - **Banco MySQL configurado** com dialect correto
 - **CORS configurado** para desenvolvimento
 - **Projeto funcional** pronto para execução
-- **Frontend estático** sendo servido corretamente
-- **Integração CSS/JS/HTML** implementada sem Thymeleaf
-- **WebConfig criado** para servir arquivos estáticos
-- **Scripts específicos** para login e registro criados
-- **Endpoint login** adicionado ao UsuarioController
-- **findByEmail()** adicionado ao UsuarioRepository
+- **Thymeleaf implementado** com templates em `/templates/`
+- **WebConfig criado** para servir recursos estáticos
+- **Links CSS/JS** configurados com `th:href` e `th:src`
+- **Compilação sem erros** (24 arquivos Java compilados)
+- **Templates HTML** convertidos para sintaxe Thymeleaf
 
 ### ✅ Concluído em 02/02/2026:
 - **WebController atualizado** para servir arquivos estáticos com `forward:`
@@ -726,11 +725,13 @@ volumes:
 - **Projeto funcional** pronto para execução
 
 ### 📊 Estrutura Final:
-- **WebController**: Serve HTML/CSS/JS estáticos via `forward:`
+- **WebController**: Serve templates Thymeleaf
 - **ActionFigureController**: `/api/action-figures/*`
 - **ColecaoController**: `/api/colecoes/*`
 - **UsuarioController**: `/api/usuarios/*`
 - **CorsConfig**: Configuração CORS para API
+- **WebConfig**: Resource handlers para arquivos estáticos
+- **Templates**: 10 arquivos HTML em `/templates/`
 
 ---
 
@@ -776,23 +777,25 @@ mvn spring-boot:run
 ### ✅ **Status: FUNCIONAL**
 - **Backend**: ✅ Spring Boot 3.5.7 compilando sem erros
 - **Banco**: ✅ MySQL 8.0 configurado com Docker
-- **Frontend**: ✅ Arquivos estáticos servidos corretamente
+- **Frontend**: ✅ Templates Thymeleaf funcionais
 - **API**: ✅ Endpoints REST disponíveis
 - **CORS**: ✅ Configurado para desenvolvimento
+- **Thymeleaf**: ✅ Templates implementados
 
 ### 📊 **Estatísticas:**
-- **Total de arquivos Java**: 23
-- **Controllers**: 5 (Web, Usuario, Colecao, ActionFigure)
+- **Total de arquivos Java**: 24
+- **Controllers**: 4 (Web, Usuario, Colecao, ActionFigure)
 - **Entities**: 3 (Usuario, Colecao, ActionFigure)
 - **Services**: 4 interfaces + 4 implementações
 - **Repositories**: 3 interfaces JPA
-- **Configurações**: 1 (CORS)
+- **Configurações**: 2 (CORS, WebConfig)
+- **Templates Thymeleaf**: 10
 
 ---
 
 *Documentação atualizada em: 02/02/2026*
-*Versão: 2.1.0*
-*Status: Integração Frontend/Backend Completa*
+*Versão: 3.0.0*
+*Status: Thymeleaf Templates Implementados*
         SpringApplication.run(FiguramaApplication.class, args);
     }
 }
