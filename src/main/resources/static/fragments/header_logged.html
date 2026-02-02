@@ -8,24 +8,24 @@
 
 <header th:fragment="logado" class="header-logged">
     <div class="contain-wrapper">
-        <a th:href="@{/dashboard}">
-            <img class="logo" th:src="@{/img/Logo.png}" alt="Logo Figurama">
+        <a href="pages/dashboard.html">
+            <img class="logo" src="img/Logo.png" alt="Logo Figurama">
         </a>
 
         <nav class="nav-logged">
             <div class="user-profile">
-                <img class="profile-icon" th:src="@{/icons/Profile-icon.png}" alt="Perfil">
+                <img class="profile-icon" src="icons/Profile-icon.png" alt="Perfil">
                 <span id="header-user-name">Usuário</span>
             </div>
 
-            <a th:href="@{/login}" class="nav-link logout" id="logoutBtn">Sair</a>
+            <a href="pages/login.html" class="nav-link logout" id="logoutBtn">Sair</a>
 
             <div class="search-box">
                 <input type="text" placeholder="Pesquisar">
                 <button class="search-btn">🔍</button>
             </div>
 
-            <a th:href="@{/criar-colecao}" class="btn-create">Criar +</a>
+            <a href="pages/criando_colecao.html" class="btn-create">Criar +</a>
         </nav>
     </div>
 </header>
