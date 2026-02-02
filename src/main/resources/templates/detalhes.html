@@ -44,7 +44,7 @@
                 const detailContainer = document.getElementById('figure-detail');
                 detailContainer.innerHTML = `
                     <div class="figure-image">
-                        <img src="${figure.fotoUrl || 'https://via.placeholder.com/400'}" alt="${figure.nome}">
+                        <img src="${figure.urlFoto || 'https://via.placeholder.com/400'}" alt="${figure.nome}">
                     </div>
                     <div class="figure-info">
                         <h1>${figure.nome}</h1>

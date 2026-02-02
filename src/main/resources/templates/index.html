@@ -29,7 +29,7 @@
             
             grid.innerHTML = figures.map(f => `
                 <div class="card">
-                    <img src="${f.fotoUrl || 'https://via.placeholder.com/250'}" alt="${f.nome}">
+                    <img src="${f.urlFoto || 'https://via.placeholder.com/250'}" alt="${f.nome}">
                     <div class="card-body">
                         <h3>${f.nome}</h3>
                         <p>${f.franquia}</p>

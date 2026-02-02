@@ -39,7 +39,7 @@ public class ActionFigureServiceImpl implements ActionFigureService {
         
         entity.setNome(dto.nome());
         entity.setFranquia(dto.franquia());
-        entity.setFotoUrl(dto.fotoUrl());
+        entity.setUrlFoto(dto.fotoUrl());
         entity.setDescricao(dto.descricao());
         entity.setCategoria(dto.categoria());
         entity.setAnoLancamento(dto.anoLancamento());
@@ -100,7 +100,7 @@ public ActionFigureEntity adicionarDaBusca(Long figureId, Long colecaoId) {
     ActionFigureEntity novaCopia = ActionFigureEntity.builder()
             .nome(molde.getNome())
             .franquia(molde.getFranquia())
-            .fotoUrl(molde.getFotoUrl())
+            .urlFoto(molde.getUrlFoto())
             .descricao(molde.getDescricao())
             .anoLancamento(molde.getAnoLancamento())
             .categoria(molde.getCategoria())

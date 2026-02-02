@@ -24,7 +24,7 @@ public class ActionFigureEntity {
     private String franquia;
 
     @Column(name = "url_foto")
-    private String fotoUrl;
+    private String urlFoto;
 
     @ManyToOne
     @JoinColumn(name = "colecao_id")
