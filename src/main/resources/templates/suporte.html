@@ -106,17 +106,9 @@
         </div>
     </div>
 
-    <script>
-        function toggleFAQ(element) {
-            const answer = element.nextElementSibling;
-            answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
-        }
+    <div id="form-error" class="error-message" style="display: none;"></div>
+    <div id="form-success" class="success-message" style="display: none;"></div>
 
-        document.getElementById('contactForm').onsubmit = async (e) => {
-            e.preventDefault();
-            alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
-            e.target.reset();
-        };
-    </script>
+    <script th:src="@{/js/suporte.js}"></script>
 </body>
 </html>

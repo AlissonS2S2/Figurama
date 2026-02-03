@@ -1,8 +1,123 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Figurama - Explorar</title>
+    <title>Figurama - Pesquisa Avançada</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .search-container {
+            background: var(--dark);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .search-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 0.5rem;
+            color: #ccc;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select {
+            padding: 0.75rem;
+            border: 2px solid #444;
+            border-radius: 8px;
+            background: #333;
+            color: #fff;
+            font-size: 1rem;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .search-stats {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+        .result-card img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+        .result-info {
+            flex: 1;
+            padding: 1.5rem;
+        }
+        .result-info h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--dark);
+        }
+        .result-info .franchise {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .result-info .category {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .result-info .year {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .result-info .description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        .result-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .no-results h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            .result-card {
+                flex-direction: column;
+            }
+            .result-card img {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -10,42 +125,77 @@
         <div>
             <a th:href="@{/}">Home</a>
             <a th:href="@{/explorar}">Explorar</a>
+            <a th:href="@{/franquias}">Franquias</a>
             <a th:href="@{/dashboard}">Minha Estante</a>
         </div>
     </nav>
 
     <div class="container">
-        <h2>🔍 Explorar Coleções</h2>
-        <input type="text" id="searchInput" placeholder="Digite o nome da figura (ex: Batman, Jean Grey...)" onkeyup="search()">
+        <h1>🔍 Pesquisa Avançada</h1>
         
-        <div id="search-results" class="grid" style="margin-top: 2rem;">
-            <!-- Resultados da busca -->
+        <div class="search-container">
+            <form id="search-form" class="search-form">
+                <div class="form-group">
+                    <label for="search-input">Buscar figuras:</label>
+                    <input type="text" id="search-input" placeholder="Nome, franquia ou descrição...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="category-filter">Categoria:</label>
+                    <select id="category-filter">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="franchise-filter">Franquia:</label>
+                    <select id="franchise-filter">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="button" id="search-btn" class="btn btn-primary">Buscar</button>
+                </div>
+            </form>
+            
+            <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <div class="form-group" style="margin: 0;">
+                    <label for="sort-by">Ordenar por:</label>
+                    <select id="sort-by">
+                        <option value="name">Nome</option>
+                        <option value="franchise">Franquia</option>
+                        <option value="category">Categoria</option>
+                        <option value="year">Ano</option>
+                    </select>
+                </div>
+                <button id="clear-filters" class="btn btn-secondary">Limpar Filtros</button>
+            </div>
+        </div>
+
+        <div id="search-stats" class="search-stats" style="display: none;">
+            <!-- Estatísticas da busca -->
+        </div>
+
+        <div id="search-results">
+            <!-- Resultados serão carregados pelo JS -->
         </div>
     </div>
 
-    <script>
-        async function search() {
-            const termo = document.getElementById('searchInput').value;
-            if (termo.length < 2) return;
+    <!-- Modal para seleção de coleção -->
+    <div id="collection-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="searchManager.closeModal()">&times;</span>
+            <div id="modal-body">
+                <!-- Conteúdo do modal será gerado dinamicamente -->
+            </div>
+        </div>
+    </div>
 
-            const response = await fetch(`/api/catalogo/pesquisar?nome=${termo}`);
-            const results = await response.json();
-            const grid = document.getElementById('search-results');
-            
-            grid.innerHTML = results.map(f => `
-                <div class="card">
-                    <div class="card-body">
-                        <h3>${f.nome}</h3>
-                        <p><strong>Franquia:</strong> ${f.franquia}</p>
-                        <button onclick="adicionar(${f.id})" class="btn">+ Adicionar à Coleção</button>
-                    </div>
-                </div>
-            `).join('');
-        }
+    <div id="error-message" class="error-message" style="display: none;"></div>
 
-        function adicionar(id) {
-            alert('Funcionalidade: Adicionar figura ' + id + ' à sua coleção logada!');
-        }
-    </script>
+    <script th:src="@{/js/login.js}"></script>
+    <script th:src="@{/js/pesquisa.js}"></script>
 </body>
 </html>
