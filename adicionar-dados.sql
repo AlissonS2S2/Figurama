@@ -4,7 +4,7 @@
 -- Password: (deixe em branco)
 
 -- Inserindo usuários de exemplo
-INSERT INTO usuarios (nome_usuario, email, senha) VALUES 
+INSERT INTO usuarios (username, email, password) VALUES 
 ('admin', 'admin@figurama.com', 'admin123'),
 ('joao', 'joao@figurama.com', 'joao123'),
 ('maria', 'maria@figurama.com', 'maria123');
