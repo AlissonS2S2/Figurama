@@ -29,38 +29,48 @@
     </nav>
 
     <div class="container">
-        <h1>🎬 Franquias</h1>
-        
-        <div class="search-section">
-            <input type="text" id="franchise-search" placeholder="Buscar franquias...">
-            <select id="sort-franchises">
-                <option value="name">Ordenar por Nome</option>
-                <option value="count">Ordenar por Quantidade</option>
-                <option value="categories">Ordenar por Categorias</option>
-            </select>
-        </div>
-
-        <div id="franchises-stats" class="stats-section">
-            <!-- Estatísticas serão carregadas pelo JS -->
-        </div>
-
-        <div id="franchises-container" class="franquia-grid">
-            <!-- Franquias serão carregadas pelo JS -->
+        <h2>🎬 Franquias Populares</h2>
+        <div id="franquia-grid" class="franquia-grid">
+            <!-- Conteúdo será carregado via JavaScript -->
         </div>
     </div>
 
-    <!-- Modal para detalhes da franquia -->
-    <div id="franchise-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="franquiasManager.closeModal()">&times;</span>
-            <div id="modal-body">
-                <!-- Conteúdo do modal será gerado dinamicamente -->
-            </div>
-        </div>
-    </div>
+    <script>
+        async function loadFranquias() {
+            try {
+                // Buscar todas as figuras para extrair as franquias únicas
+                const response = await fetch('/action-figures/listar');
+                const figures = await response.json();
+                
+                // Extrair franquias únicas e contar figuras
+                const franquiasMap = new Map();
+                figures.forEach(figure => {
+                    if (figure.franquia) {
+                        const count = franquiasMap.get(figure.franquia) || 0;
+                        franquiasMap.set(figure.franquia, count + 1);
+                    }
+                });
 
-    <div id="error-message" class="error-message" style="display: none;"></div>
+                const franquiaGrid = document.getElementById('franquia-grid');
+                franquiaGrid.innerHTML = Array.from(franquiasMap.entries())
+                    .map(([franquia, count]) => `
+                        <div class="franquia-card" onclick="buscarPorFranquia('${franquia}')">
+                            <div class="franquia-icon">🎭</div>
+                            <h3>${franquia}</h3>
+                            <p>${count} figuras</p>
+                        </div>
+                    `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar franquias:', error);
+                document.getElementById('franquia-grid').innerHTML = '<p>Erro ao carregar franquias.</p>';
+            }
+        }
 
-    <script th:src="@{/js/franquias.js}"></script>
+        function buscarPorFranquia(franquia) {
+            window.location.href = `/explorar?franquia=${encodeURIComponent(franquia)}`;
+        }
+
+        loadFranquias();
+    </script>
 </body>
 </html>

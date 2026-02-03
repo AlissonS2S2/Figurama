@@ -18,40 +18,30 @@
     </nav>
 
     <div class="container">
-        <section class="hero">
-            <h1>Bem-vindo ao Figurama</h1>
-            <p>Descubra, coleccione e compartilhe suas action figures favoritas</p>
-            <div class="hero-actions">
-                <a href="/explorar" class="btn btn-primary">Explorar Catálogo</a>
-                <a href="/pesquisa" class="btn btn-secondary">Buscar Figuras</a>
-            </div>
-        </section>
-
-        <section class="search-section">
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Buscar figuras por nome ou franquia...">
-                <select id="category-filter">
-                    <option value="">Todas as categorias</option>
-                </select>
-                <button id="search-btn" class="btn btn-primary">Buscar</button>
-            </div>
-        </section>
-
-        <section class="catalog-section">
-            <h2>🔥 Destaques do Catálogo</h2>
-            <div id="catalog-grid" class="grid">
-                <!-- JS carregará os itens aqui -->
-            </div>
-        </section>
-
-        <section class="novidades-section">
-            <h2>✨ Lançamentos</h2>
-            <div id="novidades-grid" class="grid">
-                <!-- JS carregará os itens aqui -->
-            </div>
-        </section>
+        <h2>🔥 Destaques do Catálogo</h2>
+        <div id="catalog-grid" class="grid">
+            <!-- JS carregará os itens aqui -->
+        </div>
     </div>
 
-    <script th:src="@{/js/index.js}"></script>
+    <script>
+        async function loadCatalog() {
+            const response = await fetch('/action-figures/listar');
+            const figures = await response.json();
+            const grid = document.getElementById('catalog-grid');
+            
+            grid.innerHTML = figures.map(f => `
+                <div class="card">
+                    <img src="${f.urlFoto || 'https://via.placeholder.com/250'}" alt="${f.nome}">
+                    <div class="card-body">
+                        <h3>${f.nome}</h3>
+                        <p>${f.franquia}</p>
+                        <a href="/detalhes?id=${f.id}" class="btn">Ver Detalhes</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        loadCatalog();
+    </script>
 </body>
 </html>
