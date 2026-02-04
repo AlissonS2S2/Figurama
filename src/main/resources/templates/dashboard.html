@@ -9,6 +9,7 @@
         <h1>Painel do Colecionador</h1>
         <div>
             <a th:href="@{/minha-colecao}">Minhas Figuras</a>
+            <a th:href="@{/criar-colecao}">Criar Coleção</a>
             <a href="#" onclick="logout()">Sair</a>
         </div>
     </nav>
@@ -24,6 +25,11 @@
                 <h1 id="total-cols">0</h1>
                 <p>Coleções Criadas</p>
             </div>
+        </div>
+        
+        <h3 style="margin-top: 2rem;"> Minhas Coleções Recentes</h3>
+        <div id="colecoes-recentes" class="grid">
+            <!-- Coleções do usuário serão carregadas aqui -->
         </div>
     </div>
 
@@ -44,19 +50,58 @@
                 const colecoes = await colecoesResponse.json();
                 const figuras = await figurasResponse.json();
                 
+                // Filtrar coleções do usuário logado
+                const minhasColecoes = colecoes.filter(c => c.usuario && c.usuario.id === user.id);
+                
                 // Calcular estatísticas
-                const totalColecoes = colecoes.length;
+                const totalColecoes = minhasColecoes.length;
                 const totalFiguras = figuras.length;
                 
                 // Atualizar UI
                 document.getElementById('total-figs').innerText = totalFiguras;
                 document.getElementById('total-cols').innerText = totalColecoes;
                 
+                // Exibir coleções recentes
+                displayColecoesRecentes(minhasColecoes);
+                
             } catch (error) {
                 console.error('Erro ao carregar estatísticas:', error);
                 document.getElementById('total-figs').innerText = 'Erro';
                 document.getElementById('total-cols').innerText = 'Erro';
             }
+        }
+
+        function displayColecoesRecentes(colecoes) {
+            const container = document.getElementById('colecoes-recentes');
+            
+            if (colecoes.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Você ainda não criou nenhuma coleção.</p>';
+                return;
+            }
+            
+            // Ordenar por data de criação (mais recentes primeiro)
+            colecoes.sort((a, b) => new Date(b.dataCriacao) - new Date(a.dataCriacao));
+            
+            // Exibir até 6 coleções mais recentes
+            const recentes = colecoes.slice(0, 6);
+            
+            container.innerHTML = recentes.map(colecao => `
+                <div class="card">
+                    <div class="card-body">
+                        <h3>${colecao.titulo}</h3>
+                        <p>${colecao.descricao || 'Sem descrição'}</p>
+                        <p><strong>Figuras:</strong> ${colecao.quantidade || 0}</p>
+                        <p><strong>Criada em:</strong> ${colecao.dataCriacao ? new Date(colecao.dataCriacao).toLocaleDateString() : 'Data desconhecida'}</p>
+                        <a href="#" onclick="verColecao(${colecao.id})" class="btn">Ver Coleção</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function verColecao(colecaoId) {
+            // Redirecionar para página de detalhes da coleção
+            alert(`Funcionalidade: Ver detalhes da coleção ${colecaoId}`);
+            // Em um projeto real: window.location.href = `/colecao/${colecaoId}`;
         }
 
         function logout() {
