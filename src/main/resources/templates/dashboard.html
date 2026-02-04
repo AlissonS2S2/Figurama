@@ -85,23 +85,27 @@
             // Exibir até 6 coleções mais recentes
             const recentes = colecoes.slice(0, 6);
             
-            container.innerHTML = recentes.map(colecao => `
+            container.innerHTML = recentes.map(colecao => {
+                // Calcular quantidade real de figuras
+                const quantidadeFiguras = colecao.figures ? colecao.figures.length : 0;
+                
+                return `
                 <div class="card">
                     <div class="card-body">
                         <h3>${colecao.titulo}</h3>
                         <p>${colecao.descricao || 'Sem descrição'}</p>
-                        <p><strong>Figuras:</strong> ${colecao.quantidade || 0}</p>
+                        <p><strong>Figuras:</strong> ${quantidadeFiguras}</p>
                         <p><strong>Criada em:</strong> ${colecao.dataCriacao ? new Date(colecao.dataCriacao).toLocaleDateString() : 'Data desconhecida'}</p>
-                        <a href="#" onclick="verColecao(${colecao.id})" class="btn">Ver Coleção</a>
+                        <a href="/detalhes_colecao?id=${colecao.id}" class="btn">Ver Coleção</a>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         function verColecao(colecaoId) {
             // Redirecionar para página de detalhes da coleção
-            alert(`Funcionalidade: Ver detalhes da coleção ${colecaoId}`);
-            // Em um projeto real: window.location.href = `/colecao/${colecaoId}`;
+            window.location.href = `/detalhes_colecao?id=${colecaoId}`;
         }
 
         function logout() {

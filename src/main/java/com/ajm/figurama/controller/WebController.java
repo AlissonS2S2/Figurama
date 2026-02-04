@@ -59,4 +59,9 @@ public class WebController {
     public String criarColecao() {
         return "criando_colecao"; // Busca /templates/criando_colecao.html
     }
+
+    @GetMapping("/detalhes_colecao")
+    public String detalhesColecao() {
+        return "detalhes_colecao"; // Busca /templates/detalhes_colecao.html
+    }
 }

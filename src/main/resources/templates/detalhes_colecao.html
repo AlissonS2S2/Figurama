@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Figurama - Detalhes da Coleção</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .collection-detail { max-width: 1000px; margin: 50px auto; background: var(--dark); padding: 2rem; border-radius: 10px; }
+        .collection-detail h2 { text-align: center; color: var(--primary); margin-bottom: 2rem; }
+        .collection-info { background: var(--bg); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; }
+        .figures-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .figure-card { 
+            background: var(--bg); 
+            padding: 1rem; 
+            border-radius: 8px; 
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .figure-card:hover { transform: translateY(-5px); }
+        .figure-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 5px; margin-bottom: 1rem; }
+        .figure-card h4 { color: var(--primary); margin: 0.5rem 0; }
+        .figure-card p { margin: 0.5rem 0; color: #999; font-size: 0.9rem; }
+        .empty-state { text-align: center; padding: 3rem; color: #999; }
+        .stats { display: flex; gap: 2rem; margin-bottom: 2rem; }
+        .stat-item { background: var(--bg); padding: 1rem; border-radius: 8px; text-align: center; flex: 1; }
+        .stat-item h3 { color: var(--primary); margin: 0; font-size: 2rem; }
+        .stat-item p { margin: 0.5rem 0 0 0; }
+        .back-button { margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><h1>FIGURAMA</h1></div>
+        <div>
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/minha-colecao}">Minhas Figuras</a>
+            <a th:href="@{/criar-colecao}">Criar Coleção</a>
+            <a href="#" onclick="logout()">Sair</a>
+        </div>
+    </nav>
+
+    <div class="collection-detail">
+        <div class="back-button">
+            <a href="#" onclick="history.back()" style="color: var(--secondary);">← Voltar</a>
+        </div>
+        
+        <h2 id="collection-title">📚 Detalhes da Coleção</h2>
+        
+        <div class="collection-info">
+            <h3 id="collection-name">Carregando...</h3>
+            <p id="collection-description">Carregando...</p>
+            <p><strong>Criada em:</strong> <span id="collection-date">Carregando...</span></p>
+            <p><strong>Colecionador:</strong> <span id="collection-owner">Carregando...</span></p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <h3 id="total-figures">0</h3>
+                <p>Total de Figuras</p>
+            </div>
+            <div class="stat-item">
+                <h3 id="total-franchises">0</h3>
+                <p>Franquias Diferentes</p>
+            </div>
+            <div class="stat-item">
+                <h3 id="total-categories">0</h3>
+                <p>Categorias Diferentes</p>
+            </div>
+        </div>
+
+        <h3>🎭 Figuras na Coleção</h3>
+        <div id="figures-container" class="figures-grid">
+            <!-- Figuras serão carregadas aqui via JavaScript -->
+        </div>
+        
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <h3>📦 Coleção Vazia</h3>
+            <p>Esta coleção ainda não possui nenhuma action figure.</p>
+            <a th:href="@{/criar-colecao}" class="btn">Adicionar Figuras</a>
+        </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if(!user) window.location.href = '/login';
+
+        // Obter ID da coleção da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const colecaoId = urlParams.get('id');
+
+        if (!colecaoId) {
+            alert('ID da coleção não fornecido!');
+            window.location.href = '/minha-colecao';
+        }
+
+        let colecao = {};
+        let figuras = [];
+
+        // Carregar detalhes da coleção
+        async function loadCollectionDetails() {
+            try {
+                // Buscar todas as coleções e encontrar a específica
+                const colecoesResponse = await fetch('/colecoes/listar');
+                const todasColecoes = await colecoesResponse.json();
+                
+                colecao = todasColecoes.find(c => c.id == colecaoId);
+                
+                if (!colecao) {
+                    alert('Coleção não encontrada!');
+                    window.location.href = '/minha-colecao';
+                    return;
+                }
+
+                // Verificar se o usuário é dono da coleção
+                if (!colecao.usuario || colecao.usuario.id !== user.id) {
+                    alert('Você não tem permissão para ver esta coleção!');
+                    window.location.href = '/minha-colecao';
+                    return;
+                }
+
+                // Carregar figuras da coleção
+                await loadCollectionFigures();
+                
+                // Atualizar UI
+                updateCollectionInfo();
+                updateStats();
+                displayFigures();
+
+            } catch (error) {
+                console.error('Erro ao carregar detalhes:', error);
+                alert('Erro ao carregar detalhes da coleção.');
+            }
+        }
+
+        // Carregar figuras da coleção
+        async function loadCollectionFigures() {
+            try {
+                const figurasResponse = await fetch('/action-figures/listar');
+                const todasFiguras = await figurasResponse.json();
+                
+                // Filtrar figuras que pertencem a esta coleção
+                figuras = todasFiguras.filter(f => f.colecao && f.colecao.id == colecaoId);
+                
+            } catch (error) {
+                console.error('Erro ao carregar figuras:', error);
+                figuras = [];
+            }
+        }
+
+        // Atualizar informações da coleção
+        function updateCollectionInfo() {
+            document.getElementById('collection-name').textContent = colecao.titulo;
+            document.getElementById('collection-description').textContent = colecao.descricao || 'Sem descrição';
+            document.getElementById('collection-date').textContent = colecao.dataCriacao ? 
+                new Date(colecao.dataCriacao).toLocaleDateString('pt-BR') : 'Data desconhecida';
+            document.getElementById('collection-owner').textContent = colecao.usuario ? 
+                colecao.usuario.nomeUsuario : 'Desconhecido';
+        }
+
+        // Atualizar estatísticas
+        function updateStats() {
+            const totalFigures = figuras.length;
+            const franchises = new Set(figuras.map(f => f.franquia)).size;
+            const categories = new Set(figuras.map(f => f.categoria)).size;
+
+            document.getElementById('total-figures').textContent = totalFigures;
+            document.getElementById('total-franchises').textContent = franchises;
+            document.getElementById('total-categories').textContent = categories;
+        }
+
+        // Exibir figuras
+        function displayFigures() {
+            const container = document.getElementById('figures-container');
+            const emptyState = document.getElementById('empty-state');
+
+            if (figuras.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            container.innerHTML = figuras.map(figure => `
+                <div class="figure-card">
+                    <img src="${figure.urlFoto || 'https://via.placeholder.com/250'}" alt="${figure.nome}">
+                    <h4>${figure.nome}</h4>
+                    <p><strong>Franquia:</strong> ${figure.franquia}</p>
+                    <p><strong>Categoria:</strong> ${figure.categoria}</p>
+                    <p><strong>Ano:</strong> ${figure.anoLancamento}</p>
+                    <p style="font-size: 0.8rem; margin-top: 1rem;">${figure.descricao}</p>
+                </div>
+            `).join('');
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+
+        // Carregar detalhes ao iniciar
+        loadCollectionDetails();
+    </script>
+</body>
+</html>
