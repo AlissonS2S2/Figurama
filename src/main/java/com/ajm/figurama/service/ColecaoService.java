@@ -8,5 +8,6 @@ public interface ColecaoService {
     ColecaoEntity salvar(ColecaoRecord dto);
     List<ColecaoEntity> listarTodos();
     ColecaoEntity adicionarFigurasAColecao(Long colecaoId, List<Long> figureIds);
+    ColecaoEntity atualizar(Long id, ColecaoRecord dto);
     void deletar(Long id);
 }

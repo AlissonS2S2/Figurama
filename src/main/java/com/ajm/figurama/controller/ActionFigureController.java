@@ -59,6 +59,19 @@ public class ActionFigureController {
         return ResponseEntity.noContent().build();
     }
 
+    // NOVO: Endpoint para excluir action figure de uma coleção específica
+    @DeleteMapping("/{figureId}/da-colecao/{colecaoId}")
+    public ResponseEntity<Void> removerFiguraDaColecao(
+            @PathVariable Long figureId, 
+            @PathVariable Long colecaoId) {
+        try {
+            service.removerFiguraDaColecao(figureId, colecaoId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     // NOVO: DELETE para apagar do banco (Admin)
     @DeleteMapping("/{id}/definitivo")
     public ResponseEntity<Void> excluirDoBanco(@PathVariable Long id) {

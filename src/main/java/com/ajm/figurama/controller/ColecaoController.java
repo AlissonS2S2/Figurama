@@ -27,6 +27,27 @@ public class ColecaoController {
         return ResponseEntity.ok(service.salvar(dto));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ColecaoEntity> atualizar(@PathVariable Long id, @RequestBody ColecaoRecord dto) {
+        try {
+            System.out.println("=== DEBUG ATUALIZAR COLEÇÃO ===");
+            System.out.println("ID: " + id);
+            System.out.println("DTO: " + dto);
+            System.out.println("Título: " + dto.titulo());
+            System.out.println("Descrição: " + dto.descricao());
+            System.out.println("UsuarioId: " + dto.usuarioId());
+            
+            ColecaoEntity colecaoAtualizada = service.atualizar(id, dto);
+            System.out.println("Coleção atualizada com sucesso: " + colecaoAtualizada.getTitulo());
+            
+            return ResponseEntity.ok(colecaoAtualizada);
+        } catch (RuntimeException e) {
+            System.err.println("Erro ao atualizar coleção: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping("/{colecaoId}/adicionar-figuras")
     public ResponseEntity<ColecaoEntity> adicionarFiguras(
             @PathVariable Long colecaoId, 
@@ -41,7 +62,11 @@ public class ColecaoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        service.deletar(id);
-        return ResponseEntity.noContent().build();
+        try {
+            service.deletar(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

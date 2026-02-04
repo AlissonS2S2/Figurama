@@ -39,6 +39,37 @@ public class ColecaoServiceImpl implements ColecaoService {
     }
 
     @Override
+    public ColecaoEntity atualizar(Long id, ColecaoRecord dto) {
+        System.out.println("=== SERVICE ATUALIZAR COLEÇÃO ===");
+        System.out.println("ID recebido: " + id);
+        System.out.println("DTO recebido: " + dto);
+        
+        // 1. Buscar a coleção existente
+        ColecaoEntity colecao = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Coleção não encontrada"));
+
+        System.out.println("Coleção encontrada: " + colecao.getTitulo());
+        System.out.println("Título atual: " + colecao.getTitulo());
+        System.out.println("Descrição atual: " + colecao.getDescricao());
+
+        // 2. Atualizar apenas os campos permitidos
+        colecao.setTitulo(dto.titulo());
+        colecao.setDescricao(dto.descricao());
+
+        System.out.println("Novo título: " + colecao.getTitulo());
+        System.out.println("Nova descrição: " + colecao.getDescricao());
+
+        // 3. Manter o usuário original (não permite trocar de dono)
+        // 4. Manter as figuras existentes
+
+        // 5. Salvar as alterações
+        ColecaoEntity salva = repository.save(colecao);
+        System.out.println("Coleção salva: " + salva.getTitulo());
+        
+        return salva;
+    }
+
+    @Override
     public ColecaoEntity adicionarFigurasAColecao(Long colecaoId, List<Long> figureIds) {
         // 1. Buscar a coleção
         ColecaoEntity colecao = repository.findById(colecaoId)

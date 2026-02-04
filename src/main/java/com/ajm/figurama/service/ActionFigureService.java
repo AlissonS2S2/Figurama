@@ -27,5 +27,8 @@ public interface ActionFigureService {
     List<ActionFigureEntity> buscarNovidades();
 
     // Adicione a assinatura
-ActionFigureEntity adicionarDaBusca(Long figureId, Long colecaoId);
+    ActionFigureEntity adicionarDaBusca(Long figureId, Long colecaoId);
+    
+    // NOVO: Remover figura específica de uma coleção
+    void removerFiguraDaColecao(Long figureId, Long colecaoId);
 }

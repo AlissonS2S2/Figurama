@@ -142,4 +142,19 @@ public ActionFigureEntity adicionarDaBusca(Long figureId, Long colecaoId) {
     public List<ActionFigureEntity> buscarNovidades() {
     return repository.findTop6ByOrderByIdDesc();
     }
+
+    @Override
+    public void removerFiguraDaColecao(Long figureId, Long colecaoId) {
+        // 1. Buscar a figura
+        ActionFigureEntity figura = repository.findById(figureId)
+            .orElseThrow(() -> new RuntimeException("Figura não encontrada com ID: " + figureId));
+
+        // 2. Verificar se a figura pertence à coleção especificada
+        if (figura.getColecao() == null || !figura.getColecao().getId().equals(colecaoId)) {
+            throw new RuntimeException("Esta figura não pertence à coleção especificada");
+        }
+
+        // 3. Excluir a figura (é uma cópia, então pode ser deletada)
+        repository.delete(figura);
+    }
 }

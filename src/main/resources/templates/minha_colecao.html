@@ -50,13 +50,14 @@
                         const quantidadeFiguras = c.figures ? c.figures.length : 0;
                         
                         return `
-                        <div class="card">
-                            <div class="card-body">
-                                <h3>${c.titulo}</h3>
-                                <p>${c.descricao || 'Sem descrição'}</p>
-                                <p><strong>Figuras:</strong> ${quantidadeFiguras}</p>
-                                <p><strong>Criada em:</strong> ${c.dataCriacao ? new Date(c.dataCriacao).toLocaleDateString() : 'Data desconhecida'}</p>
+                        <div class="collection-card">
+                            <h3>${c.titulo}</h3>
+                            <p>${c.descricao || 'Sem descrição'}</p>
+                            <p><strong>Figuras:</strong> ${quantidadeFiguras}</p>
+                            <p><strong>Criada em:</strong> ${c.dataCriacao ? new Date(c.dataCriacao).toLocaleDateString('pt-BR') : 'Data desconhecida'}</p>
+                            <div class="collection-actions">
                                 <a href="/detalhes_colecao?id=${c.id}" class="btn">Ver Coleção</a>
+                                <a href="/editar-colecao?id=${c.id}" class="btn btn-primary">Editar</a>
                             </div>
                         </div>
                     `;

@@ -64,4 +64,9 @@ public class WebController {
     public String detalhesColecao() {
         return "detalhes_colecao"; // Busca /templates/detalhes_colecao.html
     }
+
+    @GetMapping("/editar-colecao")
+    public String editarColecao() {
+        return "editar_colecao"; // Busca /templates/editar_colecao.html
+    }
 }
