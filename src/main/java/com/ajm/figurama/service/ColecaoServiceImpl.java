@@ -7,6 +7,7 @@ import com.ajm.figurama.repository.UsuarioRepository;
 import com.ajm.figurama.repository.UsuarioEntity;
 import com.ajm.figurama.repository.ActionFigureEntity;
 import com.ajm.figurama.repository.ColecaoEntity;
+import com.ajm.figurama.repository.ActionFigureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -18,6 +19,7 @@ public class ColecaoServiceImpl implements ColecaoService {
     private final ColecaoRepository repository;
     private final ColecaoMapper mapper;
     private final UsuarioRepository usuarioRepository;
+    private final ActionFigureRepository actionFigureRepository;
 
     @Override
     public ColecaoEntity salvar(ColecaoRecord dto) {
@@ -36,7 +38,36 @@ public class ColecaoServiceImpl implements ColecaoService {
         return repository.findAll();
     }
 
-    // Em ColecaoServiceImpl.java
+    @Override
+    public ColecaoEntity adicionarFigurasAColecao(Long colecaoId, List<Long> figureIds) {
+        // 1. Buscar a coleção
+        ColecaoEntity colecao = repository.findById(colecaoId)
+            .orElseThrow(() -> new RuntimeException("Coleção não encontrada"));
+
+        // 2. Buscar figuras originais e criar cópias para a coleção
+        for (Long figureId : figureIds) {
+            ActionFigureEntity figuraOriginal = actionFigureRepository.findById(figureId)
+                .orElseThrow(() -> new RuntimeException("Figura " + figureId + " não encontrada"));
+            
+            // Criar uma cópia da figura para esta coleção
+            ActionFigureEntity figuraCopia = ActionFigureEntity.builder()
+                .nome(figuraOriginal.getNome())
+                .descricao(figuraOriginal.getDescricao())
+                .ativo(figuraOriginal.getAtivo())
+                .categoria(figuraOriginal.getCategoria())
+                .anoLancamento(figuraOriginal.getAnoLancamento())
+                .franquia(figuraOriginal.getFranquia())
+                .urlFoto(figuraOriginal.getUrlFoto())
+                .colecao(colecao)  // Vincular a cópia à coleção
+                .build();
+            
+            // Salvar a cópia
+            actionFigureRepository.save(figuraCopia);
+        }
+
+        // 3. Salvar a coleção para atualizar as relações
+        return repository.save(colecao);
+    }
 
     @Override
     public void deletar(Long id) {
@@ -44,26 +75,12 @@ public class ColecaoServiceImpl implements ColecaoService {
         ColecaoEntity colecao = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coleção não encontrada"));
 
-        // 2. Solta todas as figures (Desvincula)
+        // 2. Remove todas as cópias de figuras da coleção
         for (ActionFigureEntity figure : colecao.getFigures()) {
-            figure.setColecao(null);
-            // Não precisamos chamar o save aqui individualmente se a transação estiver
-            // ativa,
-            // mas para garantir no seu setup atual, vamos salvar pelo
-            // actionFigureRepository se tiver acesso,
-            // ou deixar o Cascade MERGE cuidar disso se você salvar a coleção (mas vamos
-            // deletar a coleção).
-
-            // O jeito mais seguro sem injetar outro repository é apenas setar null e o
-            // banco deve aceitar
-            // se a constraint de FK permitir nulo (que é o padrão).
+            actionFigureRepository.delete(figure);  // Deletar a cópia
         }
 
-        // OBS: Para isso funcionar 100% sem injetar o ActionFigureRepository aqui,
-        // certifique-se de que a coluna colecao_id no banco aceita NULL (ela aceita por
-        // padrão).
-
-        // 3. Deleta a coleção (agora vazia de vínculos)
+        // 3. Deleta a coleção
         repository.delete(colecao);
     }
 }

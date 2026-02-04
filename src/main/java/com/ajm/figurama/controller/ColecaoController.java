@@ -27,6 +27,18 @@ public class ColecaoController {
         return ResponseEntity.ok(service.salvar(dto));
     }
 
+    @PostMapping("/{colecaoId}/adicionar-figuras")
+    public ResponseEntity<ColecaoEntity> adicionarFiguras(
+            @PathVariable Long colecaoId, 
+            @RequestBody List<Long> figureIds) {
+        try {
+            ColecaoEntity colecaoAtualizada = service.adicionarFigurasAColecao(colecaoId, figureIds);
+            return ResponseEntity.ok(colecaoAtualizada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);

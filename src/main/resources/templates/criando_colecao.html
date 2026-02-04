@@ -51,12 +51,12 @@
             <textarea id="descricao" placeholder="Descreva sua coleção..." rows="4"></textarea>
             
             <div class="figures-selection">
-                <h3>🎭 Selecione as Action Figures para esta Coleção:</h3>
+                <h3>🎭 Selecione as Action Figures para copiar para esta Coleção:</h3>
                 <div id="figures-grid" class="figures-grid">
                     <!-- Figuras serão carregadas aqui via JavaScript -->
                 </div>
                 <div class="selection-summary">
-                    <strong>Figuras selecionadas: <span id="selected-count">0</span></strong>
+                    <strong>Figuras selecionadas para cópia: <span id="selected-count">0</span></strong>
                 </div>
             </div>
             
@@ -157,10 +157,13 @@
                     
                     // Adicionar figuras selecionadas à coleção
                     if (figurasSelecionadas.size > 0) {
-                        await addFiguresToCollection(colecao.id, Array.from(figurasSelecionadas));
+                        const sucesso = await addFiguresToCollection(colecao.id, Array.from(figurasSelecionadas));
+                        if (!sucesso) {
+                            alert('Coleção criada, mas ocorreu um erro ao adicionar as figuras. Tente adicioná-las manualmente.');
+                        }
                     }
                     
-                    alert(`Coleção "${nome}" criada com ${figurasSelecionadas.size} figura(s)!`);
+                    alert(`Coleção "${nome}" criada com ${figurasSelecionadas.size} cópia(s) de figura(s)!`);
                     e.target.reset();
                     figurasSelecionadas.clear();
                     updateSelectedCount();
@@ -186,18 +189,31 @@
             }
         };
 
-        // Adicionar figuras à coleção (simulação - endpoint real não existe)
+        // Adicionar figuras à coleção (endpoint real)
         async function addFiguresToCollection(colecaoId, figureIds) {
             try {
-                // Como não há endpoint real para adicionar figuras existentes a uma coleção,
-                // vamos apenas simular o sucesso. Em um projeto real, você criaria
-                // um endpoint como POST /colecoes/{id}/adicionar-figuras
-                console.log(`Adicionando ${figureIds.length} figuras à coleção ${colecaoId}:`, figureIds);
+                console.log(`Criando ${figureIds.length} cópias de figuras para a coleção ${colecaoId}:`, figureIds);
                 
-                // Simulação de sucesso
-                return true;
+                const response = await fetch(`/colecoes/${colecaoId}/adicionar-figuras`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8',
+                    },
+                    body: JSON.stringify(figureIds)
+                });
+                
+                if (response.ok) {
+                    const colecaoAtualizada = await response.json();
+                    console.log('Cópias de figuras criadas com sucesso:', colecaoAtualizada);
+                    return true;
+                } else {
+                    const errorText = await response.text();
+                    console.error('Erro ao criar cópias de figuras:', errorText);
+                    return false;
+                }
+                
             } catch (error) {
-                console.error('Erro ao adicionar figuras:', error);
+                console.error('Erro na requisição:', error);
                 return false;
             }
         }
