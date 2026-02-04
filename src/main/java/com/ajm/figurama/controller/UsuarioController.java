@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioController {
     private final UsuarioRepository repository;
 
-    @PostMapping
+    @PostMapping("/registrar")
     public ResponseEntity<?> registrar(@RequestBody UsuarioRecord dto) {
         if(repository.existsByEmail(dto.email())) {
             return ResponseEntity.badRequest().body("E-mail já cadastrado");
