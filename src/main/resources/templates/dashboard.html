@@ -34,10 +34,29 @@
         document.getElementById('welcome').innerText = `Bem-vindo, ${user.nomeUsuario}!`;
 
         async function loadStats() {
-            const response = await fetch(`/usuarios/${user.id}/estatisticas`);
-            const stats = await response.json();
-            document.getElementById('total-figs').innerText = stats.totalFiguras;
-            document.getElementById('total-cols').innerText = stats.totalColecoes;
+            try {
+                // Buscar dados dos endpoints existentes
+                const [colecoesResponse, figurasResponse] = await Promise.all([
+                    fetch('/colecoes/listar'),
+                    fetch('/action-figures/listar')
+                ]);
+                
+                const colecoes = await colecoesResponse.json();
+                const figuras = await figurasResponse.json();
+                
+                // Calcular estatísticas
+                const totalColecoes = colecoes.length;
+                const totalFiguras = figuras.length;
+                
+                // Atualizar UI
+                document.getElementById('total-figs').innerText = totalFiguras;
+                document.getElementById('total-cols').innerText = totalColecoes;
+                
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+                document.getElementById('total-figs').innerText = 'Erro';
+                document.getElementById('total-cols').innerText = 'Erro';
+            }
         }
 
         function logout() {

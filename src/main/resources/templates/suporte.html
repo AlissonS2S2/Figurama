@@ -99,6 +99,24 @@
         </div>
 
         <div class="support-section">
+            <h3>📊 Estatísticas do Sistema</h3>
+            <div class="grid">
+                <div style="text-align: center; padding: 1rem; background: var(--bg); border-radius: 5px;">
+                    <h4 id="totalUsuarios">0</h4>
+                    <p>Usuários Cadastrados</p>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: var(--bg); border-radius: 5px;">
+                    <h4 id="totalFiguras">0</h4>
+                    <p>Figuras no Catálogo</p>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: var(--bg); border-radius: 5px;">
+                    <h4 id="totalColecoes">0</h4>
+                    <p>Coleções Criadas</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="support-section">
             <h3>Outras Formas de Contato</h3>
             <p><strong>Email:</strong> suporte@figurama.com</p>
             <p><strong>Horário de atendimento:</strong> Segunda a Sexta, 9h às 18h</p>
@@ -107,6 +125,32 @@
     </div>
 
     <script>
+        // Carregar estatísticas do sistema
+        async function loadSystemStats() {
+            try {
+                const [usuariosResponse, figurasResponse, colecoesResponse] = await Promise.all([
+                    fetch('/usuarios/listar'),
+                    fetch('/action-figures/listar'),
+                    fetch('/colecoes/listar')
+                ]);
+                
+                const usuarios = await usuariosResponse.json();
+                const figuras = await figurasResponse.json();
+                const colecoes = await colecoesResponse.json();
+                
+                // Atualizar estatísticas
+                document.getElementById('totalUsuarios').textContent = usuarios.length;
+                document.getElementById('totalFiguras').textContent = figuras.length;
+                document.getElementById('totalColecoes').textContent = colecoes.length;
+                
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+                document.getElementById('totalUsuarios').textContent = '?';
+                document.getElementById('totalFiguras').textContent = '?';
+                document.getElementById('totalColecoes').textContent = '?';
+            }
+        }
+        
         function toggleFAQ(element) {
             const answer = element.nextElementSibling;
             answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
@@ -117,6 +161,9 @@
             alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
             e.target.reset();
         };
+        
+        // Carregar estatísticas ao carregar a página
+        loadSystemStats();
     </script>
 </body>
 </html>

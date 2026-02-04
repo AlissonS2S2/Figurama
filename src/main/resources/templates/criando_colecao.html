@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Figurama - Criar Coleção</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .create-collection-box { max-width: 600px; margin: 50px auto; background: var(--dark); padding: 2rem; border-radius: 10px; }
+        .create-collection-box h2 { text-align: center; color: var(--primary); margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><h1>FIGURAMA</h1></div>
+        <div>
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/minha-colecao}">Minhas Figuras</a>
+            <a th:href="@{/criar-colecao}">Criar Coleção</a>
+            <a href="#" onclick="logout()">Sair</a>
+        </div>
+    </nav>
+
+    <div class="create-collection-box">
+        <h2>📦 Criar Nova Coleção</h2>
+        <form id="criarColecaoForm">
+            <label>Nome da Coleção:</label>
+            <input type="text" id="nome" required placeholder="Ex: Super-Heróis Marvel">
+            
+            <label>Descrição:</label>
+            <textarea id="descricao" placeholder="Descreva sua coleção..." rows="4"></textarea>
+            
+            <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Criar Coleção</button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 1rem;">
+            <a th:href="@{/minha-colecao}" style="color: var(--secondary);">← Voltar para Minhas Coleções</a>
+        </p>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if(!user) window.location.href = '/login';
+
+        document.getElementById('criarColecaoForm').onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome').value.trim();
+            const descricao = document.getElementById('descricao').value.trim();
+            
+            if (!nome) {
+                alert('Por favor, informe o nome da coleção.');
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const textoOriginal = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Criando...';
+            
+            try {
+                // Enviar requisição para criar coleção
+                const requestData = {
+                    titulo: nome,
+                    descricao: descricao,
+                    quantidade: 0,
+                    usuarioId: user.id
+                };
+                
+                const response = await fetch('/colecoes/salvar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                if (response.ok) {
+                    alert('Coleção criada com sucesso!');
+                    e.target.reset();
+                    
+                    // Redirecionar para minhas coleções após 1 segundo
+                    setTimeout(() => {
+                        window.location.href = '/minha-colecao';
+                    }, 1000);
+                    
+                } else {
+                    const errorText = await response.text();
+                    alert('Erro ao criar coleção: ' + errorText);
+                }
+                
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                alert('Erro de conexão. Verifique sua internet e tente novamente.');
+                
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = textoOriginal;
+            }
+        };
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+    </script>
+</body>
+</html>

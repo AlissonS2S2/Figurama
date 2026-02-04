@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Figurama - Minha Coleção</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav>
+        <div class="logo"><h1>FIGURAMA</h1></div>
+        <div>
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/minha-colecao}">Minhas Figuras</a>
+            <a th:href="@{/criar-colecao}">Criar Coleção</a>
+            <a href="#" onclick="logout()">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>📚 Minhas Coleções</h2>
+        <div id="colecoes-grid" class="grid">
+            <!-- Coleções do usuário serão carregadas aqui -->
+        </div>
+        
+        <h3 style="margin-top: 2rem;">🎭 Minhas Figuras</h3>
+        <div id="figuras-grid" class="grid">
+            <!-- Figuras do usuário serão carregadas aqui -->
+        </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if(!user) window.location.href = '/login';
+
+        async function loadMinhasColecoes() {
+            try {
+                // Buscar todas as coleções e filtrar por usuário
+                const colecoesResponse = await fetch('/colecoes/listar');
+                const todasColecoes = await colecoesResponse.json();
+                
+                // Filtrar coleções do usuário (simulação - na prática o backend deveria filtrar)
+                const minhasColecoes = todasColecoes.filter(c => c.colecionadorId === user.id);
+                
+                const grid = document.getElementById('colecoes-grid');
+                
+                if (minhasColecoes.length === 0) {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Você ainda não criou nenhuma coleção.</p>';
+                } else {
+                    grid.innerHTML = minhasColecoes.map(c => `
+                        <div class="card">
+                            <div class="card-body">
+                                <h3>${c.nome}</h3>
+                                <p>${c.descricao || 'Sem descrição'}</p>
+                                <p><strong>Criada em:</strong> ${new Date(c.dataCriacao).toLocaleDateString()}</p>
+                                <a href="#" onclick="verColecao(${c.id})" class="btn">Ver Coleção</a>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar coleções:', error);
+            }
+        }
+
+        async function loadMinhasFiguras() {
+            try {
+                // Buscar todas as figuras e filtrar por coleções do usuário
+                const figurasResponse = await fetch('/action-figures/listar');
+                const todasFiguras = await figurasResponse.json();
+                
+                // Filtrar figuras que pertencem às coleções do usuário
+                const colecoesResponse = await fetch('/colecoes/listar');
+                const minhasColecoes = await colecoesResponse.json();
+                const minhasColecoesIds = minhasColecoes.filter(c => c.colecionadorId === user.id).map(c => c.id);
+                
+                const minhasFiguras = todasFiguras.filter(f => minhasColecoesIds.includes(f.colecaoId));
+                
+                const grid = document.getElementById('figuras-grid');
+                
+                if (minhasFiguras.length === 0) {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Você ainda não adicionou nenhuma figura às suas coleções.</p>';
+                } else {
+                    grid.innerHTML = minhasFiguras.map(f => `
+                        <div class="card">
+                            <img src="${f.urlFoto || 'https://via.placeholder.com/250'}" alt="${f.nome}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px;">
+                            <div class="card-body">
+                                <h3>${f.nome}</h3>
+                                <p><strong>Franquia:</strong> ${f.franquia}</p>
+                                <p><strong>Categoria:</strong> ${f.categoria}</p>
+                                <button onclick="removerFigura(${f.id})" class="btn" style="background: #e74c3c;">Remover</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar figuras:', error);
+            }
+        }
+
+        function verColecao(colecaoId) {
+            alert('Funcionalidade: Ver detalhes da coleção ' + colecaoId);
+        }
+
+        function removerFigura(figuraId) {
+            if (confirm('Tem certeza que deseja remover esta figura da sua coleção?')) {
+                alert('Funcionalidade: Remover figura ' + figuraId + ' da coleção');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+
+        // Carregar dados ao iniciar
+        loadMinhasColecoes();
+        loadMinhasFiguras();
+    </script>
+</body>
+</html>

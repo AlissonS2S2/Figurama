@@ -24,19 +24,50 @@
     </div>
 
     <script>
+        let todasFiguras = [];
+        
+        // Carregar todas as figuras ao carregar a página
+        async function loadAllFigures() {
+            try {
+                const response = await fetch('/action-figures/listar');
+                todasFiguras = await response.json();
+                displayFigures(todasFiguras);
+            } catch (error) {
+                console.error('Erro ao carregar figuras:', error);
+            }
+        }
+        
         async function search() {
-            const termo = document.getElementById('searchInput').value;
-            if (termo.length < 2) return;
+            const termo = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (termo.length < 2) {
+                displayFigures(todasFiguras);
+                return;
+            }
 
-            const response = await fetch(`/api/catalogo/pesquisar?nome=${termo}`);
-            const results = await response.json();
+            const filtered = todasFiguras.filter(f => 
+                f.nome.toLowerCase().includes(termo) ||
+                f.franquia.toLowerCase().includes(termo)
+            );
+            
+            displayFigures(filtered);
+        }
+        
+        function displayFigures(figures) {
             const grid = document.getElementById('search-results');
             
-            grid.innerHTML = results.map(f => `
+            if (figures.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Nenhuma figura encontrada.</p>';
+                return;
+            }
+            
+            grid.innerHTML = figures.map(f => `
                 <div class="card">
+                    <img src="${f.urlFoto || 'https://via.placeholder.com/250'}" alt="${f.nome}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px;">
                     <div class="card-body">
                         <h3>${f.nome}</h3>
                         <p><strong>Franquia:</strong> ${f.franquia}</p>
+                        <p><strong>Categoria:</strong> ${f.categoria}</p>
                         <button onclick="adicionar(${f.id})" class="btn">+ Adicionar à Coleção</button>
                     </div>
                 </div>
@@ -46,6 +77,9 @@
         function adicionar(id) {
             alert('Funcionalidade: Adicionar figura ' + id + ' à sua coleção logada!');
         }
+        
+        // Carregar figuras ao iniciar a página
+        loadAllFigures();
     </script>
 </body>
 </html>
