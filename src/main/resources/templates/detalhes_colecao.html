@@ -134,11 +134,21 @@
         // Carregar figuras da coleção
         async function loadCollectionFigures() {
             try {
-                const figurasResponse = await fetch('/action-figures/listar');
+                console.log('Carregando figuras para a coleção ID:', colecaoId);
+                
+                // Usar novo endpoint que retorna figuras com informações da coleção
+                const figurasResponse = await fetch('/action-figures/com-colecao');
                 const todasFiguras = await figurasResponse.json();
                 
+                console.log('Todas as figuras com coleção:', todasFiguras);
+                
                 // Filtrar figuras que pertencem a esta coleção
-                figuras = todasFiguras.filter(f => f.colecao && f.colecao.id == colecaoId);
+                figuras = todasFiguras.filter(f => {
+                    console.log('Verificando figura:', f.nome, 'colecao:', f.colecao);
+                    return f.colecao && f.colecao.id == colecaoId;
+                });
+                
+                console.log('Figuras filtradas para esta coleção:', figuras);
                 
             } catch (error) {
                 console.error('Erro ao carregar figuras:', error);

@@ -2,8 +2,10 @@ package com.ajm.figurama.controller;
 
 import com.ajm.figurama.controller.rotas.RotaActionFigures;
 import com.ajm.figurama.model.ActionFigureRecord;
+import com.ajm.figurama.model.dto.ActionFigureDTO;
 import com.ajm.figurama.repository.ActionFigureEntity;
 import com.ajm.figurama.service.ActionFigureService;
+import com.ajm.figurama.model.dto.mapper.ActionFigureMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +18,20 @@ import java.util.List;
 public class ActionFigureController {
 
     private final ActionFigureService service;
+    private final ActionFigureMapper mapper;
 
     @GetMapping(RotaActionFigures.LISTAR)
     public ResponseEntity<List<ActionFigureEntity>> listarTodos() {
         return ResponseEntity.ok(service.listarTodos());
+    }
+
+    @GetMapping("/com-colecao")
+    public ResponseEntity<List<ActionFigureDTO>> listarComColecao() {
+        List<ActionFigureEntity> entities = service.listarTodos();
+        List<ActionFigureDTO> dtos = entities.stream()
+                .map(mapper::toActionFigureDTO)
+                .toList();
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping(RotaActionFigures.BUSCAR_POR_ID)
